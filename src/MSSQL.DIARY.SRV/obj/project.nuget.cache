@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "gwE01BhPH2EWcdjezEImrXG/sP2/3zVXkmipL/EqnxCwOyJpRwo12cNuYgEgYhIP7rLp5O10r4Sl1BSOo8VUEw==",
+  "dgSpecHash": "rGv2Sj4PuaHhZ3NcCmGk+gz/Tme5Z1ljHs6RBQQCudJJ6e5sn0GiZuYw1+POXWXgNA9ImU61FtpsHVgtAxhYwg==",
   "success": true,
-  "projectFilePath": "C:\\MSSQL\\MSSQL.DIARY3.1\\src\\MSSQL.DIARY.SRV\\MSSQL.DIARY.SRV.csproj",
+  "projectFilePath": "F:\\Lakshaman\\GitHub\\MSSQLDIARY\\src\\MSSQL.DIARY.SRV\\MSSQL.DIARY.SRV.csproj",
   "expectedPackageFiles": [
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\microsoft.csharp\\4.5.0\\microsoft.csharp.4.5.0.nupkg.sha512",
     "C:\\Users\\lakshaman.rokade\\.nuget\\packages\\microsoft.dotnet.platformabstractions\\2.0.4\\microsoft.dotnet.platformabstractions.2.0.4.nupkg.sha512",

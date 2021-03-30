@@ -3636,11 +3636,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\MSSQL\\MSSQL.DIARY3.1\\src\\MSSQL.DIARY.EF\\MSSQL.DIARY.EF.csproj",
+      "projectUniqueName": "F:\\Lakshaman\\GitHub\\MSSQLDIARY\\src\\MSSQL.DIARY.EF\\MSSQL.DIARY.EF.csproj",
       "projectName": "MSSQL.DIARY.EF",
-      "projectPath": "C:\\MSSQL\\MSSQL.DIARY3.1\\src\\MSSQL.DIARY.EF\\MSSQL.DIARY.EF.csproj",
+      "projectPath": "F:\\Lakshaman\\GitHub\\MSSQLDIARY\\src\\MSSQL.DIARY.EF\\MSSQL.DIARY.EF.csproj",
       "packagesPath": "C:\\Users\\lakshaman.rokade\\.nuget\\packages\\",
-      "outputPath": "C:\\MSSQL\\MSSQL.DIARY3.1\\src\\MSSQL.DIARY.EF\\obj\\",
+      "outputPath": "F:\\Lakshaman\\GitHub\\MSSQLDIARY\\src\\MSSQL.DIARY.EF\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -3660,8 +3660,8 @@
         "netcoreapp2.2": {
           "targetAlias": "netcoreapp2.2",
           "projectReferences": {
-            "C:\\MSSQL\\MSSQL.DIARY3.1\\src\\MSSQL.DIARY.COMMON\\MSSQL.DIARY.COMN.csproj": {
-              "projectPath": "C:\\MSSQL\\MSSQL.DIARY3.1\\src\\MSSQL.DIARY.COMMON\\MSSQL.DIARY.COMN.csproj"
+            "F:\\Lakshaman\\GitHub\\MSSQLDIARY\\src\\MSSQL.DIARY.COMMON\\MSSQL.DIARY.COMN.csproj": {
+              "projectPath": "F:\\Lakshaman\\GitHub\\MSSQLDIARY\\src\\MSSQL.DIARY.COMMON\\MSSQL.DIARY.COMN.csproj"
             }
           }
         }
