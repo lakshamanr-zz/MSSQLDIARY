@@ -1,0 +1,219 @@
+
+<p-breadcrumb [model]="items" [home]="home"></p-breadcrumb>
+<amexio-accordion [multi-open]="true">
+
+  <amexio-accordion-tab amexioColorPalette [color-palette]="''" header="Table Name" [gradient]="true" [active]="true">
+
+    <div class="table">
+      <div class="cell">
+        <h5>
+          <img src="./assets/icons/Table.png" style="width: 30px !important;">
+          {{databaseTableName}}
+        </h5>
+      </div>
+    </div>
+  </amexio-accordion-tab>
+  <amexio-accordion-tab amexioColorPalette [color-palette]="''" header="Table Description " [gradient]="true" [active]="true" style="box-shadow: 0 2px 3px rgb(33, 150, 243)">
+    <div class="table" *ngIf="!iblnShowEditBox">
+      <div class="cell">
+        <p>
+          {{tableDescription}}
+        </p>
+      </div>
+      <a (click)="EditTableMsDesciption($event)" class="btn btn-default btn-lg a-btn-slide-text">
+        <span class="fa fa-edit"></span>
+      </a>
+    </div>
+
+    <div class="form-group" *ngIf="iblnShowEditBox">
+      <textarea class="form-control" rows="5" id="comment" [(ngModel)]="tableDescription"> </textarea>
+      <div class="form-group" style="margin-left: 94%;">
+
+        <a (click)="CancelTableMsDesciption($event)"><i class="fa fa-2x fa-times"></i></a>&nbsp;
+        <a (click)="SaveTableMsDesciption($event)"><i class="fa fa-2x fa-save"></i></a>
+      </div>
+    </div>
+  </amexio-accordion-tab> 
+  <amexio-accordion-tab amexioColorPalette [color-palette]="''" header="Object Dependency Tree" [gradient]="true" [active]="true">
+    <p-tree [value]="databaseTableDependencyTree"
+            layout="horizontal"
+            selectionMode="single">
+    </p-tree>
+  </amexio-accordion-tab>  
+  <amexio-accordion-tab amexioColorPalette [color-palette]="''" header="Table Index Fragmentation" [gradient]="true" [active]="true">
+
+    <div class="table">
+      <div class="row header">
+        <div class="cell"> Index Name </div>
+      </div>
+
+      <div *ngFor="let Property of databaseTableFragmentationDetails |async " class="row">
+        <div class="" data-title="Index Name">
+          {{Property.indexName}}
+          <!--<ngb-progressbar [showValue]="true" type="danger" [value]="Property.percentFragmented" [max]="100"></ngb-progressbar>-->
+          <progress-bar [progress]="Property.percentFragmented" [color-degraded]="{'0': 'green',  '55': 'red'}"> </progress-bar>
+        </div>
+      </div>
+    </div>
+
+  </amexio-accordion-tab> 
+  <amexio-accordion-tab amexioColorPalette [color-palette]="''" header="Table Indexes" [gradient]="true" [active]="true">
+    <div class="table" *ngIf="databaseTableIndexs | async else loadingTabledeIndex ">
+      <div class="row header">
+        <div class="cell">
+          Key
+        </div>
+        <div class="cell">
+          Name
+        </div>
+        <div class="cell">
+          Column
+        </div>
+        <div class="cell">
+          Unique
+        </div>
+        <div class="cell">
+          Table/ View
+        </div>
+        <div class="cell">
+          Description
+        </div>
+      </div>
+
+      <div *ngFor="let property of databaseTableIndexs | async " class="row">
+        <div class="cell" data-title="Key">{{property.index_name}} </div>
+        <div class="cell" data-title="Name">{{property.columns}}</div>
+        <div class="cell" data-title="Column">{{property.index_type}} </div>
+        <div class="cell" data-title="Unique">{{property.unique}}</div>
+        <div class="cell" data-title="Table View">{{property.tableView}} </div>
+        <div class="cell" data-title="Description">{{property.object_Type}}</div>
+      </div>
+    </div>
+    <ng-template #loadingTabledeIndex>
+      Please wait database Tables Index is loading...
+    </ng-template>
+  </amexio-accordion-tab> 
+  <amexio-accordion-tab amexioColorPalette [color-palette]="''" [gradient]="true" header="Table Columns " [active]="true">
+
+    <div class="table">
+      <div class="row header">
+
+        <div class="cell"> Name </div>
+        <div class="cell"> Data Type </div>
+        <div class="cell"> Max Length (Bytes) </div>
+        <div class="cell"> Allow Nulls </div>
+        <div class="cell"> Identity </div>
+        <div class="cell"> Default Value </div>
+        <div class="cell"> Description </div>
+      </div>
+
+      <div *ngFor="let Property of databaseTableColumns " class="row">
+
+        <div class="cell" data-title="Name">{{Property.columnname}}</div>
+        <div class="cell" data-title="Data Type">{{Property.data_type}} </div>
+        <div class="cell" data-title="Max Length (Bytes)">{{Property.max_length}}</div>
+        <div class="cell" data-title="Allow Nulls">
+          <div *ngIf="Property.allow_null!=='NO'" style="color:darkgreen">
+            {{Property.allow_null}}
+          </div>
+          <div *ngIf="Property.allow_null==='NO'" style="color:red">
+            {{Property.allow_null}}
+          </div>
+        </div>
+        <div class="cell" data-title="Identity">{{Property.identity}}</div>
+        <div class="cell" data-title="Default Value">{{Property.defaultValue}} </div>
+        <div class="cell" data-title="Description">
+          <div>
+            <p *ngIf="!Property.HideEdit">
+              {{Property.description}}
+              <a (click)="EditGridRow(Property.id)" class="">
+                <span class="fa fa-edit"></span>
+              </a>
+            </p>
+            <div *ngIf="Property.HideEdit">
+              <textarea class="form-control" rows="2" [(ngModel)]="Property.description"> </textarea>
+              <div class="form-group" style="margin-left: 90%;">
+                <a (click)="CancelGridRow(Property.id)"><i class="fa fa-1x fa-times"></i></a>&nbsp;
+                <a (click)="SaveGridRow(Property.id)"><i class="fa fa-1x fa-save"></i></a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </amexio-accordion-tab>
+  <amexio-accordion-tab amexioColorPalette [color-palette]="''" [gradient]="true" header="Table Foreign Keys " [active]="true">
+    <div class="table" *ngIf="databaseTableFKDependencies | async else loadingTableFKDependencies ">
+      <div class="row header">
+        <div class="cell">Values </div>
+        <div class="cell">Current Table Name </div>
+        <div class="cell">FK_Name </div>
+        <div class="cell">Current Table fk Column </div>
+        <div class="cell">Fk Refe Table Name </div>
+        <div class="cell">Fk Refe Table Column </div>
+      </div>
+      <div *ngFor="let Property of databaseTableFKDependencies |async" class="row">
+        <div class="cell">{{Property.values}} </div>
+        <div class="cell">{{Property.current_table_name}}</div>
+        <div class="cell">{{Property.current_table_fk_columnName}} </div>
+        <div class="cell"> {{Property.fk_name}} </div>
+        <div class="cell">
+          <a (click)="samePageNevigation(Property.fk_refe_table_name)" style="color:#358ccb;">  {{Property.fk_refe_table_name}} </a>
+        </div>
+        <div class="cell">{{Property.fk_ref_table_column_name}} </div>
+      </div>
+    </div>
+    <ng-template #loadingTableFKDependencies>
+      Please wait database Tables foregian keys is loading...
+    </ng-template>
+  </amexio-accordion-tab>
+  <amexio-accordion-tab amexioColorPalette [color-palette]="''" [gradient]="true" header="Table key Constraints " [active]="true">
+
+    <div class="table" *ngIf="databaseTableKeyConstraints | async else loadingTableKeys ">
+      <div class="row header">
+        <div class="cell">Table View </div>
+        <div class="cell">Object Type </div>
+        <div class="cell">Constraint Type </div>
+        <div class="cell">Constraint Name </div>
+
+        <div class="cell">Constraint Details </div>
+      </div>
+      <div *ngFor="let Property of databaseTableKeyConstraints | async" class="row">
+        <div class="cell">{{Property.table_view}}   </div>
+        <div class="cell">{{Property.object_type}}  </div>
+        <div class="cell">{{Property.constraint_type}}   </div>
+        <div class="cell">{{Property.constraint_name}}  </div>
+        <div class="cell">{{Property.constraint_details}}   </div>
+      </div>
+    </div>
+    <ng-template #loadingTableKeys>
+      Please wait database Table key Constraints is loading...
+    </ng-template>
+  </amexio-accordion-tab> 
+  <amexio-accordion-tab amexioColorPalette [color-palette]="''" [gradient]="true" header="Referred by" [active]="true">
+    <div class="table" *ngIf="databaseTableDependencies | async else loadingTablerefe ">
+      <div class="row header">
+        <div class="cell">  Name </div>
+        <div class="cell">   Object Type </div>
+      </div>
+      <div *ngFor="let property of databaseTableDependencies  | async " class="row" [ngSwitch]="property.object_type">
+        <a *ngSwitchCase="'view'" class="cell" [routerLink]="['/ViewsDetails',property.NevigationLink]"> {{property.name}}</a>
+        <a *ngSwitchCase="'stored procedure'" class="cell" [routerLink]="['/StoreProcedureDetails',property.NevigationLink]"> {{property.name}}</a>
+        <a *ngSwitchCase="'table function'" class="cell" [routerLink]="['/TableValueFunctionDetails',property.NevigationLink]"> {{property.name}}</a>
+        <a *ngSwitchCase="'scalar function'" class="cell" [routerLink]="['/ScalarFunctionDetails',property.NevigationLink]"> {{property.name}}</a>
+        <a *ngSwitchCase="'trigger'" class="cell" [routerLink]="['/DatabaseTriggerDetails',property.NevigationLink]"> {{property.name}}</a>
+        <a *ngSwitchDefault class="cell"> {{property.name}}</a>
+        <div class="cell"> {{property.object_type}}  </div>
+
+      </div>
+    </div>
+    <ng-template #loadingTablerefe>
+      Please wait database Tables reference is loading...
+    </ng-template>
+
+  </amexio-accordion-tab>
+
+</amexio-accordion>

@@ -1,0 +1,42 @@
+<body>
+  <!--<ngx-ui-loader></ngx-ui-loader>-->
+  <app-nav-menu></app-nav-menu>
+  <div *ngIf="isAuthenticated | async; else loggedOut">
+    <div class="container-1200" style="max-height: 96vh !important; height: 94vh !important">
+      <as-split unit="percent" [direction]="Horizontal" #split="asSplit" gutterSize="10"
+                    [gutterDblClickDuration]="dblClickTime"
+                    [useTransition]="useTransition"
+                    (dragStart)="SplitterEventHandler('dragStart', $event)"
+                    (dragEnd)="SplitterEventHandler('dragEnd', $event)"
+                    (gutterClick)="SplitterEventHandler('gutterClick', $event)"
+                    (gutterDblClick)="SplitterEventHandler('gutterDblClick', $event)"
+                    (transitionEnd)="SplitterEventHandler('transitionEnd', $event)">
+        <as-split-area size="25"  [ngClass]="iblnSpitterState ? 'HideSplitBar' : 'showSplitBar'" #area1="asSplitArea" style="overflow-x: auto !important;">
+          <div>
+            <app-left-menu [objectexplorercontainst]="objectexplorercontainst"> </app-left-menu>
+            <ngx-ui-loader [loaderId]="'loader-01'"></ngx-ui-loader>
+           
+          </div>
+
+        </as-split-area>
+        <as-split-area size="75"  [ngClass]="iblnSpitterState ? 'ShowFullPageMode' : 'RemoveFullPageMode'" #area2="asSplitArea"> 
+            <div id=container>
+              <router-outlet></router-outlet>
+            </div>
+           
+        </as-split-area>
+      </as-split>
+      <ngx-ui-loader></ngx-ui-loader>
+    </div>
+    <footer class="footer" style="margin-bottom: 2px;  background-color: #184569 !important;">
+      
+
+       
+    </footer>
+  </div>
+  <ng-template #loggedOut>
+    <div>
+      <router-outlet></router-outlet>
+    </div>
+  </ng-template>
+</body>

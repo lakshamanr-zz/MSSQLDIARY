@@ -1,0 +1,136 @@
+<p-breadcrumb [home]="home" [model]="menuItems"></p-breadcrumb>
+<amexio-accordion [multi-open]="true">
+
+  <amexio-accordion-tab amexioColorPalette [color-palette]="''" [gradient]="true" header="Database" [active]="true">
+
+    <div class="table">
+      <div class="cell">
+        <h3>
+          <p class="fa fa-database">
+            {{databaseName}}
+          </p>
+        </h3>
+      </div>
+    </div>
+  </amexio-accordion-tab>
+  <amexio-accordion-tab amexioColorPalette [color-palette]="''" [gradient]="true" header="Database Object Types" [active]="true">
+    <div *ngIf="GetDatabaseObjectTypes | async else databaseobjectloader" class="table">
+      <div class="cell">
+        <ul id="Objects">
+          <li *ngFor="let ObjectType of GetDatabaseObjectTypes | async ">
+            <div *ngIf="ObjectType=='Tables'">
+              <img src="./assets/icons/Table.png">
+              <a [routerLink]="['/DatabaseTables',databaseName]"> {{ObjectType}}</a>
+            </div>
+            <div *ngIf="ObjectType=='Views'">
+              <img src="./assets/icons/View.png">
+              <a [routerLink]="['/DatabaseViews',databaseName]"> {{ObjectType}}</a>
+            </div>
+            <div *ngIf="ObjectType=='Stored Procedures'">
+              <img src="./assets/icons/StoredProcedure.png">
+              <a [routerLink]="['/StoreProcedures',databaseName]"> {{ObjectType}}</a>
+            </div>
+            <div *ngIf="ObjectType=='Table-valued Functions'">
+              <img src="./assets/icons/Function_Table.png">
+              <a [routerLink]="['/TableValueFunctions',databaseName]"> {{ObjectType}}</a>
+            </div>
+            <div *ngIf="ObjectType=='Scalar-valued Functions'">
+              <img src="./assets/icons/Function_Scalar.png">
+              <a [routerLink]="['/ScalarFunctions',databaseName]"> {{ObjectType}}</a>
+            </div>
+            <div *ngIf="ObjectType=='Database Triggers'">
+              <img src="./assets/icons/DdlTrigger.png">
+              <a class="" [routerLink]="['/DatabaseTriggers',databaseName]"> {{ObjectType}}</a>
+            </div>
+            <div *ngIf="ObjectType=='User-Defined Data Types'">
+              <img src="./assets/icons/UserDefinedDataType.png">
+              <a class="" [routerLink]="['/UserDefinedDataTypes',databaseName]"> {{ObjectType}}</a>
+            </div>
+            <div *ngIf="ObjectType=='XML Schema Collections'">
+              <img src="./assets/icons/XmlSchemaCollection.png">
+              {{ObjectType}}
+            </div>
+            <div *ngIf="ObjectType=='Full Text Catalogs'">
+              <img src="./assets/icons/FullTextCatalog.png">
+              {{ObjectType}}
+            </div>
+            <div *ngIf="ObjectType=='Users'">
+              <img src="./assets/icons/User.png">
+              {{ObjectType}}
+            </div>
+            <div *ngIf="ObjectType=='Database Roles'">
+              <img src="./assets/icons/Role_Database.png">
+              {{ObjectType}}
+            </div>
+            <div *ngIf="ObjectType=='Schemas'">
+              <img src="./assets/icons/Schema.png">
+              <a [routerLink]="['/AllSchemas',databaseName]"> {{ObjectType}} </a>
+            </div>
+
+          </li>
+        </ul>
+      </div>
+    </div>
+    <ng-template #databaseobjectloader>
+      Please wait database object type are loading...
+    </ng-template>
+  </amexio-accordion-tab>
+  <amexio-accordion-tab amexioColorPalette [color-palette]="''" [gradient]="true" header="Database Properties" [active]="true">
+    <div *ngIf="GetdbPropertValues | async else dbProprtvalueloader ">
+      <div class="table">
+        <div class="row header">
+          <div class="cell">Property</div>
+          <div class="cell">Value</div>
+        </div>
+        <div *ngFor="let Property of GetdbPropertValues | async " class="row">
+          <div class="cell" data-title="Property">{{Property.istrName}} </div>
+          <div class="cell" data-title="Value">{{Property.istrValue}}</div>
+        </div>
+      </div>
+
+    </div>
+    <ng-template #dbProprtvalueloader>
+      Please wait database properties are loading...
+    </ng-template>
+  </amexio-accordion-tab>
+  <amexio-accordion-tab amexioColorPalette [color-palette]="''" [gradient]="true" header="Database Options" [active]="true">
+
+    <div *ngIf="GetdbOptionValues |async  else dboptionLoader" class="table">
+      <div class="row header">
+        <div class="cell">Property</div>
+        <div class="cell">Value</div>
+      </div>
+
+      <div *ngFor="let Property of GetdbOptionValues |async " class="row">
+        <div class="cell" data-title="Property">{{Property.istrName}} </div>
+        <div class="cell" data-title="Value">{{Property.istrValue}}</div>
+      </div>
+    </div>
+    <ng-template #dboptionLoader>
+      Please wait database option values are loading...
+    </ng-template>
+  </amexio-accordion-tab>
+  <amexio-accordion-tab amexioColorPalette [color-palette]="''" [gradient]="true" header="Database Files" [active]="true">
+
+    <div *ngIf="GetdbFilesDetails | async else dbFileLoader" class="table">
+      <div class="row header">
+        <div class="cell">Name</div>
+        <div class="cell">Type</div>
+        <div class="cell">Size</div>
+        <div class="cell">File Name</div>
+      </div>
+
+      <div *ngFor="let Property of GetdbFilesDetails | async " class="row">
+        <div class="cell" data-title="Name">{{Property.name}} </div>
+        <div class="cell" data-title="Type">{{Property.fileType}}</div>
+        <div class="cell" data-title="Size">{{Property.fileSize}} MB</div>
+        <div class="cell" data-title="File Name">{{Property.fileLocation}}</div>
+      </div>
+    </div>
+    <ng-template #dbFileLoader>
+      Please wait database file infomration is loading...
+    </ng-template>
+
+  </amexio-accordion-tab>
+
+</amexio-accordion>

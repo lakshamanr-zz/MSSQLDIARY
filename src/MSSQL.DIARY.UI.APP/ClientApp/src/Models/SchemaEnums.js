@@ -1,0 +1,37 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var SchemaEnums;
+(function (SchemaEnums) {
+    SchemaEnums[SchemaEnums["Table"] = 0] = "Table";
+    SchemaEnums[SchemaEnums["Database"] = 1] = "Database";
+    SchemaEnums[SchemaEnums["TableValueFunction"] = 2] = "TableValueFunction";
+    SchemaEnums[SchemaEnums["ScalarValueFunctions"] = 3] = "ScalarValueFunctions";
+    SchemaEnums[SchemaEnums["AggregateFunciton"] = 4] = "AggregateFunciton";
+    SchemaEnums[SchemaEnums["Storeprocedure"] = 5] = "Storeprocedure";
+    SchemaEnums[SchemaEnums["Triggers"] = 6] = "Triggers";
+    SchemaEnums[SchemaEnums["UserDefinedDataType"] = 7] = "UserDefinedDataType";
+    SchemaEnums[SchemaEnums["XMLSchemaCollection"] = 8] = "XMLSchemaCollection";
+    SchemaEnums[SchemaEnums["DatabaseServer"] = 9] = "DatabaseServer";
+    SchemaEnums[SchemaEnums["Views"] = 10] = "Views";
+    SchemaEnums[SchemaEnums["Programmability"] = 11] = "Programmability";
+    SchemaEnums[SchemaEnums["AllDatabase"] = 12] = "AllDatabase";
+    SchemaEnums[SchemaEnums["AllTableValueFunction"] = 13] = "AllTableValueFunction";
+    SchemaEnums[SchemaEnums["AllScalarValueFunctions"] = 14] = "AllScalarValueFunctions";
+    SchemaEnums[SchemaEnums["AllAggregateFunciton"] = 15] = "AllAggregateFunciton";
+    SchemaEnums[SchemaEnums["AllStoreprocedure"] = 16] = "AllStoreprocedure";
+    SchemaEnums[SchemaEnums["AllTriggers"] = 17] = "AllTriggers";
+    SchemaEnums[SchemaEnums["AllUserDefinedDataType"] = 18] = "AllUserDefinedDataType";
+    SchemaEnums[SchemaEnums["AllXMLSchemaCollection"] = 19] = "AllXMLSchemaCollection";
+    SchemaEnums[SchemaEnums["AllDatabaseServer"] = 20] = "AllDatabaseServer";
+    SchemaEnums[SchemaEnums["AllViews"] = 21] = "AllViews";
+    SchemaEnums[SchemaEnums["AllProgrammability"] = 22] = "AllProgrammability";
+    SchemaEnums[SchemaEnums["AllFunctions"] = 23] = "AllFunctions";
+    SchemaEnums[SchemaEnums["AllDatabaseDataTypes"] = 24] = "AllDatabaseDataTypes";
+    SchemaEnums[SchemaEnums["AllTable"] = 25] = "AllTable";
+    SchemaEnums[SchemaEnums["ProjectInfo"] = 26] = "ProjectInfo";
+    SchemaEnums[SchemaEnums["TableCoumns"] = 27] = "TableCoumns";
+    SchemaEnums[SchemaEnums["WorkFlow"] = 28] = "WorkFlow";
+    SchemaEnums[SchemaEnums["AllSSISPackages"] = 29] = "AllSSISPackages";
+    SchemaEnums[SchemaEnums["SSISPackages"] = 30] = "SSISPackages";
+})(SchemaEnums = exports.SchemaEnums || (exports.SchemaEnums = {}));
+//# sourceMappingURL=SchemaEnums.js.map

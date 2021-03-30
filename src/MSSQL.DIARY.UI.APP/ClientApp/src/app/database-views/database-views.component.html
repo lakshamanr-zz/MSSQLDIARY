@@ -1,0 +1,46 @@
+<p-breadcrumb [model]="items" [home]="home"></p-breadcrumb>
+<amexio-accordion [multi-open]="true">
+
+
+  <amexio-accordion-tab amexioColorPalette [color-palette]="''" header="All Views" [gradient]="true" [active]="true">
+    <hr />
+    <input type="text" class="form-control table" placeholder="Search" [(ngModel)]="query" id="listSearch">
+    <hr />
+    <p-table [columns]="cols" [value]="databaseViews | search: query " dataKey="istrValue" [paginator]="true" [rows]="2000">
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          <th style="width: 3em"></th>
+          <th> View Name </th>
+          <th> Description </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-columns="columns">
+        <tr>
+          <td>
+            <a href="#" [pRowToggler]="rowData">
+              <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+            </a>
+          </td>
+          <td class="cell" *ngFor="let col of columns">
+            <div [innerHTML]="rowData[col.field] | highlight: query">   {{rowData[col.field]}}  </div>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
+        <tr>
+          <td [attr.colspan]="columns.length + 1">
+            <div class="ui-g-12 ui-md-3" style="text-align:center">
+              <h4>
+                <u> <a class="cell" data-title="Name" [routerLink]="['/DatabaseView',rowData.istrNevigation]"> {{rowData.istrName}}</a></u>
+              </h4>
+            </div>
+
+          </td>
+        </tr>
+      </ng-template>
+
+    </p-table>
+
+  </amexio-accordion-tab>
+
+</amexio-accordion>

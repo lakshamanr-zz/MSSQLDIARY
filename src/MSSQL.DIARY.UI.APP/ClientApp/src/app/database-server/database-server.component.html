@@ -1,0 +1,61 @@
+<p-breadcrumb [home]="home" [model]="menuItems"></p-breadcrumb>
+<amexio-accordion [multi-open]="true">
+  <amexio-accordion-tab amexioColorPalette [color-palette]="''" header="Server Name" [gradient]="true" [active]="true">
+    <div class="table">
+      <div class="cell "> <h3><p class="fa fa-desktop">{{serverName }}</p></h3></div>
+    </div>
+  </amexio-accordion-tab>
+
+
+  <amexio-accordion-tab amexioColorPalette [color-palette]="''" [gradient]="true" header="Databases ({{(databaseNames | async)?.length}})" [active]="true">
+    <div *ngIf=" databaseNames |async else databaseloading" class="table">
+      <div class="cell">
+        <ul id="Objects">
+          <li *ngFor="let databaseName of databaseNames |async ">
+            <p class="fa fa-database">
+              <a [routerLink]="['/Database',databaseName+'/'+serverName]"> {{databaseName}}</a>
+            </p>
+          <li>
+        </ul>
+      </div>
+    </div>
+
+    <ng-template #databaseloading>
+      Please wait database list is loading....
+    </ng-template>
+  </amexio-accordion-tab>
+
+  <amexio-accordion-tab amexioColorPalette [color-palette]="''" [gradient]="true" header="Server Properties" [active]="true">
+    <div *ngIf=" serverProprties |async else serverProprtiesloading" class="table">
+      <div class="row header">
+        <div class="cell">Property</div>
+        <div class="cell">Value</div>
+      </div>
+      <div *ngFor="let Property of serverProprties | async " class="row">
+        <div class="cell">{{Property.istrName}} </div>
+        <div class="cell">{{Property.istrValue}}</div>
+
+      </div>
+    </div>
+    <ng-template #serverProprtiesloading>
+      Please wait Server Properties is loading....
+    </ng-template>
+  </amexio-accordion-tab>
+  <amexio-accordion-tab amexioColorPalette [color-palette]="''" [gradient]="true" header="Server Advence Properties" [active]="true">
+    <div *ngIf=" serverAdvenceProprties |async else serverAdvenceProprtiesloading" class="table">
+      <div class="row header">
+        <div class="cell">Property</div>
+        <div class="cell">Value</div>
+      </div>
+      <div *ngFor="let Property of serverAdvenceProprties | async " class="row">
+        <div class="cell">{{Property.istrName}} </div>
+        <div class="cell">{{Property.istrValue}}</div>
+
+      </div>
+    </div>
+    <ng-template #serverAdvenceProprtiesloading>
+      Please wait Server advence Properties is loading....
+    </ng-template>
+  </amexio-accordion-tab>
+
+</amexio-accordion>

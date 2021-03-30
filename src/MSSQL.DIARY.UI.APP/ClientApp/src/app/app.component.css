@@ -1,0 +1,32 @@
+@media (max-width: 767px) {
+  /* On small screens, the nav menu spans the full width of the screen. Leave a space for it. */
+  .body-content {
+    padding-top: 50px;
+  }
+}
+
+.HideSplitBar {
+  order: 0 !important;
+  flex: 0 0 calc(0% - 0px) !important;
+}
+
+  .HideSplitBar div {
+    order: 0 !important;
+    flex: 0 0 calc(0% - 0px) !important;
+  }
+
+
+.showSplitBar {
+}
+
+  .showSplitBar div {
+  }
+
+
+.ShowFullPageMode {
+  order: 2;
+  flex: 0 0 calc(100% - 10px) !important;
+}
+.RemoveFullPageMode {
+  
+}

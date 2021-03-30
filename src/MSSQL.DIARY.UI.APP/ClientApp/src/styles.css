@@ -1,0 +1,126 @@
+/* You can add global styles to this file, and also import other style files */
+@import url(//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css);
+
+/* Provide sufficient contrast against white background */
+a {
+  color: #0366d6;
+}
+
+code {
+  color: #e01a76;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+.as-split-gutter {
+  height: auto !important;
+  background-color: none !important;
+}
+.as-split-gutter-icon {
+  max-height: 95vh !important;
+  height: 95vh !important;
+  background-color: #184569 !important;
+  width: 5px !important;
+  /*  background-image:none !important;*/
+} 
+/* width */
+/* ::-webkit-scrollbar { 
+  background: -webkit-linear-gradient(0, blue 50%, white 100%);
+} */
+
+
+/* Track */
+/* ::-webkit-scrollbar-track {
+  background: #f1f1f1;
+} */
+/* Handle */
+/* ::-webkit-scrollbar-thumb {
+  background: #2196f3 !important;
+} */
+/* 
+::-webkit-scrollbar-track {
+  background: white !important;
+} */
+
+/* body::-webkit-scrollbar {
+  width: 1em;
+} */
+
+/* body::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+} */
+body { 
+  padding-top: 17px !important; 
+   overflow: hidden !important;
+  background: var(--appBackground);
+  font-size: small !important;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 24px;
+  line-height: 24px;
+  background-color: #f5f5f5;
+  position: fixed;
+}
+.container-1200 {
+  width: 100%;
+  min-width: 1200px;
+  padding-left: 5px;
+  padding-right: 0px !important;
+  margin: 0 auto;
+  position: 0; 
+}
+ 
+#container{
+  margin-bottom: 25px !important;
+}
+
+/* changes the apperenc of accorden*/
+.accordion {
+  background-color: #184569 !important;
+  padding: 0px !important;
+  width: 100% !important;
+  font-size: 15px !important;
+}
+.treenode {
+  padding-left: 0px !important;
+  border-left: dotted !important;
+  border-width: 1.3px !important;
+  border-left-color: #2196f3 !important;
+}
+ /* width */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+  background: -webkit-linear-gradient(0, blue 50%, white 100%);
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #2196f3 !important;
+}
+
+::-webkit-scrollbar-track {
+  background: white !important;
+}
+
+body::-webkit-scrollbar {
+  width: 1em;
+}
+.spinner {
+  margin-top: 95vh !important;
+  display:none !important;
+}
+
+.spinner:before {
+  margin-left: -38% !important;
+}
