@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Edy9mh1EHjPXATjkHsfdVUMi4qYK9YUP7G775Z1Ov9j9lRBJozTrJpmoQnK7pYsqGE+AMSiH7z1whw5JqLrzHQ==",
+  "dgSpecHash": "oCs2R3qGlt6TWLAXgxqJkcOjTX5kv+8tAWndA4KUEmM9QOdRuL+xrZ/iOu8atmtyQFMS+IFv9NZ6gxBoczvXjw==",
   "success": true,
-  "projectFilePath": "C:\\MSSQL\\MSSQL.DIARY3.1\\src\\MSSQL.DIARY.EF\\MSSQL.DIARY.EF.csproj",
+  "projectFilePath": "F:\\Lakshaman\\GitHub\\MSSQLDIARY\\src\\MSSQL.DIARY.EF\\MSSQL.DIARY.EF.csproj",
   "expectedPackageFiles": [
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\microsoft.csharp\\4.5.0\\microsoft.csharp.4.5.0.nupkg.sha512",
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\microsoft.entityframeworkcore\\2.2.0\\microsoft.entityframeworkcore.2.2.0.nupkg.sha512",
