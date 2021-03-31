@@ -32,10 +32,9 @@
      5. MS SQL Server or SQL Light.
 
 # Code setup: 
- Once you donwloaded the above software you can do below step's to make this project up and running. 
      1. Open node js command prompt and update the packages. 
      2. Open visual studio and update the database .
-     3. After database update you may get create a new database as per you. 
+     3. After database update you may get create a new database as per you.
      4. Open SQL mangement studio and configure your database connection . 
      5. Make sure you to have created one dedicate database user who will have all the persmission related schema information.
-     6. Now you can run the project 
+     6. Now you can run the project.
