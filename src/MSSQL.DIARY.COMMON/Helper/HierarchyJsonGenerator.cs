@@ -4,29 +4,29 @@ using System.Linq;
 
 namespace MSSQL.DIARY.COMN.Helper
 {
-    public class HirechyJsonGenerator
+    public class HierarchyJsonGenerator
     {
         public Node root;
 
-        public HirechyJsonGenerator(List<string> l, string depancyName, List<ReferencesModel> referencesModels = null)
+        public HierarchyJsonGenerator(List<string> l, string dependencyName, List<ReferencesModel> referencesModels = null)
         {
-            root = new Node(depancyName) { ReferencesModels = referencesModels };
+            root = new Node(dependencyName) { ReferencesModels = referencesModels };
 
-            foreach (var s in l) addRow(s);
+            foreach (var s in l) AddRow(s);
         }
 
-        public void addRow(string s)
+        public void AddRow(string s)
         {
             var l = s.Split('/').ToList();
             var state = root;
             foreach (var ss in l)
             {
-                addSoon(state, ss);
-                state = getSoon(state, ss);
+                AddSoon(state, ss);
+                state = GetSoon(state, ss);
             }
         }
 
-        private void addSoon(Node n, string s)
+        private void AddSoon(Node n, string s)
         {
             var f = false;
             foreach (var ns in n.Soon)
@@ -35,7 +35,7 @@ namespace MSSQL.DIARY.COMN.Helper
             if (!f) n.Soon.Add(new Node(s));
         }
 
-        private Node getSoon(Node n, string s)
+        private Node GetSoon(Node n, string s)
         {
             foreach (var ns in n.Soon)
                 if (ns.name == s)

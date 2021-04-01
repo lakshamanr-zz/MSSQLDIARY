@@ -3,9 +3,9 @@
     public static partial class SqlQueryConstant
     {
         public static readonly string GetCurrentDataBaseName = @"SELECT DB_NAME() AS [Current_Database]";
-        public static readonly string GetAllDatabaseNames = @"SELECT name FROM master.dbo.sysdatabases where name not in ('master','tempdb','model','msdb')";
+        public static readonly string GetDatabaseNames = @"SELECT name FROM master.dbo.sysdatabases where name not in ('master','tempdb','model','msdb')";
 
-        public static readonly string GetDatabaseServerName = @"SELECT @@SERVERNAME";
+        public static readonly string GetServerName = @"SELECT @@SERVERNAME";
 
         public static readonly string GetTables = @"[sys].[sp_tables]";
 
@@ -36,7 +36,7 @@
             @"SELECT (SCHEMA_NAME(SCHEMA_ID) +'.'+[NAME])AS 'USERDEFINEDDATATYPE' FROM SYS.TYPES
                                                                WHERE IS_USER_DEFINED = 1";
 
-        public static readonly string GetXmlSchemaCollection =
+        public static readonly string GetXmlSchemas =
             @"SELECT DISTINCT (SCHEMA_NAME(SCHEMA_ID)+'.'+XSC.NAME) AS 'NAME' FROM    SYS.XML_SCHEMA_COLLECTIONS XSC JOIN SYS.XML_SCHEMA_NAMESPACES XSN  ON (XSC.XML_COLLECTION_ID = XSN.XML_COLLECTION_ID)";
 
         public static readonly string[] GetServerProperties =

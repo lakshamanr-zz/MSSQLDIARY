@@ -783,7 +783,7 @@ namespace MSSQL.DIARY.SRV
         {
             using (var dbSqldocContext = new MssqlDiaryContext(dbConnections))
             {
-                return dbSqldocContext.GetScalarFunction().Where(x => x != null).ToList();
+                return dbSqldocContext.GetScalarFunctions().Where(x => x != null).ToList();
                 ;
             }
         }
@@ -797,7 +797,7 @@ namespace MSSQL.DIARY.SRV
         {
             using (var dbSqldocContext = new MssqlDiaryContext(dbConnections))
             {
-                return dbSqldocContext.GetTableValueFunction().Where(x => x != null).ToList();
+                return dbSqldocContext.GetTableValueFunctions().Where(x => x != null).ToList();
             }
         }
 
@@ -823,7 +823,7 @@ namespace MSSQL.DIARY.SRV
         {
             using (var dbSqldocContext = new MssqlDiaryContext(dbConnections))
             {
-                return dbSqldocContext.GetTigger().Where(x => x != null).ToList();
+                return dbSqldocContext.GetTriggers().Where(x => x != null).ToList();
             }
         }
 
@@ -836,7 +836,7 @@ namespace MSSQL.DIARY.SRV
         {
             using (var dbSqldocContext = new MssqlDiaryContext(dbInstanceName))
             {
-                return dbSqldocContext.GetUserDefinedDataType().Where(x => x != null).ToList();
+                return dbSqldocContext.GetUserDefinedDataTypes().Where(x => x != null).ToList();
             }
         }
 
@@ -844,7 +844,7 @@ namespace MSSQL.DIARY.SRV
         {
             using (var dbSqldocContext = new MssqlDiaryContext())
             {
-                return dbSqldocContext.GetXmlSchemaCollection().Where(x => x != null).ToList();
+                return dbSqldocContext.GetXmlSchemas().Where(x => x != null).ToList();
             }
         }
 
@@ -852,7 +852,7 @@ namespace MSSQL.DIARY.SRV
         {
             using (var dbSqldocContext = new MssqlDiaryContext(dbConnections))
             {
-                return dbSqldocContext.GetUserDefinedDataType().Where(x => x != null).ToList();
+                return dbSqldocContext.GetUserDefinedDataTypes().Where(x => x != null).ToList();
             }
         }
 

@@ -8,14 +8,14 @@ namespace MSSQL.DIARY.EF
 {
     public partial class MssqlDiaryContext
     {
-        public List<PropertyInfo> GetListOfAllSchemaAndMsDescription()
+        public List<PropertyInfo> GetSchemaAndDescriptions()
         {
             var lstPropInfo = new List<PropertyInfo>();
             try
             {
                 using (var commad = Database.GetDbConnection().CreateCommand())
                 {
-                    commad.CommandText = SqlQueryConstant.GetListOfAllSchemaAndMsDescription;
+                    commad.CommandText = SqlQueryConstant.GetSchemaAndDescriptions;
                     Database.OpenConnection();
                     using (var reader = commad.ExecuteReader())
                     {
@@ -38,7 +38,7 @@ namespace MSSQL.DIARY.EF
             return lstPropInfo;
         }
 
-        public void CreateOrUpdateSchemaMsDescription(string astrDescriptionValue, string astrSchemaName)
+        public void CreateOrUpdateSchemaDescription(string astrDescriptionValue, string astrSchemaName)
         {
             try
             {
@@ -80,22 +80,22 @@ namespace MSSQL.DIARY.EF
             }
         }
 
-        public List<SchemaReferanceInfo> GetSchemaReferanceInfo(string astrSchema_Name)
+        public List<SchemaReferanceInfo> GetSchemaReferences(string astrSchemaName)
         {
-            var lstOfSchemaReferance = new List<SchemaReferanceInfo>();
+            var lstSchemaReferences = new List<SchemaReferanceInfo>();
             try
             {
                 using (var commad = Database.GetDbConnection().CreateCommand())
                 {
                     commad.CommandText =
-                        SqlQueryConstant.GetAllSchemaReferancedObject.Replace("@schema_id",
-                            "'" + astrSchema_Name + "'");
+                        SqlQueryConstant.GetSchemaReferences.Replace("@schema_id",
+                            "'" + astrSchemaName + "'");
                     Database.OpenConnection();
                     using (var reader = commad.ExecuteReader())
                     {
                         if (reader.HasRows)
                             while (reader.Read())
-                                lstOfSchemaReferance.Add(new SchemaReferanceInfo
+                                lstSchemaReferences.Add(new SchemaReferanceInfo
                                     {
                                         istrName = reader.GetString(0)
                                     }
@@ -108,12 +108,12 @@ namespace MSSQL.DIARY.EF
                 // ignored
             }
 
-            return lstOfSchemaReferance;
+            return lstSchemaReferences;
         }
 
-        public Ms_Description GetSchemaMsDescription(string astrSchemaName)
+        public Ms_Description GetSchemaDescription(string astrSchemaName)
         {
-            var msDesc = new Ms_Description();
+            var schemaDescription = new Ms_Description();
             try
             {
                 using (var commad = Database.GetDbConnection().CreateCommand())
@@ -125,7 +125,7 @@ namespace MSSQL.DIARY.EF
                     {
                         if (reader.HasRows)
                             while (reader.Read())
-                                msDesc.desciption = reader.GetString(0);
+                                schemaDescription.desciption = reader.GetString(0);
                     }
                 }
             }
@@ -134,7 +134,7 @@ namespace MSSQL.DIARY.EF
                 // ignored
             }
 
-            return msDesc;
+            return schemaDescription;
         }
 
         //public SchemaCreateScript GetSchemaCreateSript()
@@ -144,7 +144,7 @@ namespace MSSQL.DIARY.EF
         //    {
         //        using (var commad = Database.GetDbConnection().CreateCommand())
         //        {
-        //            commad.CommandText = SqlQueryConstant.GetDatabaseServerName;
+        //            commad.CommandText = SqlQueryConstant.GetServerName;
         //            Database.OpenConnection();
         //            using (var reader = commad.ExecuteReader())
         //            {

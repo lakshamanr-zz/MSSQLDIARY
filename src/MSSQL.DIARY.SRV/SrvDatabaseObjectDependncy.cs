@@ -19,7 +19,7 @@ namespace MSSQL.DIARY.SRV
 
         private string GetObjectThatDependsOnJson(List<ReferencesModel> referencesModels)
         {
-            var e = new HirechyJsonGenerator(
+            var e = new HierarchyJsonGenerator(
                 AddObjectTypeInfo(referencesModels).Select(x => x.ThePath.Replace("\\", " ")).ToList(),
                 "That Depends On");
             var result = e.root.PrimengToJson();
@@ -28,7 +28,7 @@ namespace MSSQL.DIARY.SRV
 
         public string GetBusinessWorkFlowJson(List<string> referencesModels)
         {
-            var e = new HirechyJsonGenerator(referencesModels.Select(x => x.Replace("\\", " ")).ToList(), "");
+            var e = new HierarchyJsonGenerator(referencesModels.Select(x => x.Replace("\\", " ")).ToList(), "");
             e.root.IblnFirstNode = true;
             var result = e.root.PrimengToJson();
             return result;
@@ -45,7 +45,7 @@ namespace MSSQL.DIARY.SRV
 
         private string GetObjectOnWhichDependsOnJson(List<ReferencesModel> referencesModels)
         {
-            var e = new HirechyJsonGenerator(
+            var e = new HierarchyJsonGenerator(
                 AddObjectTypeInfo(referencesModels).Select(x => x.ThePath.Replace("\\", " ")).ToList(),
                 "On Which Depends");
             var result = e.root.PrimengToJson();

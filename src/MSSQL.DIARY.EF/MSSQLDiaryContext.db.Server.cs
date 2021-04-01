@@ -10,20 +10,20 @@ namespace MSSQL.DIARY.EF
 {
     public partial class MssqlDiaryContext
     {
-        public string GetDatabaseServerName()
+        public string GetServerName()
         {
-            var istrDataBaseServerName = "";
+            var lstrServerName = "";
             try
             {
-                using (var commad = Database.GetDbConnection().CreateCommand())
+                using (var command = Database.GetDbConnection().CreateCommand())
                 {
-                    commad.CommandText = SqlQueryConstant.GetDatabaseServerName;
+                    command.CommandText = SqlQueryConstant.GetServerName;
                     Database.OpenConnection();
-                    using (var reader = commad.ExecuteReader())
+                    using (var reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                             while (reader.Read())
-                                istrDataBaseServerName = reader.GetString(0);
+                                lstrServerName = reader.GetString(0);
                     }
                 }
             }
@@ -32,7 +32,7 @@ namespace MSSQL.DIARY.EF
                 // ignored
             }
 
-            return istrDataBaseServerName;
+            return lstrServerName;
         }
 
         public List<string> GetTables()
@@ -40,12 +40,12 @@ namespace MSSQL.DIARY.EF
             var lstTables = new List<string>();
             try
             {
-                using (var commad = Database.GetDbConnection().CreateCommand())
+                using (var command = Database.GetDbConnection().CreateCommand())
                 {
-                    commad.CommandText = SqlQueryConstant.GetTables;
-                    commad.CommandType = CommandType.StoredProcedure;
+                    command.CommandText = SqlQueryConstant.GetTables;
+                    command.CommandType = CommandType.StoredProcedure;
                     Database.OpenConnection();
-                    using (var reader = commad.ExecuteReader())
+                    using (var reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                             while (reader.Read())
@@ -68,11 +68,11 @@ namespace MSSQL.DIARY.EF
             var lstTables = new List<string>();
             try
             {
-                using (var commad = Database.GetDbConnection().CreateCommand())
+                using (var command = Database.GetDbConnection().CreateCommand())
                 {
-                    commad.CommandText = SqlQueryConstant.GetAllViewsDetailsWithMsDesc;
+                    command.CommandText = SqlQueryConstant.GetAllViewsDetailsWithMsDesc;
                     Database.OpenConnection();
-                    using (var reader = commad.ExecuteReader())
+                    using (var reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                             while (reader.Read())
@@ -93,12 +93,12 @@ namespace MSSQL.DIARY.EF
             var storeProcedures = new List<string>();
             try
             {
-                using (var commad = Database.GetDbConnection().CreateCommand())
+                using (var command = Database.GetDbConnection().CreateCommand())
                 {
-                    commad.CommandText = SqlQueryConstant.GetStoreProcedures;
-                    commad.CommandTimeout = 10 * 60;
+                    command.CommandText = SqlQueryConstant.GetStoreProcedures;
+                    command.CommandTimeout = 10 * 60;
                     Database.OpenConnection();
-                    using (var reader = commad.ExecuteReader())
+                    using (var reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                             while (reader.Read())
@@ -115,21 +115,21 @@ namespace MSSQL.DIARY.EF
             return storeProcedures;
         }
 
-        public List<string> GetTigger()
+        public List<string> GetTriggers()
         {
-            var tigger = new List<string>();
+            var lstrTriggers = new List<string>();
             try
             {
-                using (var commad = Database.GetDbConnection().CreateCommand())
+                using (var command = Database.GetDbConnection().CreateCommand())
                 {
-                    commad.CommandText = SqlQueryConstant.GetTigger;
-                    commad.CommandTimeout = 10 * 60;
+                    command.CommandText = SqlQueryConstant.GetTigger;
+                    command.CommandTimeout = 10 * 60;
                     Database.OpenConnection();
-                    using (var reader = commad.ExecuteReader())
+                    using (var reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                             while (reader.Read())
-                                tigger.Add(reader.GetString(0));
+                                lstrTriggers.Add(reader.GetString(0));
                     }
                 }
             }
@@ -138,24 +138,24 @@ namespace MSSQL.DIARY.EF
                 // ignored
             }
 
-            return tigger;
+            return lstrTriggers;
         }
 
-        public List<string> GetScalarFunction()
+        public List<string> GetScalarFunctions()
         {
-            var scalarFunction = new List<string>();
+            var lstScalarFunctions = new List<string>();
             try
             {
-                using (var commad = Database.GetDbConnection().CreateCommand())
+                using (var command = Database.GetDbConnection().CreateCommand())
                 {
-                    commad.CommandText = SqlQueryConstant.GetScalarFunctions;
-                    commad.CommandTimeout = 10 * 60;
+                    command.CommandText = SqlQueryConstant.GetScalarFunctions;
+                    command.CommandTimeout = 10 * 60;
                     Database.OpenConnection();
-                    using (var reader = commad.ExecuteReader())
+                    using (var reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                             while (reader.Read())
-                                scalarFunction.Add(reader.GetString(0));
+                                lstScalarFunctions.Add(reader.GetString(0));
                     }
                 }
             }
@@ -165,24 +165,24 @@ namespace MSSQL.DIARY.EF
             }
 
 
-            return scalarFunction;
+            return lstScalarFunctions;
         }
 
-        public List<string> GetTableValueFunction()
+        public List<string> GetTableValueFunctions()
         {
-            var tableValueFunction = new List<string>();
+            var lstTableValueFunctions = new List<string>();
             try
             {
-                using (var commad = Database.GetDbConnection().CreateCommand())
+                using (var command = Database.GetDbConnection().CreateCommand())
                 {
-                    commad.CommandText = SqlQueryConstant.GetTableValueFunctions;
-                    commad.CommandTimeout = 10 * 60;
+                    command.CommandText = SqlQueryConstant.GetTableValueFunctions;
+                    command.CommandTimeout = 10 * 60;
                     Database.OpenConnection();
-                    using (var reader = commad.ExecuteReader())
+                    using (var reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                             while (reader.Read())
-                                tableValueFunction.Add(reader.GetString(0));
+                                lstTableValueFunctions.Add(reader.GetString(0));
                     }
                 }
             }
@@ -192,24 +192,24 @@ namespace MSSQL.DIARY.EF
             }
 
 
-            return tableValueFunction;
+            return lstTableValueFunctions;
         }
 
         public List<string> GetAggregateFunctions()
         {
-            var aggregateFunctions = new List<string>();
+            var lstAggregateFunctions = new List<string>();
             try
             {
-                using (var commad = Database.GetDbConnection().CreateCommand())
+                using (var command = Database.GetDbConnection().CreateCommand())
                 {
-                    commad.CommandText = SqlQueryConstant.GetAggregateFunctions;
-                    commad.CommandTimeout = 10 * 60;
+                    command.CommandText = SqlQueryConstant.GetAggregateFunctions;
+                    command.CommandTimeout = 10 * 60;
                     Database.OpenConnection();
-                    using (var reader = commad.ExecuteReader())
+                    using (var reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                             while (reader.Read())
-                                aggregateFunctions.Add(reader.GetString(0));
+                                lstAggregateFunctions.Add(reader.GetString(0));
                     }
                 }
             }
@@ -219,24 +219,24 @@ namespace MSSQL.DIARY.EF
             }
 
 
-            return aggregateFunctions;
+            return lstAggregateFunctions;
         }
 
-        public List<string> GetUserDefinedDataType()
+        public List<string> GetUserDefinedDataTypes()
         {
-            var userDefinedDataType = new List<string>();
+            var lstUserDefinedDataType = new List<string>();
             try
             {
-                using (var commad = Database.GetDbConnection().CreateCommand())
+                using (var command = Database.GetDbConnection().CreateCommand())
                 {
-                    commad.CommandText = SqlQueryConstant.GetUserDefinedDataType;
-                    commad.CommandTimeout = 10 * 60;
+                    command.CommandText = SqlQueryConstant.GetUserDefinedDataType;
+                    command.CommandTimeout = 10 * 60;
                     Database.OpenConnection();
-                    using (var reader = commad.ExecuteReader())
+                    using (var reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                             while (reader.Read())
-                                userDefinedDataType.Add(reader.GetString(0));
+                                lstUserDefinedDataType.Add(reader.GetString(0));
                     }
                 }
             }
@@ -246,53 +246,54 @@ namespace MSSQL.DIARY.EF
             }
 
 
-            return userDefinedDataType;
+            return lstUserDefinedDataType;
         }
 
-        public List<string> GetXmlSchemaCollection()
+        public List<string> GetXmlSchemas()
         {
-            var xmlSchemaCollection = new List<string>();
+            var lstXmlSchemas = new List<string>();
             try
             {
-                using (var commad = Database.GetDbConnection().CreateCommand())
+                using (var command = Database.GetDbConnection().CreateCommand())
                 {
-                    commad.CommandText = SqlQueryConstant.GetXmlSchemaCollection;
-                    commad.CommandTimeout = 10 * 60;
+                    command.CommandText = SqlQueryConstant.GetXmlSchemas;
+                    command.CommandTimeout = 10 * 60;
                     Database.OpenConnection();
-                    using (var reader = commad.ExecuteReader())
+                    using (var reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                             while (reader.Read())
-                                xmlSchemaCollection.Add(reader.GetString(0));
+                                lstXmlSchemas.Add(reader.GetString(0));
                     }
                 }
             }
             catch (Exception)
             {
+                // ignored
             }
 
 
-            return xmlSchemaCollection;
+            return lstXmlSchemas;
         }
 
         public List<PropertyInfo> GetServerProperties()
         {
-            var serverPropericesInfos = new List<PropertyInfo>();
+            var lstServerProperties = new List<PropertyInfo>();
             var count = 0;
             try
             {
                 foreach (var sqlQuery in SqlQueryConstant.GetServerProperties)
                 {
-                    using (var commad = Database.GetDbConnection().CreateCommand())
+                    using (var command = Database.GetDbConnection().CreateCommand())
                     {
-                        commad.CommandText = SqlQueryConstant.GetServerProperties[count];
-                        commad.CommandTimeout = 10 * 60;
+                        command.CommandText = SqlQueryConstant.GetServerProperties[count];
+                        command.CommandTimeout = 10 * 60;
                         Database.OpenConnection();
-                        using (var reader = commad.ExecuteReader())
+                        using (var reader = command.ExecuteReader())
                         {
                             if (reader.HasRows)
                                 while (reader.Read())
-                                    serverPropericesInfos.Add(new PropertyInfo
+                                    lstServerProperties.Add(new PropertyInfo
                                     {
                                         istrName = Enumerable.Range(0, reader.FieldCount).Select(reader.GetName)
                                             .ToList().FirstOrDefault(),
@@ -309,24 +310,24 @@ namespace MSSQL.DIARY.EF
                 // ignored
             }
 
-            return serverPropericesInfos;
+            return lstServerProperties;
         }
 
-        public List<PropertyInfo> GetAdvancedServerSettingsInfo()
+        public List<PropertyInfo> GetAdvancedServerSettings()
         {
-            var advancedServerSettingsInfo = new List<PropertyInfo>();
+            var lstAdvancedServerSettings = new List<PropertyInfo>();
             try
             {
-                using (var commad = Database.GetDbConnection().CreateCommand())
+                using (var command = Database.GetDbConnection().CreateCommand())
                 {
-                    commad.CommandText = SqlQueryConstant.GetAdvancedServerSettings;
-                    commad.CommandTimeout = 10 * 60;
+                    command.CommandText = SqlQueryConstant.GetAdvancedServerSettings;
+                    command.CommandTimeout = 10 * 60;
                     Database.OpenConnection();
-                    using (var reader = commad.ExecuteReader())
+                    using (var reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                             while (reader.Read())
-                                advancedServerSettingsInfo.Add(new PropertyInfo
+                                lstAdvancedServerSettings.Add(new PropertyInfo
                                 {
                                     istrName = reader.GetString(0),
                                     istrValue = reader.GetString(1).Replace("\0", "")
@@ -339,23 +340,23 @@ namespace MSSQL.DIARY.EF
                 // ignored
             }
 
-            return advancedServerSettingsInfo;
+            return lstAdvancedServerSettings;
         }
 
         public List<string> GetDatabaseNames()
         {
-            var lstOfDatabases = new List<string>();
+            var lstDatabaseNames = new List<string>();
             try
             {
-                using (var commad = Database.GetDbConnection().CreateCommand())
+                using (var command = Database.GetDbConnection().CreateCommand())
                 {
-                    commad.CommandText = SqlQueryConstant.GetAllDatabaseNames;
+                    command.CommandText = SqlQueryConstant.GetDatabaseNames;
                     Database.OpenConnection();
-                    using (var reader = commad.ExecuteReader())
+                    using (var reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                             while (reader.Read())
-                                lstOfDatabases.Add(reader.GetString(0));
+                                lstDatabaseNames.Add(reader.GetString(0));
                     }
                 }
             }
@@ -364,7 +365,7 @@ namespace MSSQL.DIARY.EF
                 // ignored
             }
 
-            return lstOfDatabases;
+            return lstDatabaseNames;
         }
 
         public List<string> GetTableColumns(string istrTableName)
@@ -372,12 +373,12 @@ namespace MSSQL.DIARY.EF
             var lstTableColumns = new List<string>();
             try
             {
-                using (var commad = Database.GetDbConnection().CreateCommand())
+                using (var command = Database.GetDbConnection().CreateCommand())
                 {
-                    commad.CommandText = SqlQueryConstant.GetTableColumns.Replace("@tableName", istrTableName);
+                    command.CommandText = SqlQueryConstant.GetTableColumns.Replace("@tableName", istrTableName);
 
                     Database.OpenConnection();
-                    using (var reader = commad.ExecuteReader())
+                    using (var reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                             while (reader.Read())

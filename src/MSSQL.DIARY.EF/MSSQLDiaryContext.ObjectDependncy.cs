@@ -7,7 +7,7 @@ using MSSQL.DIARY.COMN.Models;
 
 namespace MSSQL.DIARY.EF
 {
-    public partial class MssqlDiaryContext : DbContext, IMssqlDiaryContext
+    public partial class MssqlDiaryContext 
     {
         public List<ReferencesModel> GetObjectThatDependsOn(string astrObjectName)
         {

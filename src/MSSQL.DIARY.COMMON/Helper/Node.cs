@@ -46,7 +46,7 @@ namespace MSSQL.DIARY.COMN.Helper
             s = s + "]}";
             return s;
         }
-        public string amexioToJson()
+        public string AmexioToJson()
         {
             String s = "";
             if (IblnFirstNode)
@@ -66,8 +66,8 @@ namespace MSSQL.DIARY.COMN.Helper
             bool f = true;
             foreach (Node n in Soon)
             {
-                if (f) { f = !f; } else { s = s + ","; }
-                s = s + n.amexioToJson();
+                if (f) { f = false; } else { s = s + ","; }
+                s = s + n.AmexioToJson();
             }
             s = s + "]}";
             return s;

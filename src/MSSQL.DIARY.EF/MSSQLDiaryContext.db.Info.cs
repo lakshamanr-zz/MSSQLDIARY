@@ -6,7 +6,7 @@ using MSSQL.DIARY.COMN.Models;
 
 namespace MSSQL.DIARY.EF
 {
-    public partial class MssqlDiaryContext : IMssqlDiaryContext
+    public partial class MssqlDiaryContext
     {
         protected MssqlDiaryContext()
         {
@@ -114,7 +114,7 @@ namespace MSSQL.DIARY.EF
             return dbFile;
         }
 
-        public List<TableFKDependency> GetAllTableRefernce(string istrSchemaName = null)
+        public List<TableFKDependency> GetTableReferences(string istrSchemaName = null)
         {
             var tableFkDependencies = new List<TableFKDependency>();
             try

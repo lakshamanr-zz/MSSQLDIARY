@@ -34,7 +34,7 @@ namespace MSSQL.DIARY.SRV
             var lst = new List<string>();
             using (var dbSqldocContext = new MssqlDiaryContext())
             {
-                lst.Add(dbSqldocContext.GetDatabaseServerName());
+                lst.Add(dbSqldocContext.GetServerName());
             }
 
             return lst;
@@ -62,7 +62,7 @@ namespace MSSQL.DIARY.SRV
             var lst = new List<PropertyInfo>();
             using (var dbSqldocContext = new MssqlDiaryContext(istrDBConnection))
             {
-                return dbSqldocContext.GetAdvancedServerSettingsInfo();
+                return dbSqldocContext.GetAdvancedServerSettings();
             }
         }
     }

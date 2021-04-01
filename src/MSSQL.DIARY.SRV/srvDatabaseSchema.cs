@@ -11,7 +11,7 @@ namespace MSSQL.DIARY.SRV
         {
             using (var dbSqldocContext = new MssqlDiaryContext(istrdbConn))
             {
-                return dbSqldocContext.GetListOfAllSchemaAndMsDescription();
+                return dbSqldocContext.GetSchemaAndDescriptions();
             }
         }
 
@@ -19,7 +19,7 @@ namespace MSSQL.DIARY.SRV
         {
             using (var dbSqldocContext = new MssqlDiaryContext(istrdbConn))
             {
-                dbSqldocContext.GetListOfAllSchemaAndMsDescription();
+                dbSqldocContext.GetSchemaAndDescriptions();
             }
         }
 
@@ -28,7 +28,7 @@ namespace MSSQL.DIARY.SRV
         {
             using (var dbSqldocContext = new MssqlDiaryContext(istrdbConn))
             {
-                dbSqldocContext.CreateOrUpdateSchemaMsDescription(astrDescription_Value, astrSchema_Name);
+                dbSqldocContext.CreateOrUpdateSchemaDescription(astrDescription_Value, astrSchema_Name);
             }
         }
 
@@ -39,7 +39,7 @@ namespace MSSQL.DIARY.SRV
             {
                 using (var dbSqldocContext = new MssqlDiaryContext(istrdbConn))
                 {
-                    result = dbSqldocContext.GetSchemaReferanceInfo(astrSchema_Name);
+                    result = dbSqldocContext.GetSchemaReferences(astrSchema_Name);
                 }
             }
             catch (Exception)
@@ -56,7 +56,7 @@ namespace MSSQL.DIARY.SRV
             {
                 using (var dbSqldocContext = new MssqlDiaryContext(istrdbConn))
                 {
-                    result = dbSqldocContext.GetSchemaMsDescription(astrSchema_Name);
+                    result = dbSqldocContext.GetSchemaDescription(astrSchema_Name);
                 }
             }
             catch (Exception)
