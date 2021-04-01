@@ -2,7 +2,7 @@
 {
     public static partial class SqlQueryConstant
     {
-        public static readonly string GetAllViewsDetailsWithMsDesc =
+        public static readonly string GetViewsWithDescription =
             @"SELECT   ((SCHEMA_NAME(O.SCHEMA_ID) )+'.'+ O.[NAME])AS 'STOREPROC' , ep.value AS [Extended property] FROM sys.extended_properties EP LEFT JOIN SYS.OBJECTS O ON ep.major_id = O.object_id  WHERE O.TYPE='V' ";
 
         public static readonly string GetViewProperties =

@@ -192,9 +192,9 @@ namespace MSSQL.DIARY.EF
                     command.ExecuteNonQuery();
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                // ignored
             }
         }
          

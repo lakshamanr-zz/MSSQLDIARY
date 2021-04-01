@@ -18,7 +18,7 @@ namespace MSSQL.DIARY.SRV
         {
             using (var dbSqldocContext = new MsSqlDiaryContext(istrdbName))
             {
-                return dbSqldocContext.GetAllViewsDetailsWithms_description();
+                return dbSqldocContext.GetViewsWithDescription();
             }
         }
 
@@ -26,7 +26,7 @@ namespace MSSQL.DIARY.SRV
         {
             using (var dbSqldocContext = new MsSqlDiaryContext(istrdbName))
             {
-                return dbSqldocContext.GetViewDependancies(astrViewName);
+                return dbSqldocContext.GetViewDependencies(astrViewName);
             }
         }
 
@@ -58,7 +58,7 @@ namespace MSSQL.DIARY.SRV
         {
             using (var dbSqldocContext = new MsSqlDiaryContext(istrdbName))
             {
-                return dbSqldocContext.GetAllViewsDetailsWithms_description()
+                return dbSqldocContext.GetViewsWithDescription()
                     .Find(x => x.istrName.Contains(astrViewName));
             }
         }

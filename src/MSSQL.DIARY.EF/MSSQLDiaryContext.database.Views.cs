@@ -9,44 +9,25 @@ namespace MSSQL.DIARY.EF
 {
     public partial class MsSqlDiaryContext  
     {
-        public List<string> GetViews()
-        {
-            var lstTables = new List<string>();
-            try
-            {
-                using (var command = Database.GetDbConnection().CreateCommand())
-                {
-                    command.CommandText = SqlQueryConstant.GetAllViewsDetailsWithMsDesc;
-                    Database.OpenConnection();
-                    using (var reader = command.ExecuteReader())
-                    {
-                        if (reader.HasRows)
-                            while (reader.Read())
-                                lstTables.Add(reader.GetString(0));
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
 
-            return lstTables;
-        }
+        /// <summary>
+        /// Get list of database views
+        /// </summary>
+        /// <returns></returns> 
 
-        public List<PropertyInfo> GetAllViewsDetailsWithms_description()
+        public List<PropertyInfo> GetViewsWithDescription()
         {
             var dbProperties = new List<PropertyInfo>();
             try
             {
-                using (var conn = Database.GetDbConnection())
+                using (var lDbConnection = Database.GetDbConnection())
                 {
-                    var commad = conn.CreateCommand();
-                    commad.CommandText = SqlQueryConstant.GetAllViewsDetailsWithMsDesc;
-                    commad.CommandTimeout = 10 * 60;
+                    var command = lDbConnection.CreateCommand();
+                    command.CommandText = SqlQueryConstant.GetViewsWithDescription;
+                    command.CommandTimeout = 10 * 60;
                     Database.OpenConnection();
 
-                    using (var reader = commad.ExecuteReader())
+                    using (var reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                             while (reader.Read())
@@ -66,25 +47,26 @@ namespace MSSQL.DIARY.EF
             return dbProperties;
         }
 
-        public List<ViewDependancy> GetViewDependancies(string astrViewName)
+        /// <summary>
+        /// Get view Dependencies
+        /// </summary>
+        /// <param name="astrViewName"></param>
+        /// <returns></returns>
+        public List<ViewDependancy> GetViewDependencies(string astrViewName)
         {
-            var lstViewdependancy = new List<ViewDependancy>();
+            var lstViewDependencies = new List<ViewDependancy>();
             try
             {
-                using (var conn = Database.GetDbConnection())
+                using (var lDbConnection = Database.GetDbConnection())
                 {
-                    var commad = conn.CreateCommand();
-                    //var newViewName = astrViewName.Replace(astrViewName.Substring(0, astrViewName.IndexOf(".")) + ".", "");
-                    commad.CommandText =
-                        SqlQueryConstant.GetViewsdependancies.Replace("@viewname", "'" + astrViewName + "'");
-                    commad.CommandTimeout = 10 * 60;
-                    Database.OpenConnection();
-
-                    using (var reader = commad.ExecuteReader())
+                    var command = lDbConnection.CreateCommand(); 
+                    command.CommandText = SqlQueryConstant.GetViewsdependancies.Replace("@viewname", "'" + astrViewName + "'");
+                    Database.OpenConnection(); 
+                    using (var reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                             while (reader.Read())
-                                lstViewdependancy.Add(new ViewDependancy
+                                lstViewDependencies .Add(new ViewDependancy
                                 {
                                     name = reader.SafeGetString(0)
                                 });
@@ -96,24 +78,25 @@ namespace MSSQL.DIARY.EF
                 // ignored
             }
 
-            return lstViewdependancy;
+            return lstViewDependencies ;
         }
 
+        /// <summary>
+        /// Get view Properties
+        /// </summary>
+        /// <param name="astrViewName"></param>
+        /// <returns></returns>
         public List<View_Properties> GetViewProperties(string astrViewName)
         {
             var lstViewProperties = new List<View_Properties>();
             try
             {
-                using (var conn = Database.GetDbConnection())
+                using (var lDbConnection = Database.GetDbConnection())
                 {
-                    var commad = conn.CreateCommand();
-                    commad.CommandText =
-                        SqlQueryConstant.GetViewProperties.Replace("@viewname", "'" + astrViewName + "'");
-                    commad.CommandTimeout = 10 * 60;
-                    Database.OpenConnection();
-
-
-                    using (var reader = commad.ExecuteReader())
+                    var command = lDbConnection.CreateCommand();
+                    command.CommandText = SqlQueryConstant.GetViewProperties.Replace("@viewname", "'" + astrViewName + "'"); 
+                    Database.OpenConnection(); 
+                    using (var reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                             while (reader.Read())
@@ -134,20 +117,22 @@ namespace MSSQL.DIARY.EF
 
             return lstViewProperties;
         }
-
+        /// <summary>
+        /// Get view column details
+        /// </summary>
+        /// <param name="astrViewName"></param>
+        /// <returns></returns>
         public List<ViewColumns> GetViewColumns(string astrViewName)
         {
             var lstGetViewColumns = new List<ViewColumns>();
             try
             {
-                using (var conn = Database.GetDbConnection())
+                using (var lDbConnection = Database.GetDbConnection())
                 {
-                     var commad = conn.CreateCommand();
-                    commad.CommandText = SqlQueryConstant.GetViewColumns.Replace("@viewname", "'" + astrViewName + "'");
-                    commad.CommandTimeout = 10 * 60;
-                    Database.OpenConnection();
-
-                    using (var reader = commad.ExecuteReader())
+                     var command = lDbConnection.CreateCommand();
+                    command.CommandText = SqlQueryConstant.GetViewColumns.Replace("@viewname", "'" + astrViewName + "'"); 
+                    Database.OpenConnection(); 
+                    using (var reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                             while (reader.Read())
@@ -169,27 +154,27 @@ namespace MSSQL.DIARY.EF
 
             return lstGetViewColumns;
         }
+        /// <summary>
+        /// Get view create script
+        /// </summary>
+        /// <param name="astrViewName"></param>
+        /// <returns></returns>
 
         public ViewCreateScript GetViewCreateScript(string astrViewName)
         {
-            var createScript = new ViewCreateScript();
+            var lViewCreateScript = new ViewCreateScript();
             try
             {
-                using (var conn = Database.GetDbConnection())
+                using (var lDbConnection = Database.GetDbConnection())
                 {
-                    var commad = conn.CreateCommand();
-                    //var newViewName = astrViewName.Replace(astrViewName.Substring(0, astrViewName.IndexOf(".")) + ".", "");
-
-                    commad.CommandText =
-                        SqlQueryConstant.GetViewCreateScript.Replace("@viewname", "'" + astrViewName + "'");
-                    commad.CommandTimeout = 10 * 60;
-                    Database.OpenConnection();
-
-                    using (var reader = commad.ExecuteReader())
+                    var command = lDbConnection.CreateCommand();  
+                    command.CommandText = SqlQueryConstant.GetViewCreateScript.Replace("@viewname", "'" + astrViewName + "'"); 
+                    Database.OpenConnection(); 
+                    using (var reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                             while (reader.Read())
-                                createScript.createViewScript = reader.SafeGetString(0);
+                                lViewCreateScript.createViewScript = reader.SafeGetString(0);
                     }
                 }
             }
@@ -198,7 +183,7 @@ namespace MSSQL.DIARY.EF
                 // ignored
             }
 
-            return createScript;
+            return lViewCreateScript;
         }
     }
 }

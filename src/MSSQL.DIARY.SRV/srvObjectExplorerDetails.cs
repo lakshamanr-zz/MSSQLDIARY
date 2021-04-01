@@ -757,7 +757,7 @@ namespace MSSQL.DIARY.SRV
         {
             using (var dbSqldocContext = new MsSqlDiaryContext(dbConnections))
             {
-                return dbSqldocContext.GetViews().Where(x => x != null).ToList();
+                return dbSqldocContext.GetViewsWithDescription().Where(x => x.istrName != null).Select(x=>x.istrName).ToList();
             }
         }
 
