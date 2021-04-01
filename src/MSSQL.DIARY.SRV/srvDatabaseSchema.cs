@@ -11,7 +11,7 @@ namespace MSSQL.DIARY.SRV
         {
             using (var dbSqldocContext = new MssqlDiaryContext(istrdbConn))
             {
-                return dbSqldocContext.GetSchemaAndDescriptions();
+                return dbSqldocContext.GetSchemaWithDescriptions();
             }
         }
 
@@ -19,7 +19,7 @@ namespace MSSQL.DIARY.SRV
         {
             using (var dbSqldocContext = new MssqlDiaryContext(istrdbConn))
             {
-                dbSqldocContext.GetSchemaAndDescriptions();
+                dbSqldocContext.GetSchemaWithDescriptions();
             }
         }
 

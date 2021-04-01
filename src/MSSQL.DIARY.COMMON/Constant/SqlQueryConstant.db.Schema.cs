@@ -2,7 +2,7 @@
 {
     public static partial class SqlQueryConstant
     {
-        public static string GetSchemaAndDescriptions = @" SELECT sch.name ,''FROM sys.schemas sch where schema_id<=100 ";
+        public static string GetSchemaWithDescriptions = @" SELECT sch.name ,''FROM sys.schemas sch where schema_id<=100 ";
         public static string GetSchemaInfoByName = @"";
         public static string GetSchemaReferences = @"select name as table_name from sys.tables where schema_name(schema_id) = @schema_id order by name;";
         public static string GetSchemaMsDescription = @" SELECT value,sch.name FROM sys.extended_properties ep left JOIN sys.schemas sch ON class=3 AND ep.major_id=SCHEMA_ID  where ep.class=3 and sch.name =@schemaName";

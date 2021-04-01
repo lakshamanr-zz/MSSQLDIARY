@@ -10,6 +10,32 @@ namespace MSSQL.DIARY.EF
 {
     public partial class MssqlDiaryContext
     {
+        public List<string> GetTriggers()
+        {
+            var lstrTriggers = new List<string>();
+            try
+            {
+                using (var command = Database.GetDbConnection().CreateCommand())
+                {
+                    command.CommandText = SqlQueryConstant.GetTigger;
+                    command.CommandTimeout = 10 * 60;
+                    Database.OpenConnection();
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.HasRows)
+                            while (reader.Read())
+                                lstrTriggers.Add(reader.GetString(0));
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+
+            return lstrTriggers;
+        }
+
         public List<PropertyInfo> GetAllDatabaseTrigger()
         {
             var propertyInfos = new List<PropertyInfo>();

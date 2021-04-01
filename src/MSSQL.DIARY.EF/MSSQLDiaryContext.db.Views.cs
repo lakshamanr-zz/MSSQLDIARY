@@ -7,8 +7,33 @@ using MSSQL.DIARY.COMN.Models;
 
 namespace MSSQL.DIARY.EF
 {
-    public partial class MssqlDiaryContext : DbContext, IMssqlDiaryContext
+    public partial class MssqlDiaryContext  
     {
+        public List<string> GetViews()
+        {
+            var lstTables = new List<string>();
+            try
+            {
+                using (var command = Database.GetDbConnection().CreateCommand())
+                {
+                    command.CommandText = SqlQueryConstant.GetAllViewsDetailsWithMsDesc;
+                    Database.OpenConnection();
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.HasRows)
+                            while (reader.Read())
+                                lstTables.Add(reader.GetString(0));
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+
+            return lstTables;
+        }
+
         public List<PropertyInfo> GetAllViewsDetailsWithms_description()
         {
             var dbProperties = new List<PropertyInfo>();

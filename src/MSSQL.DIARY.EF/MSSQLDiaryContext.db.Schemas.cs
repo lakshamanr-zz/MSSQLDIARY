@@ -8,16 +8,21 @@ namespace MSSQL.DIARY.EF
 {
     public partial class MssqlDiaryContext
     {
-        public List<PropertyInfo> GetSchemaAndDescriptions()
+
+        /// <summary>
+        /// Get list of schemas and there description
+        /// </summary>
+        /// <returns></returns>
+        public List<PropertyInfo> GetSchemaWithDescriptions()
         {
             var lstPropInfo = new List<PropertyInfo>();
             try
             {
-                using (var commad = Database.GetDbConnection().CreateCommand())
+                using (var command = Database.GetDbConnection().CreateCommand())
                 {
-                    commad.CommandText = SqlQueryConstant.GetSchemaAndDescriptions;
+                    command.CommandText = SqlQueryConstant.GetSchemaWithDescriptions;
                     Database.OpenConnection();
-                    using (var reader = commad.ExecuteReader())
+                    using (var reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                             while (reader.Read())
@@ -38,60 +43,69 @@ namespace MSSQL.DIARY.EF
             return lstPropInfo;
         }
 
+        /// <summary>
+        /// Create or update the schema descriptions
+        /// </summary>
+        /// <param name="astrDescriptionValue"></param>
+        /// <param name="astrSchemaName"></param>
         public void CreateOrUpdateSchemaDescription(string astrDescriptionValue, string astrSchemaName)
         {
             try
             {
-                UpdateFunctionDescription(astrDescriptionValue, astrSchemaName);
+                UpdateSchemaDescription(astrDescriptionValue, astrSchemaName);
             }
             catch (Exception)
             {
-                CreateFunctionDescription(astrDescriptionValue, astrSchemaName);
+                CreateSchemaDescription(astrDescriptionValue, astrSchemaName);
             }
         }
 
-        private void CreateFunctionDescription(string astrDescriptionValue, string astrSchemaName)
+        /// <summary>
+        /// Update schema Descriptions 
+        /// </summary>
+        /// <param name="astrDescriptionValue"></param>
+        /// <param name="astrSchemaName"></param>
+        private void CreateSchemaDescription(string astrDescriptionValue, string astrSchemaName)
         {
-            using (var commad = Database.GetDbConnection().CreateCommand())
+            using (var command = Database.GetDbConnection().CreateCommand())
             {
-                commad.CommandText = SqlQueryConstant
-                    .CreateSchemaColumnExtendedProperty
-                    .Replace("@Schema_info", "'" + astrDescriptionValue + "'")
-                    .Replace("@SchemaName", "'" + astrSchemaName + "'");
-
-                commad.CommandTimeout = 10 * 60;
+                command.CommandText = SqlQueryConstant.CreateSchemaColumnExtendedProperty.Replace("@Schema_info", "'" + astrDescriptionValue + "'").Replace("@SchemaName", "'" + astrSchemaName + "'"); 
                 Database.OpenConnection();
-                commad.ExecuteNonQuery();
+                command.ExecuteNonQuery();
             }
         }
 
-        private void UpdateFunctionDescription(string astrDescriptionValue, string astrSchemaName)
+        /// <summary>
+        /// Update the schema description
+        /// </summary>
+        /// <param name="astrDescriptionValue"></param>
+        /// <param name="astrSchemaName"></param>
+        private void UpdateSchemaDescription(string astrDescriptionValue, string astrSchemaName)
         {
-            using (var commad = Database.GetDbConnection().CreateCommand())
+            using (var command = Database.GetDbConnection().CreateCommand())
             {
-                commad.CommandText = SqlQueryConstant
-                    .UpdateSchemaColumnExtendedProperty
-                    .Replace("@Schema_info", "'" + astrDescriptionValue + "'")
-                    .Replace("@SchemaName", "'" + astrSchemaName + "'");
-
-                commad.CommandTimeout = 10 * 60;
+                command.CommandText = SqlQueryConstant.UpdateSchemaColumnExtendedProperty.Replace("@Schema_info", "'" + astrDescriptionValue + "'").Replace("@SchemaName", "'" + astrSchemaName + "'"); 
                 Database.OpenConnection();
-                commad.ExecuteNonQuery();
+                command.ExecuteNonQuery();
             }
         }
 
+
+        /// <summary>
+        /// Get schema references with table / view / store procedures etc. 
+        /// </summary>
+        /// <param name="astrSchemaName"></param>
+        /// <returns></returns>
         public List<SchemaReferanceInfo> GetSchemaReferences(string astrSchemaName)
         {
             var lstSchemaReferences = new List<SchemaReferanceInfo>();
             try
             {
-                using (var commad = Database.GetDbConnection().CreateCommand())
+                using (var command = Database.GetDbConnection().CreateCommand())
                 {
-                    commad.CommandText =
-                        SqlQueryConstant.GetSchemaReferences.Replace("@schema_id",
-                            "'" + astrSchemaName + "'");
+                    command.CommandText = SqlQueryConstant.GetSchemaReferences.Replace("@schema_id", "'" + astrSchemaName + "'");
                     Database.OpenConnection();
-                    using (var reader = commad.ExecuteReader())
+                    using (var reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                             while (reader.Read())
@@ -111,17 +125,21 @@ namespace MSSQL.DIARY.EF
             return lstSchemaReferences;
         }
 
+        /// <summary>
+        /// Get the schema description.
+        /// </summary>
+        /// <param name="astrSchemaName"></param>
+        /// <returns></returns>
         public Ms_Description GetSchemaDescription(string astrSchemaName)
         {
             var schemaDescription = new Ms_Description();
             try
             {
-                using (var commad = Database.GetDbConnection().CreateCommand())
+                using (var command = Database.GetDbConnection().CreateCommand())
                 {
-                    commad.CommandText =
-                        SqlQueryConstant.GetSchemaMsDescription.Replace("@schemaName", "'" + astrSchemaName + "'");
+                    command.CommandText = SqlQueryConstant.GetSchemaMsDescription.Replace("@schemaName", "'" + astrSchemaName + "'");
                     Database.OpenConnection();
-                    using (var reader = commad.ExecuteReader())
+                    using (var reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                             while (reader.Read())
@@ -142,11 +160,11 @@ namespace MSSQL.DIARY.EF
         //    var sch_cs = new SchemaCreateScript();
         //    try
         //    {
-        //        using (var commad = Database.GetDbConnection().CreateCommand())
+        //        using (var command = Database.GetDbConnection().CreateCommand())
         //        {
-        //            commad.CommandText = SqlQueryConstant.GetServerName;
+        //            command.CommandText = SqlQueryConstant.GetServerName;
         //            Database.OpenConnection();
-        //            using (var reader = commad.ExecuteReader())
+        //            using (var reader = command.ExecuteReader())
         //            {
         //                if (reader.HasRows)
         //                    while (reader.Read())

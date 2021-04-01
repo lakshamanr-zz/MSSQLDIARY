@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using MoreLinq;
@@ -296,12 +297,10 @@ namespace MSSQL.DIARY.EF
                                     istrSchemaName = reader.SafeGetString(3)
                                 });
                     }
-                }
-                var lGetDatabaseName = GetDatabaseName;
+                } 
                 getAllTbleDesc.ForEach(tablePropertyInfo =>
-                {
-                  //  tablePropertyInfo.tableColumns = GetAllTablesColumn(tablePropertyInfo.istrFullName).DistinctBy(x1 => x1.columnname).ToList();
-                    tablePropertyInfo.istrNevigation = lGetDatabaseName + "/" + tablePropertyInfo.istrFullName + "/" + GetServerName;
+                { 
+                    tablePropertyInfo.istrNevigation = GetDatabaseName + "/" + tablePropertyInfo.istrFullName + "/" + GetServerName();
                 });
             }
             catch (Exception)
@@ -312,7 +311,6 @@ namespace MSSQL.DIARY.EF
 
             return getAllTbleDesc;
         }
-
         public Ms_Description GetTableDescription(string istrtableName)
         {
             var msDesc = "";
@@ -339,8 +337,6 @@ namespace MSSQL.DIARY.EF
                 return new Ms_Description {desciption = ""};
             }
         }
-
-
         public void CreateOrUpdateTableDescription(string astrDescriptionValue, string astrSchemaName,string astrTableName)
         {
             try
@@ -489,6 +485,65 @@ namespace MSSQL.DIARY.EF
                     // ignored
                 }
             }
+        }
+
+        public List<string> GetTables()
+        {
+            var lstTables = new List<string>();
+            try
+            {
+                using (var command = Database.GetDbConnection().CreateCommand())
+                {
+                    command.CommandText = SqlQueryConstant.GetTables;
+                    command.CommandType = CommandType.StoredProcedure;
+                    Database.OpenConnection();
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.HasRows)
+                            while (reader.Read())
+                                if (!reader.GetString(1).Equals("sys") && reader.GetString(3).Equals("TABLE"))
+                                    //lstTables.Add( reader.GetString(2));
+                                    lstTables.Add(reader.GetString(1) + "." + reader.GetString(2));
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+
+            return lstTables;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="istrTableName"></param>
+        /// <returns></returns>
+        public List<string> GetTableColumns(string istrTableName)
+        {
+            var lstTableColumns = new List<string>();
+            try
+            {
+                using (var command = Database.GetDbConnection().CreateCommand())
+                {
+                    command.CommandText = SqlQueryConstant.GetTableColumns.Replace("@tableName", istrTableName);
+
+                    Database.OpenConnection();
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.HasRows)
+                            while (reader.Read())
+                                lstTableColumns.Add(reader.GetString(0));
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+
+            return lstTableColumns;
         }
     }
 }

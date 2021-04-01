@@ -46,7 +46,7 @@ namespace MSSQL.DIARY.SRV
         {
             using (var dbSqldocContext = new MssqlDiaryContext(istrdbConn))
             {
-                return dbSqldocContext.GetdbProperties();
+                return dbSqldocContext.GetDatabaseProperties();
             }
         }
 
@@ -59,7 +59,7 @@ namespace MSSQL.DIARY.SRV
         {
             using (var dbSqldocContext = new MssqlDiaryContext(istrdbConn))
             {
-                return dbSqldocContext.GetdbOptions();
+                return dbSqldocContext.GetDatabaseOptions();
             }
         }
 
@@ -132,7 +132,7 @@ namespace MSSQL.DIARY.SRV
         {
             using (var dbSqldocContext = new MssqlDiaryContext(istrDBConnection))
             {
-                return dbSqldocContext.GetdbFiles();
+                return dbSqldocContext.GetDatabaseFiles();
             }
         }
     }

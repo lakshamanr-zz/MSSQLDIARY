@@ -2,7 +2,7 @@
 {
     public static partial class SqlQueryConstant
     {
-        public static string GetAllFunctionWithMsDescriptions =
+        public static string GetFunctionsWithDescription =
             @"SELECT ((SCHEMA_NAME(O.SCHEMA_ID) )+'.'+ O.[NAME])AS 'SQL_TABLE_VALUED_FUNCTION' ,sep.value FROM  SYS.SQL_MODULES M INNER JOIN SYS.OBJECTS O  ON M.OBJECT_ID=O.OBJECT_ID INNER JOIN sys.extended_properties sep ON o.object_id=sep.major_id  WHERE O.TYPE=@function_Type  and     sep.Name = 'MS_Description'    AND sep.minor_id = 0  ";
 
         public static string GetFunctionProperties =

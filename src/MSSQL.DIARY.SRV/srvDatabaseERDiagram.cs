@@ -263,12 +263,12 @@ namespace MSSQL.DIARY.SRV
                 if (istrSchemaName.IsNullOrEmpty())
                     using (var dbSqldocContext = new MssqlDiaryContext(istrdbName))
                     {
-                        tableReference = dbSqldocContext.GetTableReferences();
+                        tableReference = dbSqldocContext.GetTableFkReferences();
                     }
                 else
                     using (var dbSqldocContext = new MssqlDiaryContext(istrdbName))
                     {
-                        tableReference = dbSqldocContext.GetTableReferences(istrSchemaName);
+                        tableReference = dbSqldocContext.GetTableFkReferences(istrSchemaName);
                     }
                 
                 tableReference.ForEach(x =>
@@ -286,7 +286,7 @@ namespace MSSQL.DIARY.SRV
                     using (var dbSqldocContext = new MssqlDiaryContext(istrdbName))
                     {
 
-                        dbSqldocContext.GetTableReferences()
+                        dbSqldocContext.GetTableFkReferences()
                             .ForEach(x => 
                             {
                                 var result = x.fk_refe_table_name.IsNull() ? x.current_table_name : x.fk_refe_table_name;
@@ -304,7 +304,7 @@ namespace MSSQL.DIARY.SRV
                 else
                     using (var dbSqldocContext = new MssqlDiaryContext(istrdbName))
                     { 
-                        dbSqldocContext.GetTableReferences(istrSchemaName).Where(x=>x.fk_refe_table_name.IsNotNull())
+                        dbSqldocContext.GetTableFkReferences(istrSchemaName).Where(x=>x.fk_refe_table_name.IsNotNull())
                             .ForEach(x =>
                             {
                                 var result = x.fk_refe_table_name.IsNull() ? x.current_table_name : x.fk_refe_table_name;

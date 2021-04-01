@@ -52,7 +52,7 @@ namespace MSSQL.DIARY.SRV
         {
             using (var dbSqldocContext = new MssqlDiaryContext(istrdbConn))
             {
-                return dbSqldocContext.GetAllFunctionWithMsDescriptions(function_type);
+                return dbSqldocContext.GetFunctionsWithDescription(function_type);
             }
         }
 
@@ -60,7 +60,7 @@ namespace MSSQL.DIARY.SRV
         {
             using (var dbSqldocContext = new MssqlDiaryContext(istrdbConn))
             {
-                return dbSqldocContext.GetAllFunctionWithMsDescriptions(function_type)
+                return dbSqldocContext.GetFunctionsWithDescription(function_type)
                     .FirstOrDefault(x => x.istrName.Contains(astrFunctionName)) ?? new PropertyInfo
                     {istrName = astrFunctionName, istrValue = ""};
             }

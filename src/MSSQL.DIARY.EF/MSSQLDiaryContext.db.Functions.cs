@@ -1,36 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using MSSQL.DIARY.COMN.Constant;
 using MSSQL.DIARY.COMN.Helper;
 using MSSQL.DIARY.COMN.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MSSQL.DIARY.EF
 {
     public partial class MssqlDiaryContext
     {
-        public List<FunctionDependencies> GetFunctionDependencies(string astrFunctionName, string functionType)
-        {
-            if (astrFunctionName == null) throw new ArgumentNullException(nameof(astrFunctionName));
+        /// <summary>
+        /// In this method we are Find the function and there dependencies.
+        /// </summary>
+        /// <param name="astrFunctionName"></param>
+        /// <param name="astrFunctionType"></param>
+        /// <returns></returns>
+        public List<FunctionDependencies> GetFunctionDependencies(string astrFunctionName, string astrFunctionType)
+        { 
             var lstInterdependency = new List<FunctionDependencies>();
             try
             {
-                using (var conn = Database.GetDbConnection())
+                using (var lDbConnection = Database.GetDbConnection())
                 {
                     try
                     {
-                        var commad = conn.CreateCommand();
-                        var newFunctionName = astrFunctionName.Replace(
-                            astrFunctionName.Substring(0, astrFunctionName.IndexOf(".", StringComparison.Ordinal)) +
-                            ".", "");
-                        commad.CommandText = SqlQueryConstant.GetFunctionDependencies
-                            .Replace("@function_Type", "'" + functionType + "'")
-                            .Replace("@function_name", "'" + newFunctionName + "'");
-                        commad.CommandTimeout = 10 * 60;
+                        var command = lDbConnection.CreateCommand();
+                        var newFunctionName = astrFunctionName.Replace(astrFunctionName.Substring(0, astrFunctionName.IndexOf(".", StringComparison.Ordinal)) +".", "");
+                        command.CommandText = SqlQueryConstant.GetFunctionDependencies.Replace("@function_Type", "'" + astrFunctionType + "'").Replace("@function_name", "'" + newFunctionName + "'");
                         Database.OpenConnection();
-
-                        using (var reader = commad.ExecuteReader())
+                        using (var reader = command.ExecuteReader())
                         {
                             if (reader.HasRows)
                                 while (reader.Read())
@@ -54,25 +53,24 @@ namespace MSSQL.DIARY.EF
             return lstInterdependency.Distinct().ToList();
         }
 
-        public List<FunctionProperties> GetFunctionProperties(string astrFunctionName, string functionType)
+        /// <summary>
+        /// In this method we are get the function properties.
+        /// </summary>
+        /// <param name="astrFunctionName"></param>
+        /// <param name="astrFunctionType"></param>
+        /// <returns></returns>
+        public List<FunctionProperties> GetFunctionProperties(string astrFunctionName, string astrFunctionType)
         {
             var lstFunctionProperties = new List<FunctionProperties>();
             try
             {
-                using (var conn = Database.GetDbConnection())
+                using (var  lDbConnection = Database.GetDbConnection())
                 {
-                    var commad = conn.CreateCommand();
-                    var newFunctionName = astrFunctionName.Replace(
-                        astrFunctionName.Substring(0, astrFunctionName.IndexOf(".", StringComparison.Ordinal)) + ".",
-                        "");
-                    commad.CommandText = SqlQueryConstant.GetFunctionProperties
-                        .Replace("@function_Type", "'" + functionType + "'")
-                        .Replace("@function_name", "'" + newFunctionName + "'");
-                    commad.CommandTimeout = 10 * 60;
-                    Database.OpenConnection();
-
-
-                    using (var reader = commad.ExecuteReader())
+                    var command = lDbConnection.CreateCommand();
+                    var newFunctionName = astrFunctionName.Replace(astrFunctionName.Substring(0, astrFunctionName.IndexOf(".", StringComparison.Ordinal)) + ".", "");
+                    command.CommandText = SqlQueryConstant.GetFunctionProperties.Replace("@function_Type", "'" + astrFunctionType + "'").Replace("@function_name", "'" + newFunctionName + "'");
+                    Database.OpenConnection();  
+                    using (var reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                             while (reader.Read())
@@ -93,22 +91,23 @@ namespace MSSQL.DIARY.EF
 
             return lstFunctionProperties;
         }
-
-        public List<FunctionParameters> GetFunctionParameters(string astrFunctionName, string functionType)
+        /// <summary>
+        /// In this method we getting the function parameters list.
+        /// </summary>
+        /// <param name="astrFunctionName"></param>
+        /// <param name="astrFunctionType"></param>
+        /// <returns></returns>
+        public List<FunctionParameters> GetFunctionParameters(string astrFunctionName, string astrFunctionType)
         {
             var lstFunctionColumns = new List<FunctionParameters>();
             try
             {
-                using (var conn = Database.GetDbConnection())
+                using (var  lDbConnection = Database.GetDbConnection())
                 {
-                    var commad = conn.CreateCommand();
-                    commad.CommandText = SqlQueryConstant.GetFunctionParameters
-                        .Replace("@function_Type", "'" + functionType + "'")
-                        .Replace("@function_name", "'" + astrFunctionName + "'");
-                    commad.CommandTimeout = 10 * 60;
+                    var command = lDbConnection.CreateCommand();
+                    command.CommandText = SqlQueryConstant.GetFunctionParameters.Replace("@function_Type", "'" + astrFunctionType + "'").Replace("@function_name", "'" + astrFunctionName + "'"); 
                     Database.OpenConnection();
-
-                    using (var reader = commad.ExecuteReader())
+                    using (var reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                             while (reader.Read())
@@ -132,25 +131,29 @@ namespace MSSQL.DIARY.EF
             return lstFunctionColumns;
         }
 
-        public FunctionCreateScript GetFunctionCreateScript(string astrFunctionName, string functionType)
+        /// <summary>
+        /// In this method returns the create script of the function
+        /// </summary>
+        /// <param name="astrFunctionName"></param>
+        /// <param name="astrFunctionType"></param>
+        /// <returns></returns>
+        public FunctionCreateScript GetFunctionCreateScript(string astrFunctionName, string astrFunctionType)
         {
-            var createScript = new FunctionCreateScript();
+            var lstrFunctionCreateScript = new FunctionCreateScript();
             try
             {
-                using (var conn = Database.GetDbConnection())
+                using (var  lDbConnection = Database.GetDbConnection())
                 {
-                    var commad = conn.CreateCommand();
-                    commad.CommandText = SqlQueryConstant.GetFunctionCreateScript
-                        .Replace("@function_Type", "'" + functionType + "'")
-                        .Replace("@function_name", "'" + astrFunctionName + "'");
-                    commad.CommandTimeout = 10 * 60;
-                    Database.OpenConnection();
-
-                    using (var reader = commad.ExecuteReader())
+                    var command = lDbConnection.CreateCommand();
+                    command.CommandText = SqlQueryConstant.GetFunctionCreateScript.Replace("@function_Type", "'" + astrFunctionType + "'").Replace("@function_name", "'" + astrFunctionName + "'"); 
+                    Database.OpenConnection(); 
+                    using (var reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                             while (reader.Read())
-                                createScript.createFunctionscript = reader.SafeGetString(0);
+                            {
+                                lstrFunctionCreateScript.createFunctionscript = reader.SafeGetString(0);
+                            } 
                     }
                 }
             }
@@ -159,26 +162,28 @@ namespace MSSQL.DIARY.EF
                 // ignored
             }
 
-            return createScript;
+            return lstrFunctionCreateScript;
         }
 
-        public List<PropertyInfo> GetAllFunctionWithMsDescriptions(string functionType)
+        /// <summary>
+        /// This method return the functions with it description
+        /// </summary>
+        /// <param name="astrFunctionType"></param>
+        /// <returns></returns>
+        public List<PropertyInfo> GetFunctionsWithDescription(string astrFunctionType)
         {
-            var getAllTbleDesc = new List<PropertyInfo>();
+            var lstFunctionDescriptions = new List<PropertyInfo>();
             try
             {
-                using (var commad = Database.GetDbConnection().CreateCommand())
+                using (var command = Database.GetDbConnection().CreateCommand())
                 {
-                    commad.CommandText =
-                        SqlQueryConstant.GetAllFunctionWithMsDescriptions.Replace("@function_Type",
-                            "'" + functionType + "'");
-                    commad.CommandTimeout = 10 * 60;
+                    command.CommandText = SqlQueryConstant.GetFunctionsWithDescription.Replace("@function_Type", "'" + astrFunctionType + "'");
                     Database.OpenConnection();
-                    using (var reader = commad.ExecuteReader())
+                    using (var reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                             while (reader.Read())
-                                getAllTbleDesc.Add(new PropertyInfo
+                                lstFunctionDescriptions.Add(new PropertyInfo
                                 {
                                     istrName = reader.SafeGetString(0),
                                     istrValue = reader.GetString(1)
@@ -191,9 +196,15 @@ namespace MSSQL.DIARY.EF
                 // ignored
             }
 
-            return getAllTbleDesc;
+            return lstFunctionDescriptions;
         }
 
+        /// <summary>
+        /// Update or Create new description for the function
+        /// </summary>
+        /// <param name="astrDescriptionValue"></param>
+        /// <param name="astrSchemaName"></param>
+        /// <param name="astrFunctioneName"></param>
         public void CreateOrUpdateFunctionDescription(string astrDescriptionValue, string astrSchemaName,string astrFunctioneName)
         {
             try
@@ -206,46 +217,156 @@ namespace MSSQL.DIARY.EF
             }
         }
 
+        /// <summary>
+        /// Create description for the function
+        /// </summary>
+        /// <param name="astrDescriptionValue"></param>
+        /// <param name="astrSchemaName"></param>
+        /// <param name="astrFunctioneName"></param>
         private void CreateFunctionDescription(string astrDescriptionValue, string astrSchemaName,string astrFunctioneName)
         {
-            using (var commad = Database.GetDbConnection().CreateCommand())
+            using (var command = Database.GetDbConnection().CreateCommand())
             {
-                var tableName =
-                    astrFunctioneName.Replace(
-                        astrFunctioneName.Substring(0, astrFunctioneName.IndexOf(".", StringComparison.Ordinal)) + ".",
-                        "");
-
-                commad.CommandText = SqlQueryConstant
-                    .UpdateFunctionExtendedProperty
-                    .Replace("@fun_value", "'" + astrDescriptionValue + "'")
-                    .Replace("@Schema_Name", "'" + astrSchemaName + "'")
-                    .Replace("@FunctionName", "'" + tableName + "'");
-
-                commad.CommandTimeout = 10 * 60;
+                var tableName = astrFunctioneName.Replace(astrFunctioneName.Substring(0, astrFunctioneName.IndexOf(".", StringComparison.Ordinal)) + ".", "");
+                command.CommandText = SqlQueryConstant.UpdateFunctionExtendedProperty.Replace("@fun_value", "'" + astrDescriptionValue + "'").Replace("@Schema_Name", "'" + astrSchemaName + "'").Replace("@FunctionName", "'" + tableName + "'");
                 Database.OpenConnection();
-                commad.ExecuteNonQuery();
+                command.ExecuteNonQuery();
             }
         }
 
+        /// <summary>
+        /// Update the function descriptions.
+        /// </summary>
+        /// <param name="astrDescriptionValue"></param>
+        /// <param name="astrSchemaName"></param>
+        /// <param name="astrFunctioneName"></param>
         private void UpdateFunctionDescription(string astrDescriptionValue, string astrSchemaName, string astrFunctioneName)
         {
-            using (var commad = Database.GetDbConnection().CreateCommand())
+            using (var command = Database.GetDbConnection().CreateCommand())
             {
-                var tableName =
-                    astrFunctioneName.Replace(
-                        astrFunctioneName.Substring(0, astrFunctioneName.IndexOf(".", StringComparison.Ordinal)) + ".",
-                        "");
-
-                commad.CommandText = SqlQueryConstant
-                    .UpdateFunctionExtendedProperty
-                    .Replace("@fun_value", "'" + astrDescriptionValue + "'")
-                    .Replace("@Schema_Name", "'" + astrSchemaName + "'")
-                    .Replace("@FunctionName", "'" + tableName + "'");
-
-                commad.CommandTimeout = 10 * 60;
+                var tableName = astrFunctioneName.Replace(astrFunctioneName.Substring(0, astrFunctioneName.IndexOf(".", StringComparison.Ordinal)) + ".", "");
+                command.CommandText = SqlQueryConstant.UpdateFunctionExtendedProperty.Replace("@fun_value", "'" + astrDescriptionValue + "'").Replace("@Schema_Name", "'" + astrSchemaName + "'").Replace("@FunctionName", "'" + tableName + "'");
                 Database.OpenConnection();
-                commad.ExecuteNonQuery();
+                command.ExecuteNonQuery();
             }
         }
+
+
+        /// <summary>
+        /// Get scalar functions
+        /// </summary>
+        /// <returns></returns>
+        public List<string> GetScalarFunctions()
+        {
+            var lstScalarFunctions = new List<string>();
+            try
+            {
+                using (var command = Database.GetDbConnection().CreateCommand())
+                {
+                    command.CommandText = SqlQueryConstant.GetScalarFunctions;
+                    Database.OpenConnection();
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.HasRows)
+                            while (reader.Read())
+                                lstScalarFunctions.Add(reader.GetString(0));
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+
+
+            return lstScalarFunctions;
+        }
+
+        /// <summary>
+        /// Get Table value functions
+        /// </summary>
+        /// <returns></returns>
+        public List<string> GetTableValueFunctions()
+        {
+            var lstTableValueFunctions = new List<string>();
+            try
+            {
+                using (var command = Database.GetDbConnection().CreateCommand())
+                {
+                    command.CommandText = SqlQueryConstant.GetTableValueFunctions;
+                    Database.OpenConnection();
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.HasRows)
+                            while (reader.Read())
+                                lstTableValueFunctions.Add(reader.GetString(0));
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+
+
+            return lstTableValueFunctions;
+        }
+
+        /// <summary>
+        /// Get aggregation functions
+        /// </summary>
+        /// <returns></returns>
+        public List<string> GetAggregateFunctions()
+        {
+            var lstAggregateFunctions = new List<string>();
+            try
+            {
+                using (var command = Database.GetDbConnection().CreateCommand())
+                {
+                    command.CommandText = SqlQueryConstant.GetAggregateFunctions;
+                    Database.OpenConnection();
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.HasRows)
+                            while (reader.Read())
+                                lstAggregateFunctions.Add(reader.GetString(0));
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // ignored
+            } 
+            return lstAggregateFunctions;
+        }
+
+        /// <summary>
+        ///  Get user defined data type.
+        /// </summary>
+        /// <returns></returns>
+        public List<string> GetUserDefinedDataTypes()
+        {
+            var lstUserDefinedDataType = new List<string>();
+            try
+            {
+                using (var command = Database.GetDbConnection().CreateCommand())
+                {
+                    command.CommandText = SqlQueryConstant.GetUserDefinedDataType; 
+                    Database.OpenConnection();
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.HasRows)
+                            while (reader.Read())
+                                lstUserDefinedDataType.Add(reader.GetString(0));
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // ignored
+            } 
+            return lstUserDefinedDataType;
+        }
+
     }
 }

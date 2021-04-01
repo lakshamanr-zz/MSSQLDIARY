@@ -1,39 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using MSSQL.DIARY.COMN.Constant;
 using MSSQL.DIARY.COMN.Models;
+using System;
+using System.Collections.Generic;
 
 namespace MSSQL.DIARY.EF
 {
     public partial class MssqlDiaryContext
     {
-        protected MssqlDiaryContext()
+        /// <summary>
+        /// Get the database Properties
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public List<PropertyInfo> GetDatabaseProperties()
         {
-        }
-
-        public MssqlDiaryContext(DbContextOptions options) : base(options)
-        {
-        }
-
-        public List<PropertyInfo> GetdbProperties()
-        {
-            var dbProperties = new List<PropertyInfo>();
+            var lstDatabaseProperties = new List<PropertyInfo>();
             try
             {
-                using (var conn = Database.GetDbConnection())
+                using (var lDbConnection = Database.GetDbConnection())
                 {
-                    var commad = conn.CreateCommand();
-                    commad.CommandText =
-                        SqlQueryConstant.GetdbProperties.Replace("@DatabaseName", $"'{conn.Database}'");
+                    var command = lDbConnection.CreateCommand();
+                    command.CommandText = SqlQueryConstant.GetDatabaseProperties.Replace("@DatabaseName", $"'{lDbConnection.Database}'");
                     Database.OpenConnection();
-
-                    using (var reader = commad.ExecuteReader())
+                    using (var reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                             while (reader.Read())
                                 for (var i = 0; i < 12; i++)
-                                    dbProperties.Add(new PropertyInfo
+                                    lstDatabaseProperties.Add(new PropertyInfo
                                     {
                                         istrName = reader.GetName(i),
                                         istrValue = reader.GetString(i)
@@ -46,26 +41,29 @@ namespace MSSQL.DIARY.EF
                 // ignored
             }
 
-            return dbProperties;
+            return lstDatabaseProperties;
         }
 
-        public List<PropertyInfo> GetdbOptions()
+        /// <summary>
+        /// Get the database options
+        /// </summary>
+        /// <returns></returns>
+        public List<PropertyInfo> GetDatabaseOptions()
         {
-            var dbOptions = new List<PropertyInfo>();
+            var lstDatabaseOptions = new List<PropertyInfo>();
             try
             {
-                using (var conn = Database.GetDbConnection())
+                using (var lDbConnection = Database.GetDbConnection())
                 {
-                    var commad = conn.CreateCommand();
-                    commad.CommandText = SqlQueryConstant.GetdbOptions.Replace("@DatabaseName", $"'{conn.Database}'");
+                    var command = lDbConnection.CreateCommand();
+                    command.CommandText = SqlQueryConstant.GetDatabaseOptions.Replace("@DatabaseName", $"'{lDbConnection.Database}'");
                     Database.OpenConnection();
-
-                    using (var reader = commad.ExecuteReader())
+                    using (var reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                             while (reader.Read())
                                 for (var i = 0; i < 14; i++)
-                                    dbOptions.Add(new PropertyInfo
+                                    lstDatabaseOptions.Add(new PropertyInfo
                                     {
                                         istrName = reader.GetName(i),
                                         istrValue = reader.GetString(i)
@@ -78,25 +76,28 @@ namespace MSSQL.DIARY.EF
                 // ignored
             }
 
-            return dbOptions;
+            return lstDatabaseOptions;
         }
+        /// <summary>
+        /// Get list of database files
+        /// </summary>
+        /// <returns></returns>
 
-        public List<FileInfomration> GetdbFiles()
+        public List<FileInfomration> GetDatabaseFiles()
         {
-            var dbFile = new List<FileInfomration>();
+            var lstDatabaseFiles = new List<FileInfomration>();
             try
             {
-                using (var conn = Database.GetDbConnection())
+                using (var lDbConnection = Database.GetDbConnection())
                 {
-                    var commad = conn.CreateCommand();
-                    commad.CommandText = SqlQueryConstant.GetdbFiles.Replace("@DatabaseName", $"'{conn.Database}'");
+                    var command = lDbConnection.CreateCommand();
+                    command.CommandText = SqlQueryConstant.GetDatabaseFiles.Replace("@DatabaseName", $"'{lDbConnection.Database}'");
                     Database.OpenConnection();
-
-                    using (var reader = commad.ExecuteReader())
+                    using (var reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                             while (reader.Read())
-                                dbFile.Add(new FileInfomration
+                                lstDatabaseFiles.Add(new FileInfomration
                                 {
                                     Name = reader.GetString(0),
                                     FileType = reader.GetString(1),
@@ -111,36 +112,37 @@ namespace MSSQL.DIARY.EF
                 // ignored
             }
 
-            return dbFile;
+            return lstDatabaseFiles;
         }
 
-        public List<TableFKDependency> GetTableReferences(string istrSchemaName = null)
+        /// <summary>
+        /// Get table dependencies
+        /// </summary>
+        /// <param name="astrSchemaName"></param>
+        /// <returns></returns>
+        public List<TableFKDependency> GetTableFkReferences(string astrSchemaName = null)
         {
-            var tableFkDependencies = new List<TableFKDependency>();
+            var lstTableFkDependencies = new List<TableFKDependency>();
             try
             {
-                using (var conn = Database.GetDbConnection())
+                using (var lDbConnection = Database.GetDbConnection())
                 {
-                    var commad = conn.CreateCommand();
-                    if (istrSchemaName.IsNullOrEmpty())
+                    var command = lDbConnection.CreateCommand();
+                    if (astrSchemaName.IsNullOrEmpty())
                     {
-                        commad.CommandText = SqlQueryConstant.AllDatabaseReferances;
+                        command.CommandText = SqlQueryConstant.GetTableFkReferences;
                     }
                     else
                     {
-                        commad.CommandText =
-                            SqlQueryConstant.AllDatabaseReferancesBySchemaName.Replace("@SchemaName",
-                                $"'{istrSchemaName}'");
+                        command.CommandText = SqlQueryConstant.GetTableFkReferencesBySchemaName.Replace("@SchemaName",$"'{astrSchemaName}'");
                         ;
-                    }
-
-                    Database.OpenConnection();
-
-                    using (var reader = commad.ExecuteReader())
+                    } 
+                    Database.OpenConnection(); 
+                    using (var reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                             while (reader.Read())
-                                tableFkDependencies.Add(new TableFKDependency
+                                lstTableFkDependencies.Add(new TableFKDependency
                                 {
                                     Fk_name = reader.GetString(0),
                                     fk_refe_table_name = reader.GetString(1)
@@ -153,7 +155,37 @@ namespace MSSQL.DIARY.EF
                 // ignored
             }
 
-            return tableFkDependencies;
+            return lstTableFkDependencies;
+        }
+
+
+        /// <summary>
+        /// Get database names.
+        /// </summary>
+        /// <returns></returns>
+        public List<string> GetDatabaseNames()
+        {
+            var lstDatabaseNames = new List<string>();
+            try
+            {
+                using (var command = Database.GetDbConnection().CreateCommand())
+                {
+                    command.CommandText = SqlQueryConstant.GetDatabaseNames;
+                    Database.OpenConnection();
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.HasRows)
+                            while (reader.Read())
+                                lstDatabaseNames.Add(reader.GetString(0));
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+
+            return lstDatabaseNames;
         }
     }
 }

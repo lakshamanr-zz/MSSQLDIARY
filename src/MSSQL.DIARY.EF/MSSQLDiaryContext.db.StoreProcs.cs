@@ -10,6 +10,39 @@ namespace MSSQL.DIARY.EF
 {
     public partial class MssqlDiaryContext
     {
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public List<string> GetStoreProcedures()
+        {
+            var storeProcedures = new List<string>();
+            try
+            {
+                using (var command = Database.GetDbConnection().CreateCommand())
+                {
+                    command.CommandText = SqlQueryConstant.GetStoreProcedures;
+                    command.CommandTimeout = 10 * 60;
+                    Database.OpenConnection();
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.HasRows)
+                            while (reader.Read())
+                                storeProcedures.Add(reader.GetString(0));
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+
+
+            return storeProcedures;
+        }
+
+
         public List<PropertyInfo> GetAllStoreprocedureDescription()
         {
             var getAllTableDesc = new List<PropertyInfo>();
