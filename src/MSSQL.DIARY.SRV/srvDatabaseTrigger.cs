@@ -8,24 +8,24 @@ namespace MSSQL.DIARY.SRV
     {
         public List<PropertyInfo> GetAllDatabaseTrigger(string istrdbName)
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(istrdbName))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrdbName))
             {
-                return dbSqldocContext.GetAllDatabaseTrigger();
+                return dbSqldocContext.GetTriggers();
             }
         }
 
         public List<TriggerInfo> GetTriggerInfosByName(string istrdbName, string istrTriggerName)
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(istrdbName))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrdbName))
             {
-                return dbSqldocContext.GetTriggerInfosByName(istrTriggerName);
+                return dbSqldocContext.GetTrigger(istrTriggerName);
             }
         }
 
         public void CreateOrUpdateTriggerDescription(string istrdbName, string astrDescription_Value,
             string astrTrigger_Name)
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(istrdbName))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrdbName))
             {
                 dbSqldocContext.CreateOrUpdateTriggerDescription(astrDescription_Value, astrTrigger_Name);
             }

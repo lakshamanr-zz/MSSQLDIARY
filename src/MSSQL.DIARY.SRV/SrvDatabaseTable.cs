@@ -25,7 +25,7 @@ namespace MSSQL.DIARY.SRV
         private  List<TablePropertyInfo> CreateCacheIfNot()
         {
             var lstTableDetails = new List<TablePropertyInfo>(); 
-            using (var dbSqldocContext = new MssqlDiaryContext(istrDBConnection))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrDBConnection))
             {
                 dbSqldocContext.GetTablesDescription().GroupBy(x => x.istrName).ToList().ForEach(Tables =>
                 {
@@ -68,7 +68,7 @@ namespace MSSQL.DIARY.SRV
 
         public Ms_Description GetTableDescription(string istrtableName)
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(istrDBConnection))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrDBConnection))
             {
                 return dbSqldocContext.GetTableDescription(istrtableName);
             }
@@ -76,7 +76,7 @@ namespace MSSQL.DIARY.SRV
 
         public List<TableIndexInfo> LoadTableIndexes(string istrtableName )
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(istrDBConnection))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrDBConnection))
             {
                 return dbSqldocContext.GetTableIndexes(istrtableName);
             }
@@ -84,7 +84,7 @@ namespace MSSQL.DIARY.SRV
 
         public TableCreateScript GetTableCreateScript(string istrtableName)
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(istrDBConnection))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrDBConnection))
             {
                 return dbSqldocContext.GetTableCreateScript(istrtableName);
             }
@@ -92,7 +92,7 @@ namespace MSSQL.DIARY.SRV
 
         public List<Tabledependencies> GetAllTabledependencies(string istrtableName )
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(istrDBConnection))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrDBConnection))
             {
                 return dbSqldocContext.GetTableDependencies(istrtableName);
             }
@@ -100,7 +100,7 @@ namespace MSSQL.DIARY.SRV
 
         public List<TableColumns> GetAllTablesColumn(string istrtableName)
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(istrDBConnection))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrDBConnection))
             {
                 var lsttblcolumn = new List<TableColumns>();
                 foreach (var keyValue in dbSqldocContext.GetTablesColumn(istrtableName).GroupBy(x => x.columnname))
@@ -133,7 +133,7 @@ namespace MSSQL.DIARY.SRV
 
         public List<TableFKDependency> GetAllTableForeignKeys(string istrtableName)
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(istrDBConnection))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrDBConnection))
             {
                 return dbSqldocContext.GetTableForeignKeys(istrtableName);
             }
@@ -141,7 +141,7 @@ namespace MSSQL.DIARY.SRV
 
         public List<TableKeyConstraint> GetTableKeyConstraints(string istrtableName)
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(istrDBConnection))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrDBConnection))
             {
                 return dbSqldocContext.GetTableKeyConstraints(istrtableName);
             }
@@ -150,7 +150,7 @@ namespace MSSQL.DIARY.SRV
         public bool CreateOrUpdateColumnDescription(string astrDescription_Value,
             string astrSchema_Name, string astrTableName, string astrColumnValue)
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(istrDBConnection))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrDBConnection))
             {
                 dbSqldocContext.CreateOrUpdateColumnDescription(astrDescription_Value, astrSchema_Name, astrTableName,
                     astrColumnValue);
@@ -161,7 +161,7 @@ namespace MSSQL.DIARY.SRV
         public void CreateOrUpdateTableDescription( string astrDescription_Value,
             string astrSchema_Name, string astrTableName)
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(istrDBConnection))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrDBConnection))
             {
                 dbSqldocContext.CreateOrUpdateTableDescription(astrDescription_Value, astrSchema_Name, astrTableName);
             }
@@ -194,7 +194,7 @@ namespace MSSQL.DIARY.SRV
 
         private List<TableFragmentationDetails> GetAllTableFragmentationDetails( )
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(istrDBConnection))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrDBConnection))
             {
                 return dbSqldocContext.GetTableFragmentation();
             }

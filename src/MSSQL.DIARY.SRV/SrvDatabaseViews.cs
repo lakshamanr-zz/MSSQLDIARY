@@ -16,7 +16,7 @@ namespace MSSQL.DIARY.SRV
 
         private static List<PropertyInfo> CacheViewDetails(string istrdbName)
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(istrdbName))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrdbName))
             {
                 return dbSqldocContext.GetAllViewsDetailsWithms_description();
             }
@@ -24,7 +24,7 @@ namespace MSSQL.DIARY.SRV
 
         public List<ViewDependancy> GetView_Dependancies(string istrdbName, string astrViewName)
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(istrdbName))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrdbName))
             {
                 return dbSqldocContext.GetViewDependancies(astrViewName);
             }
@@ -32,7 +32,7 @@ namespace MSSQL.DIARY.SRV
 
         public List<View_Properties> GetViewProperties(string istrdbName, string astrViewName)
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(istrdbName))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrdbName))
             {
                 return dbSqldocContext.GetViewProperties(astrViewName);
             }
@@ -40,7 +40,7 @@ namespace MSSQL.DIARY.SRV
 
         public List<ViewColumns> GetViewColumns(string istrdbName, string astrViewName)
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(istrdbName))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrdbName))
             {
                 return dbSqldocContext.GetViewColumns(astrViewName);
             }
@@ -48,7 +48,7 @@ namespace MSSQL.DIARY.SRV
 
         public ViewCreateScript GetViewCreateScript(string istrdbName, string astrViewName)
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(istrdbName))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrdbName))
             {
                 return dbSqldocContext.GetViewCreateScript(astrViewName);
             }
@@ -56,7 +56,7 @@ namespace MSSQL.DIARY.SRV
 
         public PropertyInfo GetViewNameWithMs_description(string istrdbName, string astrViewName)
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(istrdbName))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrdbName))
             {
                 return dbSqldocContext.GetAllViewsDetailsWithms_description()
                     .Find(x => x.istrName.Contains(astrViewName));

@@ -24,7 +24,7 @@ namespace MSSQL.DIARY.SRV
 
         private List<SP_PropertyInfo> CacheStoreProcInfo(string istrdbName)
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(istrdbName))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrdbName))
             {
                 var db_sp_info = new List<SP_PropertyInfo>();
                 foreach (var grp in dbSqldocContext.GetStoreProceduresWithDescription().GroupBy(x => x.istrName))
@@ -54,7 +54,7 @@ namespace MSSQL.DIARY.SRV
 
         public Ms_Description GetCreateScriptOfStoreProc(string istrdbName, string StoreprocName)
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(istrdbName))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrdbName))
             {
                 return dbSqldocContext.GetStoreProcedureCreateScript(StoreprocName);
             }
@@ -62,7 +62,7 @@ namespace MSSQL.DIARY.SRV
 
         public List<SP_Depencancy> GetStoreProcDependancy(string istrdbName, string StoreprocName)
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(istrdbName))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrdbName))
             {
                 return dbSqldocContext.GetStoreProceduresDependency(StoreprocName);
             }
@@ -89,7 +89,7 @@ namespace MSSQL.DIARY.SRV
         public List<SP_Parameters> GetStoreProcParameters(string istrdbName, string StoreprocName)
         {
             var SP_Parameters = new List<SP_Parameters>();
-            using (var dbSqldocContext = new MssqlDiaryContext(istrdbName))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrdbName))
             {
                 foreach (var key in dbSqldocContext.GetStoreProceduresParametersWithDescriptions(StoreprocName)
                     .GroupBy(x => x.Parameter_name))
@@ -115,7 +115,7 @@ namespace MSSQL.DIARY.SRV
 
         public List<ExecutionPlanInfo> GetCachedExecutionPlan(string istrdbName, string StoreprocName)
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(istrdbName))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrdbName))
             {
                 var ExecutionPlanResult = dbSqldocContext.GetStoreProcedureExecutionPlan(StoreprocName);
 
@@ -132,7 +132,7 @@ namespace MSSQL.DIARY.SRV
         public void CreateOrUpdateStoreProcDescription(string istrdbName, string astrDescription_Value,
             string astrSchema_Name, string StoreprocName)
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(istrdbName))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrdbName))
             {
                 dbSqldocContext.CreateOrUpdateStoreProcedureDescription(astrDescription_Value, astrSchema_Name,
                     StoreprocName);
@@ -142,7 +142,7 @@ namespace MSSQL.DIARY.SRV
         public void CreateOrUpdateStoreProcParameterDescription(string istrdbName, string astrDescription_Value,
             string astrSchema_Name, string StoreprocName, string ParameterName)
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(istrdbName))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrdbName))
             {
                 dbSqldocContext.CreateOrUpdateStoreProcedureDescription(astrDescription_Value, astrSchema_Name,
                     StoreprocName, ParameterName);
@@ -151,7 +151,7 @@ namespace MSSQL.DIARY.SRV
 
         public string GetStoreProcMsDescription(string istrdbName, string StoreprocName)
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(istrdbName))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrdbName))
             {
                 return dbSqldocContext.GetStoreProcedureDescription(StoreprocName);
             }

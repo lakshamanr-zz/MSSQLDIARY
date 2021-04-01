@@ -9,7 +9,7 @@ namespace MSSQL.DIARY.SRV
     {
         public List<PropertyInfo> GetListOfAllSchemaAndMsDescription(string istrdbConn)
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(istrdbConn))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrdbConn))
             {
                 return dbSqldocContext.GetSchemaWithDescriptions();
             }
@@ -17,7 +17,7 @@ namespace MSSQL.DIARY.SRV
 
         public void CreateOrUpdateSchemaMsDescription(string istrdbConn)
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(istrdbConn))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrdbConn))
             {
                 dbSqldocContext.GetSchemaWithDescriptions();
             }
@@ -26,7 +26,7 @@ namespace MSSQL.DIARY.SRV
         public void CreateOrUpdateSchemaMsDescription(string istrdbConn, string astrDescription_Value,
             string astrSchema_Name)
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(istrdbConn))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrdbConn))
             {
                 dbSqldocContext.CreateOrUpdateSchemaDescription(astrDescription_Value, astrSchema_Name);
             }
@@ -37,7 +37,7 @@ namespace MSSQL.DIARY.SRV
             var result = new List<SchemaReferanceInfo>();
             try
             {
-                using (var dbSqldocContext = new MssqlDiaryContext(istrdbConn))
+                using (var dbSqldocContext = new MsSqlDiaryContext(istrdbConn))
                 {
                     result = dbSqldocContext.GetSchemaReferences(astrSchema_Name);
                 }
@@ -54,7 +54,7 @@ namespace MSSQL.DIARY.SRV
             var result = new Ms_Description();
             try
             {
-                using (var dbSqldocContext = new MssqlDiaryContext(istrdbConn))
+                using (var dbSqldocContext = new MsSqlDiaryContext(istrdbConn))
                 {
                     result = dbSqldocContext.GetSchemaDescription(astrSchema_Name);
                 }

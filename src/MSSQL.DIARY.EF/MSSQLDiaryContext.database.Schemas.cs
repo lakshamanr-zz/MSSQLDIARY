@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace MSSQL.DIARY.EF
 {
-    public partial class MssqlDiaryContext
+    public partial class MsSqlDiaryContext
     {
 
         /// <summary>

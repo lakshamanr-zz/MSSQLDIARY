@@ -11,7 +11,7 @@ namespace MSSQL.DIARY.SRV
     {
         public string GetObjectThatDependsOn(string istrdbConn, string astrObjectName)
         {
-            using (var dbSqlDocContext = new MssqlDiaryContext(istrdbConn))
+            using (var dbSqlDocContext = new MsSqlDiaryContext(istrdbConn))
             {
                 return GetObjectThatDependsOnJson(dbSqlDocContext.GetObjectThatDependsOn(astrObjectName));
             }
@@ -37,7 +37,7 @@ namespace MSSQL.DIARY.SRV
 
         public string GetObjectOnWhichDepends(string istrdbConn, string astrObjectName)
         {
-            using (var dbSqlDocContext = new MssqlDiaryContext(istrdbConn))
+            using (var dbSqlDocContext = new MsSqlDiaryContext(istrdbConn))
             {
                 return GetObjectOnWhichDependsOnJson(dbSqlDocContext.GetObjectOnWhichDepends(astrObjectName));
             }

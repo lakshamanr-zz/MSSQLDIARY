@@ -10,7 +10,7 @@ using MSSQL.DIARY.COMN.Models;
 
 namespace MSSQL.DIARY.EF
 {
-    public partial class MssqlDiaryContext
+    public partial class MsSqlDiaryContext
     {
 
         /// <summary>

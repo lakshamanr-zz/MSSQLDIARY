@@ -63,13 +63,13 @@ namespace MSSQL.DIARY.SRV
             GraphHtml.SetListOfTables(lstTablesAndColumns, istrSchemaName);
 
             if (FormatType.Equals("pdf"))
-                return FileDotEngine.PDF(GraphHtml.GraphSVGHTMLString(istrdbName, istrSchemaName));
+                return FileDotEngine.Pdf(GraphHtml.GraphSVGHTMLString(istrdbName, istrSchemaName));
             if (FormatType.Equals("png"))
-                return FileDotEngine.PNG(GraphHtml.GraphSVGHTMLString(istrdbName, istrSchemaName));
+                return FileDotEngine.Png(GraphHtml.GraphSVGHTMLString(istrdbName, istrSchemaName));
             if (FormatType.Equals("jpg"))
-                return FileDotEngine.JPG(GraphHtml.GraphSVGHTMLString(istrdbName, istrSchemaName));
+                return FileDotEngine.Jpg(GraphHtml.GraphSVGHTMLString(istrdbName, istrSchemaName));
 
-            return FileDotEngine.SVG(GraphHtml.GraphSVGHTMLString(istrdbName, istrSchemaName));
+            return FileDotEngine.Svg(GraphHtml.GraphSVGHTMLString(istrdbName, istrSchemaName));
         }
         public byte[] GetGraphHtmlString(string istrdbName, string FormatType, string istrSchemaName,List<string> alstOfSelectedTables)
         {
@@ -112,13 +112,13 @@ namespace MSSQL.DIARY.SRV
             GraphHtml.SetListOfTables(lstTablesAndColumns, istrSchemaName);
 
             if (FormatType.Equals("pdf"))
-                return FileDotEngine.PDF(GraphHtml.GraphSVGHTMLString(istrdbName, istrSchemaName, alstOfSelectedTables));
+                return FileDotEngine.Pdf(GraphHtml.GraphSVGHTMLString(istrdbName, istrSchemaName, alstOfSelectedTables));
             if (FormatType.Equals("png"))
-                return FileDotEngine.PNG(GraphHtml.GraphSVGHTMLString(istrdbName, istrSchemaName, alstOfSelectedTables));
+                return FileDotEngine.Png(GraphHtml.GraphSVGHTMLString(istrdbName, istrSchemaName, alstOfSelectedTables));
             if (FormatType.Equals("jpg"))
-                return FileDotEngine.JPG(GraphHtml.GraphSVGHTMLString(istrdbName, istrSchemaName, alstOfSelectedTables));
+                return FileDotEngine.Jpg(GraphHtml.GraphSVGHTMLString(istrdbName, istrSchemaName, alstOfSelectedTables));
 
-            return FileDotEngine.SVG(GraphHtml.GraphSVGHTMLString(istrdbName, istrSchemaName, alstOfSelectedTables));
+            return FileDotEngine.Svg(GraphHtml.GraphSVGHTMLString(istrdbName, istrSchemaName, alstOfSelectedTables));
         }
 
         private static void SelecctTableWithSchemaNames(TablePropertyInfo x, List<TableWithSchema> lstTablesAndColumns)
@@ -261,12 +261,12 @@ namespace MSSQL.DIARY.SRV
                 var RefernceHTML = "";
                 var tableReference = new List<TableFKDependency>();
                 if (istrSchemaName.IsNullOrEmpty())
-                    using (var dbSqldocContext = new MssqlDiaryContext(istrdbName))
+                    using (var dbSqldocContext = new MsSqlDiaryContext(istrdbName))
                     {
                         tableReference = dbSqldocContext.GetTableFkReferences();
                     }
                 else
-                    using (var dbSqldocContext = new MssqlDiaryContext(istrdbName))
+                    using (var dbSqldocContext = new MsSqlDiaryContext(istrdbName))
                     {
                         tableReference = dbSqldocContext.GetTableFkReferences(istrSchemaName);
                     }
@@ -283,7 +283,7 @@ namespace MSSQL.DIARY.SRV
                 var RefernceHTML = "";
                 var tableReference = new List<TableFKDependency>();
                 if (istrSchemaName.IsNullOrEmpty())
-                    using (var dbSqldocContext = new MssqlDiaryContext(istrdbName))
+                    using (var dbSqldocContext = new MsSqlDiaryContext(istrdbName))
                     {
 
                         dbSqldocContext.GetTableFkReferences()
@@ -302,7 +302,7 @@ namespace MSSQL.DIARY.SRV
                             );
                     }
                 else
-                    using (var dbSqldocContext = new MssqlDiaryContext(istrdbName))
+                    using (var dbSqldocContext = new MsSqlDiaryContext(istrdbName))
                     { 
                         dbSqldocContext.GetTableFkReferences(istrSchemaName).Where(x=>x.fk_refe_table_name.IsNotNull())
                             .ForEach(x =>

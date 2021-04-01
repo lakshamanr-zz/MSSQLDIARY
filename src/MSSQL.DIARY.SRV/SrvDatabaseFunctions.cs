@@ -17,7 +17,7 @@ namespace MSSQL.DIARY.SRV
 
         public List<FunctionDependencies> GetFunctionDependencies(string istrdbConn, string astrFunctionName)
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(istrdbConn))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrdbConn))
             {
                 return dbSqldocContext.GetFunctionDependencies(astrFunctionName, function_type).DistinctBy(x => x.name)
                     .ToList();
@@ -26,7 +26,7 @@ namespace MSSQL.DIARY.SRV
 
         public List<FunctionProperties> GetFunctionProperties(string istrdbConn, string astrFunctionName)
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(istrdbConn))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrdbConn))
             {
                 return dbSqldocContext.GetFunctionProperties(astrFunctionName, function_type);
             }
@@ -34,7 +34,7 @@ namespace MSSQL.DIARY.SRV
 
         public List<FunctionParameters> GetFunctionParameters(string istrdbConn, string astrFunctionName)
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(istrdbConn))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrdbConn))
             {
                 return dbSqldocContext.GetFunctionParameters(astrFunctionName, function_type);
             }
@@ -42,7 +42,7 @@ namespace MSSQL.DIARY.SRV
 
         public FunctionCreateScript GetFunctionCreateScript(string istrdbConn, string astrFunctionName)
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(istrdbConn))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrdbConn))
             {
                 return dbSqldocContext.GetFunctionCreateScript(astrFunctionName, function_type);
             }
@@ -50,7 +50,7 @@ namespace MSSQL.DIARY.SRV
 
         public List<PropertyInfo> GetAllFunctionWithMsDescriptions(string istrdbConn)
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(istrdbConn))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrdbConn))
             {
                 return dbSqldocContext.GetFunctionsWithDescription(function_type);
             }
@@ -58,7 +58,7 @@ namespace MSSQL.DIARY.SRV
 
         public PropertyInfo GetFunctionMsDescriptions(string istrdbConn, string astrFunctionName)
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(istrdbConn))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrdbConn))
             {
                 return dbSqldocContext.GetFunctionsWithDescription(function_type)
                     .FirstOrDefault(x => x.istrName.Contains(astrFunctionName)) ?? new PropertyInfo
@@ -69,7 +69,7 @@ namespace MSSQL.DIARY.SRV
         public void CreateOrUpdateFunctionDescription(string istrdbConn, string astrDescription_Value,
             string astrSchema_Name, string astrFunctionName)
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(istrdbConn))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrdbConn))
             {
                 dbSqldocContext.CreateOrUpdateFunctionDescription(astrDescription_Value, astrSchema_Name,
                     astrFunctionName);

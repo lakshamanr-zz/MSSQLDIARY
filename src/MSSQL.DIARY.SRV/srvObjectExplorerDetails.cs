@@ -706,7 +706,7 @@ namespace MSSQL.DIARY.SRV
         public static List<string> GetDatabaseName(string dbConnections = null)
         {
             var lst = new List<string>();
-            using (var dbSqldocContext = new MssqlDiaryContext(dbConnections))
+            using (var dbSqldocContext = new MsSqlDiaryContext(dbConnections))
             {
                 lst = dbSqldocContext.GetDatabaseNames().ToList();
             }
@@ -720,7 +720,7 @@ namespace MSSQL.DIARY.SRV
 
         public static List<string> GetTableList(string dbInstanceName = null, string dbConnections = null)
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(dbConnections))
+            using (var dbSqldocContext = new MsSqlDiaryContext(dbConnections))
             {
                 return dbSqldocContext.GetTables().Where(x => x != null).ToList();
             }
@@ -733,7 +733,7 @@ namespace MSSQL.DIARY.SRV
 
         public static List<string> GetTablesColumnsList(string astrTableName, string dbInstanceName = null, string dbConnections = null)
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(dbConnections))
+            using (var dbSqldocContext = new MsSqlDiaryContext(dbConnections))
             {
                 return dbSqldocContext.GetTableColumns(astrTableName);
             }
@@ -742,7 +742,7 @@ namespace MSSQL.DIARY.SRV
         //GetTableColumns
         public static List<string> GetTableColumns(string astrColumnName)
         {
-            using (var dbSqldocContext = new MssqlDiaryContext())
+            using (var dbSqldocContext = new MsSqlDiaryContext())
             {
                 return dbSqldocContext.GetTableColumns(astrColumnName);
             }
@@ -755,7 +755,7 @@ namespace MSSQL.DIARY.SRV
 
         public static List<string> GetViewsList(string dbInstanceName = null, string dbConnections = null)
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(dbConnections))
+            using (var dbSqldocContext = new MsSqlDiaryContext(dbConnections))
             {
                 return dbSqldocContext.GetViews().Where(x => x != null).ToList();
             }
@@ -768,7 +768,7 @@ namespace MSSQL.DIARY.SRV
 
         public static List<string> GetStoreProceduresList(string dbInstanceName = null, string dbConnections = null)
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(dbConnections))
+            using (var dbSqldocContext = new MsSqlDiaryContext(dbConnections))
             {
                 return dbSqldocContext.GetStoreProcedures().Where(x => x != null).ToList();
             }
@@ -781,7 +781,7 @@ namespace MSSQL.DIARY.SRV
 
         public static List<string> GetScalarFunctionsList(string dbInstanceName = null, string dbConnections = null)
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(dbConnections))
+            using (var dbSqldocContext = new MsSqlDiaryContext(dbConnections))
             {
                 return dbSqldocContext.GetScalarFunctions().Where(x => x != null).ToList();
                 ;
@@ -795,7 +795,7 @@ namespace MSSQL.DIARY.SRV
 
         public static List<string> GetTableValueFunctionsList(string dbInstanceName = null, string dbConnections = null)
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(dbConnections))
+            using (var dbSqldocContext = new MsSqlDiaryContext(dbConnections))
             {
                 return dbSqldocContext.GetTableValueFunctions().Where(x => x != null).ToList();
             }
@@ -808,7 +808,7 @@ namespace MSSQL.DIARY.SRV
 
         public static List<string> GetAggregateFunctionsList(string dbInstanceName = null, string dbConnections = null)
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(dbConnections))
+            using (var dbSqldocContext = new MsSqlDiaryContext(dbConnections))
             {
                 return dbSqldocContext.GetAggregateFunctions().Where(x => x != null).ToList();
             }
@@ -821,38 +821,24 @@ namespace MSSQL.DIARY.SRV
 
         public   static List<string> GetTriggersList(string dbInstanceName = null, string dbConnections = null)
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(dbConnections))
+            using (var dbSqldocContext = new MsSqlDiaryContext(dbConnections))
             {
-                return dbSqldocContext.GetTriggers().Where(x => x != null).ToList();
+                return dbSqldocContext.GetTriggers().Where(x => x.istrName != null).Select(x=>x.istrName).ToList();
             }
         }
-
-        public static List<string> GetUserDefinedTypes(string dbInstanceName = null)
-        {
-            return GetUserDefinedTypesList(dbInstanceName);
-        }
-
         public static List<string> GetUserDefinedTypesList(string dbInstanceName = null)
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(dbInstanceName))
+            using (var dbSqldocContext = new MsSqlDiaryContext(dbInstanceName))
             {
-                return dbSqldocContext.GetUserDefinedDataTypes().Where(x => x != null).ToList();
-            }
-        }
-
-        public static List<string> GetXmlSchemaCollection(string dbInstanceName = null)
-        {
-            using (var dbSqldocContext = new MssqlDiaryContext())
-            {
-                return dbSqldocContext.GetXmlSchemas().Where(x => x != null).ToList();
+                return dbSqldocContext.GetUserDefinedDataTypes().Where(x => x.name != null).Select(x=>x.name).ToList();
             }
         }
 
         public static List<string> GetUserDefinedType(string istrDatabaseName, string dbConnections)
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(dbConnections))
+            using (var dbSqldocContext = new MsSqlDiaryContext(dbConnections))
             {
-                return dbSqldocContext.GetUserDefinedDataTypes().Where(x => x != null).ToList();
+                return dbSqldocContext.GetUserDefinedDataTypes().Where(x => x.name != null).Select(x=>x.name).ToList();
             }
         }
 

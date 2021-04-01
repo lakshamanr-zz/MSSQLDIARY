@@ -8,46 +8,25 @@ using MSSQL.DIARY.COMN.Models;
 
 namespace MSSQL.DIARY.EF
 {
-    public partial class MssqlDiaryContext
+    public partial class MsSqlDiaryContext
     {
-        public List<string> GetTriggers()
-        {
-            var lstrTriggers = new List<string>();
-            try
-            {
-                using (var command = Database.GetDbConnection().CreateCommand())
-                {
-                    command.CommandText = SqlQueryConstant.GetTigger;
-                    command.CommandTimeout = 10 * 60;
-                    Database.OpenConnection();
-                    using (var reader = command.ExecuteReader())
-                    {
-                        if (reader.HasRows)
-                            while (reader.Read())
-                                lstrTriggers.Add(reader.GetString(0));
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
 
-            return lstrTriggers;
-        }
-
-        public List<PropertyInfo> GetAllDatabaseTrigger()
+        /// <summary>
+        /// Get Database Triggers
+        /// </summary>
+        /// <returns></returns>
+        public List<PropertyInfo> GetTriggers()
         {
             var propertyInfos = new List<PropertyInfo>();
             try
             {
-                using (var conn = Database.GetDbConnection())
+                using (var lDbConnection = Database.GetDbConnection())
                 {
-                    var commad = conn.CreateCommand();
-                    commad.CommandText = SqlQueryConstant.GetAllDatabaseTrigger;
+                    var command = lDbConnection.CreateCommand();
+                    command.CommandText = SqlQueryConstant.GetTriggers;
                     Database.OpenConnection();
 
-                    using (var reader = commad.ExecuteReader())
+                    using (var reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                             while (reader.Read())
@@ -67,21 +46,23 @@ namespace MSSQL.DIARY.EF
             return propertyInfos;
         }
 
-        public List<TriggerInfo> GetTriggerInfosByName(string istrTriggerName)
+        /// <summary>
+        /// Get Trigger Details by trigger name
+        /// </summary>
+        /// <param name="astrTriggerName"></param>
+        /// <returns></returns>
+        public List<TriggerInfo> GetTrigger(string astrTriggerName)
         {
             var triggerInfo = new List<TriggerInfo>();
             try
             {
-                using (var conn = Database.GetDbConnection())
+                using (var lDbConnection = Database.GetDbConnection())
                 {
-                    var commad = conn.CreateCommand();
-                    commad.CommandText =
-                        SqlQueryConstant.GetDatabaseTriggerdtlByName.Replace("@TiggersName",
-                            "'" + istrTriggerName + "'");
-                    ;
+                    var command = lDbConnection.CreateCommand();
+                    command.CommandText = SqlQueryConstant.GetTrigger.Replace("@TiggersName", "'" + astrTriggerName + "'");
                     Database.OpenConnection();
 
-                    using (var reader = commad.ExecuteReader())
+                    using (var reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                             while (reader.Read())
@@ -104,6 +85,11 @@ namespace MSSQL.DIARY.EF
             return triggerInfo;
         }
 
+        /// <summary>
+        /// Create or update the trigger descriptions
+        /// </summary>
+        /// <param name="astrDescriptionValue"></param>
+        /// <param name="astrTriggerName"></param>
         public void CreateOrUpdateTriggerDescription(string astrDescriptionValue, string astrTriggerName)
         {
             try
@@ -116,33 +102,35 @@ namespace MSSQL.DIARY.EF
             }
         }
 
+        /// <summary>
+        /// Update Trigger descriptions
+        /// </summary>
+        /// <param name="astrDescriptionValue"></param>
+        /// <param name="astrSchemaName"></param>
         private void UpdateTriggerDescription(string astrDescriptionValue, string astrSchemaName)
         {
-            using (var commad = Database.GetDbConnection().CreateCommand())
+            using (var command = Database.GetDbConnection().CreateCommand())
             {
-                commad.CommandText = SqlQueryConstant.UpdateTriggerExtendedProperty
-                    .Replace("@Trigger_value", "'" + astrDescriptionValue + "'")
-                    .Replace("@Trigger_Name", "'" + astrSchemaName + "'");
-
-                commad.CommandTimeout = 10 * 60;
+                command.CommandText = SqlQueryConstant.UpdateTriggerExtendedProperty.Replace("@Trigger_value", "'" + astrDescriptionValue + "'").Replace("@Trigger_Name", "'" + astrSchemaName + "'"); 
                 Database.OpenConnection();
-                commad.ExecuteNonQuery();
+                command.ExecuteNonQuery();
             }
         }
 
+        /// <summary>
+        /// Create Trigger descriptions
+        /// </summary>
+        /// <param name="astrDescriptionValue"></param>
+        /// <param name="astrSchemaName"></param>
         private void CreateTriggerDescription(string astrDescriptionValue, string astrSchemaName)
         {
-            using (var commad = Database.GetDbConnection().CreateCommand())
+            using (var command = Database.GetDbConnection().CreateCommand())
             {
-                commad.CommandText = SqlQueryConstant.CreateTriggerExtendedProperty
-                    .Replace("@Trigger_value", "'" + astrDescriptionValue + "'")
-                    .Replace("@Trigger_Name", "'" + astrSchemaName + "'");
-
-                commad.CommandTimeout = 10 * 60;
+                command.CommandText = SqlQueryConstant.CreateTriggerExtendedProperty.Replace("@Trigger_value", "'" + astrDescriptionValue + "'").Replace("@Trigger_Name", "'" + astrSchemaName + "'");
                 Database.OpenConnection();
                 try
                 {
-                    commad.ExecuteNonQuery();
+                    command.ExecuteNonQuery();
                 }
                 catch (Exception)
                 {

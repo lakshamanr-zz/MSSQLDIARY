@@ -2,16 +2,16 @@
 
 namespace MSSQL.DIARY.EF
 {
-    public partial class MssqlDiaryContext: DbContext
+    public partial class MsSqlDiaryContext: DbContext
     {
       
 
-        public MssqlDiaryContext(string aIstrDbConnections = null)
+        public MsSqlDiaryContext(string aIstrDbConnections = null)
         {
             IstrDbConnections = aIstrDbConnections;
         }
 
-        public MssqlDiaryContext(DbContextOptions<MssqlDiaryContext> options) : base(options)
+        public MsSqlDiaryContext(DbContextOptions<MsSqlDiaryContext> options) : base(options)
         {
         } 
         public string IstrDbConnections { get; set; }

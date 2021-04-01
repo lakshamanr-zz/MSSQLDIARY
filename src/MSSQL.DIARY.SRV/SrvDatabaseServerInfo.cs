@@ -32,7 +32,7 @@ namespace MSSQL.DIARY.SRV
         public static List<string> GetServerNameList()
         {
             var lst = new List<string>();
-            using (var dbSqldocContext = new MssqlDiaryContext())
+            using (var dbSqldocContext = new MsSqlDiaryContext())
             {
                 lst.Add(dbSqldocContext.GetServerName());
             }
@@ -43,7 +43,7 @@ namespace MSSQL.DIARY.SRV
         private  List<string> GetDatabaseNameList()
         {
             var lst = new List<string>();
-            using (var dbSqldocContext = new MssqlDiaryContext(istrDBConnection))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrDBConnection))
             {
                 return dbSqldocContext.GetDatabaseNames();
             }
@@ -51,7 +51,7 @@ namespace MSSQL.DIARY.SRV
 
         private   List<PropertyInfo> GetServerPropertiesList()
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(istrDBConnection))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrDBConnection))
             {
                 return dbSqldocContext.GetServerProperties();
             }
@@ -60,7 +60,7 @@ namespace MSSQL.DIARY.SRV
         private   List<PropertyInfo> GetAdvancedServerSettingsInfoList()
         {
             var lst = new List<PropertyInfo>();
-            using (var dbSqldocContext = new MssqlDiaryContext(istrDBConnection))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrDBConnection))
             {
                 return dbSqldocContext.GetAdvancedServerSettings();
             }

@@ -7,23 +7,28 @@ using MSSQL.DIARY.COMN.Models;
 
 namespace MSSQL.DIARY.EF
 {
-    public partial class MssqlDiaryContext
+    public partial class MsSqlDiaryContext
     {
-        public List<UserDefinedDataTypeDetails> GetAllUserDefinedDataTypes()
+
+        /// <summary>
+        /// Get list of UserDefined data types
+        /// </summary>
+        /// <returns></returns>
+        public List<UserDefinedDataTypeDetails> GetUserDefinedDataTypes()
         {
-            var userdefineddatatypedetails = new List<UserDefinedDataTypeDetails>();
+            var lstUserDefinedDataTypeDetails = new List<UserDefinedDataTypeDetails>();
             try
             {
-                using (var conn = Database.GetDbConnection())
+                using (var lDbConnection = Database.GetDbConnection())
                 {
-                    var commad = conn.CreateCommand();
-                    commad.CommandText = SqlQueryConstant.GetAllUserDefinedDataTypes;
+                    var command = lDbConnection.CreateCommand();
+                    command.CommandText = SqlQueryConstant.GetUserDefinedDataTypes;
                     Database.OpenConnection();
-                    using (var reader = commad.ExecuteReader())
+                    using (var reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                             while (reader.Read())
-                                userdefineddatatypedetails.Add(new UserDefinedDataTypeDetails
+                                lstUserDefinedDataTypeDetails.Add(new UserDefinedDataTypeDetails
                                 {
                                     name = reader.SafeGetString(0),
                                     iblnallownull = reader.GetBoolean(1),
@@ -39,25 +44,29 @@ namespace MSSQL.DIARY.EF
                 // ignored
             }
 
-            return userdefineddatatypedetails;
+            return lstUserDefinedDataTypeDetails;
         }
 
-        public UserDefinedDataTypeDetails GetUserDefinedDataTypeDetails(string istrTypeName)
-        {
-            var userdefineddatatypedetails = new UserDefinedDataTypeDetails();
+        /// <summary>
+        /// Get User defined data type by it names
+        /// </summary>
+        /// <param name="astrTypeName"></param>
+        /// <returns></returns>
+        public UserDefinedDataTypeDetails GetUserDefinedDataType(string astrTypeName)
+        { 
+            var lUserDefinedDataTypeDetails = new UserDefinedDataTypeDetails();
             try
             {
-                using (var conn = Database.GetDbConnection())
+                using (var lDbConnection = Database.GetDbConnection())
                 {
-                    var commad = conn.CreateCommand();
-                    commad.CommandText =
-                        SqlQueryConstant.GetUserDefinedDataTypeDetails.Replace("@TypeName", "'" + istrTypeName + "'");
+                    var command = lDbConnection.CreateCommand();
+                    command.CommandText = SqlQueryConstant.GetUserDefinedDataTypeDetails.Replace("@TypeName", "'" + astrTypeName + "'");
                     Database.OpenConnection();
-                    using (var reader = commad.ExecuteReader())
+                    using (var reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                             while (reader.Read())
-                                userdefineddatatypedetails = new UserDefinedDataTypeDetails
+                                lUserDefinedDataTypeDetails = new UserDefinedDataTypeDetails
                                 {
                                     name = reader.SafeGetString(0),
                                     iblnallownull = reader.GetBoolean(1),
@@ -70,27 +79,32 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception)
             {
+                // ignored
             }
 
-            return userdefineddatatypedetails;
+            return lUserDefinedDataTypeDetails;
         }
 
-        public List<UserDefinedDataTypeReferance> GetUsedDefinedDataTypeReferance(string istrTypeName)
+        /// <summary>
+        /// Get user defined data type references.
+        /// </summary>
+        /// <param name="astrTypeName"></param>
+        /// <returns></returns>
+        public List<UserDefinedDataTypeReferance> GetUsedDefinedDataTypeReference(string astrTypeName)
         {
-            var userdefineddatatypeRefe = new List<UserDefinedDataTypeReferance>();
+            var lstUserDefinedDataTypeReference = new List<UserDefinedDataTypeReferance>();
             try
             {
-                using (var conn = Database.GetDbConnection())
+                using (var lDbConnection = Database.GetDbConnection())
                 {
-                    var commad = conn.CreateCommand();
-                    commad.CommandText =
-                        SqlQueryConstant.GetUsedDefinedDataTypeReferance.Replace("@TypeName", "'" + istrTypeName + "'");
+                    var command = lDbConnection.CreateCommand();
+                    command.CommandText = SqlQueryConstant.GetUsedDefinedDataTypeReference.Replace("@TypeName", "'" + astrTypeName + "'");
                     Database.OpenConnection();
-                    using (var reader = commad.ExecuteReader())
+                    using (var reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                             while (reader.Read())
-                                userdefineddatatypeRefe.Add(new UserDefinedDataTypeReferance
+                                lstUserDefinedDataTypeReference.Add(new UserDefinedDataTypeReferance
                                 {
                                     objectname = reader.SafeGetString(0),
                                     typeofobject = reader.SafeGetString(1)
@@ -101,28 +115,30 @@ namespace MSSQL.DIARY.EF
             catch (Exception)
             {
                 // ignored
-            }
-
-            return userdefineddatatypeRefe;
+            } 
+            return lstUserDefinedDataTypeReference;
         }
 
-        public Ms_Description GetUsedDefinedDataTypeExtendedProperties(string istrTypeName)
+        /// <summary>
+        ///Get  User defined data type description
+        /// </summary>
+        /// <param name="astrTypeName"></param>
+        /// <returns></returns>
+        public Ms_Description GetUsedDefinedDataTypeExtendedProperties(string astrTypeName)
         {
-            var userdefineddatatypeExtendedPropertyInfo = new Ms_Description();
+            var lUserDefinedDataTypeDescription = new Ms_Description();
             try
             {
-                using (var conn = Database.GetDbConnection())
+                using (var lDbConnection = Database.GetDbConnection())
                 {
-                    var commad = conn.CreateCommand();
-                    commad.CommandText = SqlQueryConstant.GetUsedDefinedDataTypeExtendedProperties
-                        .Replace("@SchemaName", "'" + istrTypeName.Split('.')[0] + "'")
-                        .Replace("@TypeName", "'" + istrTypeName.Split('.')[1] + "'");
+                    var command = lDbConnection.CreateCommand();
+                    command.CommandText = SqlQueryConstant.GetUsedDefinedDataTypeExtendedProperties.Replace("@SchemaName", "'" + astrTypeName.Split('.')[0] + "'").Replace("@TypeName", "'" + astrTypeName.Split('.')[1] + "'");
                     Database.OpenConnection();
-                    using (var reader = commad.ExecuteReader())
+                    using (var reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                             while (reader.Read())
-                                userdefineddatatypeExtendedPropertyInfo = new Ms_Description
+                                lUserDefinedDataTypeDescription = new Ms_Description
                                 {
                                     desciption = reader.SafeGetString(0)
                                 };
@@ -134,41 +150,46 @@ namespace MSSQL.DIARY.EF
                 // ignored
             }
 
-            return userdefineddatatypeExtendedPropertyInfo;
+            return lUserDefinedDataTypeDescription;
         } 
-        public void CreateUsedDefinedDataTypeExtendedProperties(string istrTypeName, string istrdescValue)
+
+        /// <summary>
+        /// Create User defined data type description
+        /// </summary>
+        /// <param name="astrTypeName"></param>
+        /// <param name="astrDescValue"></param>
+        public void CreateUsedDefinedDataTypeDescription(string astrTypeName, string astrDescValue)
         {
             try
             {
-                using (var conn = Database.GetDbConnection())
+                using (var lDbConnection = Database.GetDbConnection())
                 {
-                    var commad = conn.CreateCommand();
-                    commad.CommandText = SqlQueryConstant.AddUserDefinedDataTypeExtendedProperty
-                        .Replace("@desc", "'" + istrdescValue + "'")
-                        .Replace("@SchemaName", "'" + istrTypeName.Split('.')[0] + "'")
-                        .Replace("@TypeName", "'" + istrTypeName.Split('.')[1] + "'");
+                    var command = lDbConnection.CreateCommand();
+                    command.CommandText = SqlQueryConstant.AddUserDefinedDataTypeExtendedProperty.Replace("@desc", "'" + astrDescValue + "'").Replace("@SchemaName", "'" + astrTypeName.Split('.')[0] + "'").Replace("@TypeName", "'" + astrTypeName.Split('.')[1] + "'");
                     Database.OpenConnection();
-                    commad.ExecuteNonQuery();
+                    command.ExecuteNonQuery();
                 }
             }
             catch (Exception)
             {
+                // ignored
             }
         }
-
-        public void UpdateUsedDefinedDataTypeExtendedProperties(string istrTypeName, string istrdescValue)
+        /// <summary>
+        /// Update user defined data type description
+        /// </summary>
+        /// <param name="astrTypeName"></param>
+        /// <param name="astrDescValue"></param>
+        public void UpdateUsedDefinedDataTypeDescription(string astrTypeName, string astrDescValue)
         {
             try
             {
-                using (var conn = Database.GetDbConnection())
+                using (var lDbConnection = Database.GetDbConnection())
                 {
-                    var commad = conn.CreateCommand();
-                    commad.CommandText = SqlQueryConstant.UpdateUserDefinedDataTypeExtendedProperty
-                        .Replace("@desc", "'" + istrdescValue + "'")
-                        .Replace("@SchemaName", "'" + istrTypeName.Split('.')[0] + "'")
-                        .Replace("@TypeName", "'" + istrTypeName.Split('.')[1] + "'");
+                    var command = lDbConnection.CreateCommand();
+                    command.CommandText = SqlQueryConstant.UpdateUserDefinedDataTypeExtendedProperty.Replace("@desc", "'" + astrDescValue + "'").Replace("@SchemaName", "'" + astrTypeName.Split('.')[0] + "'").Replace("@TypeName", "'" + astrTypeName.Split('.')[1] + "'");
                     Database.OpenConnection();
-                    commad.ExecuteNonQuery();
+                    command.ExecuteNonQuery();
                 }
             }
             catch (Exception ex)
@@ -176,7 +197,6 @@ namespace MSSQL.DIARY.EF
                 throw ex;
             }
         }
-
-        //CreateUsedDefinedDataTypeExtendedProperties
+         
     }
 }

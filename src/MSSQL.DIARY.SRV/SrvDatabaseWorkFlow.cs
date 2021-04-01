@@ -7,7 +7,7 @@ namespace MSSQL.DIARY.SRV
     {
         public List<string> GetWorkList(string istrdbConn)
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(istrdbConn))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrdbConn))
             {
                 return dbSqldocContext.GetWorkList();
             }
@@ -15,7 +15,7 @@ namespace MSSQL.DIARY.SRV
 
         public List<string> BuildBusinessWorkFlowTree(string istrdbConn, string istrWorkFlowName)
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(istrdbConn))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrdbConn))
             {
                 return dbSqldocContext.GetWorkDetailsbyName(istrWorkFlowName);
             }

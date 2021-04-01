@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace MSSQL.DIARY.EF
 {
-    public partial class MssqlDiaryContext
+    public partial class MsSqlDiaryContext
     {
         /// <summary>
         /// In this method we are Find the function and there dependencies.
@@ -343,29 +343,6 @@ namespace MSSQL.DIARY.EF
         ///  Get user defined data type.
         /// </summary>
         /// <returns></returns>
-        public List<string> GetUserDefinedDataTypes()
-        {
-            var lstUserDefinedDataType = new List<string>();
-            try
-            {
-                using (var command = Database.GetDbConnection().CreateCommand())
-                {
-                    command.CommandText = SqlQueryConstant.GetUserDefinedDataType; 
-                    Database.OpenConnection();
-                    using (var reader = command.ExecuteReader())
-                    {
-                        if (reader.HasRows)
-                            while (reader.Read())
-                                lstUserDefinedDataType.Add(reader.GetString(0));
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                // ignored
-            } 
-            return lstUserDefinedDataType;
-        }
 
     }
 }

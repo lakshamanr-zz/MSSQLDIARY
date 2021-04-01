@@ -44,7 +44,7 @@ namespace MSSQL.DIARY.SRV
 
         private static List<PropertyInfo> GetdbProperties(string istrdbConn)
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(istrdbConn))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrdbConn))
             {
                 return dbSqldocContext.GetDatabaseProperties();
             }
@@ -57,7 +57,7 @@ namespace MSSQL.DIARY.SRV
 
         private   List<PropertyInfo> GetdbOptions(string istrdbConn)
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(istrdbConn))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrdbConn))
             {
                 return dbSqldocContext.GetDatabaseOptions();
             }
@@ -130,7 +130,7 @@ namespace MSSQL.DIARY.SRV
 
         private  List<FileInfomration> GetdbFilesDetail()
         {
-            using (var dbSqldocContext = new MssqlDiaryContext(istrDBConnection))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrDBConnection))
             {
                 return dbSqldocContext.GetDatabaseFiles();
             }
