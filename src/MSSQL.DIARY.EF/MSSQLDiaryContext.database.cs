@@ -114,51 +114,7 @@ namespace MSSQL.DIARY.EF
 
             return lstDatabaseFiles;
         }
-
-        /// <summary>
-        /// Get table dependencies
-        /// </summary>
-        /// <param name="astrSchemaName"></param>
-        /// <returns></returns>
-        public List<TableFKDependency> GetTableFkReferences(string astrSchemaName = null)
-        {
-            var lstTableFkDependencies = new List<TableFKDependency>();
-            try
-            {
-                using (var lDbConnection = Database.GetDbConnection())
-                {
-                    var command = lDbConnection.CreateCommand();
-                    if (astrSchemaName.IsNullOrEmpty())
-                    {
-                        command.CommandText = SqlQueryConstant.GetTableFkReferences;
-                    }
-                    else
-                    {
-                        command.CommandText = SqlQueryConstant.GetTableFkReferencesBySchemaName.Replace("@SchemaName",$"'{astrSchemaName}'");
-                        ;
-                    } 
-                    Database.OpenConnection(); 
-                    using (var reader = command.ExecuteReader())
-                    {
-                        if (reader.HasRows)
-                            while (reader.Read())
-                                lstTableFkDependencies.Add(new TableFKDependency
-                                {
-                                    Fk_name = reader.GetString(0),
-                                    fk_refe_table_name = reader.GetString(1)
-                                });
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
-
-            return lstTableFkDependencies;
-        }
-
-
+        
         /// <summary>
         /// Get database names.
         /// </summary>

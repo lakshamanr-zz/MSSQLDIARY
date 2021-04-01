@@ -251,7 +251,6 @@ namespace MSSQL.DIARY.EF
             }
         }
 
-
         /// <summary>
         /// Get scalar functions
         /// </summary>
