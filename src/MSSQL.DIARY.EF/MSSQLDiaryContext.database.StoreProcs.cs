@@ -12,52 +12,83 @@ namespace MSSQL.DIARY.EF
     {
 
         /// <summary>
-        /// 
+        /// Get store procedures.
         /// </summary>
         /// <returns></returns>
         public List<string> GetStoreProcedures()
         {
-            var storeProcedures = new List<string>();
+            var lstStoreProcedures = new List<string>();
             try
             {
                 using (var command = Database.GetDbConnection().CreateCommand())
                 {
-                    command.CommandText = SqlQueryConstant.GetStoreProcedures;
-                    command.CommandTimeout = 10 * 60;
+                    command.CommandText = SqlQueryConstant.GetStoreProcedures; 
                     Database.OpenConnection();
                     using (var reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                             while (reader.Read())
-                                storeProcedures.Add(reader.GetString(0));
+                                lstStoreProcedures.Add(reader.GetString(0));
                     }
                 }
             }
             catch (Exception)
             {
                 // ignored
-            }
-
-
-            return storeProcedures;
+            } 
+            return lstStoreProcedures;
         }
 
-
-        public List<PropertyInfo> GetAllStoreprocedureDescription()
+        /// <summary>
+        /// Get store procedures with descriptions
+        /// </summary>
+        /// <returns></returns>
+        public List<PropertyInfo> GetStoreProceduresWithDescription()
         {
-            var getAllTableDesc = new List<PropertyInfo>();
+            var lstStoreProceduresWithDescription = new List<PropertyInfo>();
             try
             {
-                using (var commad = Database.GetDbConnection().CreateCommand())
+                using (var command = Database.GetDbConnection().CreateCommand())
                 {
-                    commad.CommandText = SqlQueryConstant.GetAllStoreProcWithMsDesc;
-                    commad.CommandTimeout = 10 * 60;
+                    command.CommandText = SqlQueryConstant.GetStoreProceduresWithDescription; 
                     Database.OpenConnection();
-                    using (var reader = commad.ExecuteReader())
+                    using (var reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                             while (reader.Read())
-                                getAllTableDesc.Add(new PropertyInfo
+                                lstStoreProceduresWithDescription.Add(new PropertyInfo
+                                {
+                                    istrName = reader.SafeGetString(0),
+                                    istrValue = reader.SafeGetString(1)
+                                });
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // ignored
+            } 
+            return lstStoreProceduresWithDescription;
+        }
+        /// <summary>
+        /// Get create script of the store procedure
+        /// </summary>
+        /// <param name="astrStoreProcedureName"></param>
+        /// <returns></returns>
+        public Ms_Description GetStoreProcedureCreateScript(string astrStoreProcedureName)
+        {
+            var lstrStoreProcedureCreateScript = new List<PropertyInfo>();
+            try
+            {
+                using (var command = Database.GetDbConnection().CreateCommand())
+                {
+                    command.CommandText = SqlQueryConstant.GetStoreProcedureCreateScript.Replace("@StoreprocName", "'" + astrStoreProcedureName + "'"); 
+                    Database.OpenConnection();
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.HasRows)
+                            while (reader.Read())
+                                lstrStoreProcedureCreateScript.Add(new PropertyInfo
                                 {
                                     istrName = reader.SafeGetString(0),
                                     istrValue = reader.SafeGetString(1)
@@ -70,57 +101,28 @@ namespace MSSQL.DIARY.EF
                 // ignored
             }
 
-            return getAllTableDesc;
+            return new Ms_Description {desciption = lstrStoreProcedureCreateScript.FirstOrDefault()?.istrValue};
         }
 
-        public Ms_Description GetCreateScriptOfStoreProc(string StoreprocName)
+        /// <summary>
+        /// Get store procedure dependencies
+        /// </summary>
+        /// <param name="astrStoreProcedureName"></param>
+        /// <returns></returns>
+        public List<SP_Depencancy> GetStoreProceduresDependency(string astrStoreProcedureName)
         {
-            var getStoreProcInfos = new List<PropertyInfo>();
+            var lstStoreProcedureDependencies = new List<SP_Depencancy>();
             try
             {
-                using (var commad = Database.GetDbConnection().CreateCommand())
+                using (var command = Database.GetDbConnection().CreateCommand())
                 {
-                    commad.CommandText =
-                        SqlQueryConstant.GetCreateScriptOfStoreProc.Replace("@StoreprocName",
-                            "'" + StoreprocName + "'");
-                    commad.CommandTimeout = 10 * 60;
+                    command.CommandText = SqlQueryConstant.GetStoreProcDependencies.Replace("@StoreprocName", "'" + astrStoreProcedureName + "'");
                     Database.OpenConnection();
-                    using (var reader = commad.ExecuteReader())
+                    using (var reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                             while (reader.Read())
-                                getStoreProcInfos.Add(new PropertyInfo
-                                {
-                                    istrName = reader.SafeGetString(0),
-                                    istrValue = reader.SafeGetString(1)
-                                });
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
-
-            return new Ms_Description {desciption = getStoreProcInfos.FirstOrDefault()?.istrValue};
-        }
-
-        public List<SP_Depencancy> GetStoreProcDependancy(string storeprocName)
-        {
-            var getSpDependancies = new List<SP_Depencancy>();
-            try
-            {
-                using (var commad = Database.GetDbConnection().CreateCommand())
-                {
-                    commad.CommandText =
-                        SqlQueryConstant.GetStoreProcDependencies.Replace("@StoreprocName", "'" + storeprocName + "'");
-                    commad.CommandTimeout = 10 * 60;
-                    Database.OpenConnection();
-                    using (var reader = commad.ExecuteReader())
-                    {
-                        if (reader.HasRows)
-                            while (reader.Read())
-                                getSpDependancies.Add(new SP_Depencancy
+                                lstStoreProcedureDependencies.Add(new SP_Depencancy
                                 {
                                     referencing_object_name = reader.SafeGetString(0),
                                     referencing_object_type = reader.SafeGetString(1),
@@ -134,26 +136,27 @@ namespace MSSQL.DIARY.EF
                 // ignored
             }
 
-            return getSpDependancies;
+            return lstStoreProcedureDependencies;
         }
-
-        public List<SP_Parameters> GetStoreProcParameters(string storeprocName)
+        /// <summary>
+        /// Get store procedures parameters with Descriptions
+        /// </summary>
+        /// <param name="astrStoreProcedureName"></param>
+        /// <returns></returns>
+        public List<SP_Parameters> GetStoreProceduresParametersWithDescriptions(string astrStoreProcedureName)
         {
-            var getSpParameters = new List<SP_Parameters>();
+            var lstStoreProceduresParametersWithDescriptions = new List<SP_Parameters>();
             try
             {
-                using (var commad = Database.GetDbConnection().CreateCommand())
+                using (var command = Database.GetDbConnection().CreateCommand())
                 {
-                    commad.CommandText =
-                        SqlQueryConstant.GetAllStoreProcParamWithMsDesc.Replace("@StoreprocName",
-                            "'" + storeprocName + "'");
-                    commad.CommandTimeout = 10 * 60;
+                    command.CommandText = SqlQueryConstant.GetStoreProceduresParametersWithDescriptions.Replace("@StoreprocName", "'" + astrStoreProcedureName + "'"); 
                     Database.OpenConnection();
-                    using (var reader = commad.ExecuteReader())
+                    using (var reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                             while (reader.Read())
-                                getSpParameters.Add(new SP_Parameters
+                                lstStoreProceduresParametersWithDescriptions.Add(new SP_Parameters
                                 {
                                     Parameter_name = reader.SafeGetString(0),
                                     Type = reader.SafeGetString(1),
@@ -169,31 +172,30 @@ namespace MSSQL.DIARY.EF
             catch (Exception)
             {
                 // ignored
-            }
-
-            return getSpParameters;
+            } 
+            return lstStoreProceduresParametersWithDescriptions;
         }
 
-        public List<ExecutionPlanInfo> GetCachedExecutionPlan(string storeprocName)
+        /// <summary>
+        /// Get store procedure execution plan details
+        /// </summary>
+        /// <param name="astrStoreProcedureName"></param>
+        /// <returns></returns>
+        public List<ExecutionPlanInfo> GetStoreProcedureExecutionPlan(string astrStoreProcedureName)
         {
-            var exeutionPlan = new List<ExecutionPlanInfo>();
+            var lstExecutionPlanDetails = new List<ExecutionPlanInfo>();
             try
             {
-                using (var commad = Database.GetDbConnection().CreateCommand())
-                {
-                    //tables.Replace(tables.Substring(0, tables.IndexOf("."))+".", ""
-                    var newStoreprocName =
-                        storeprocName.Replace(storeprocName.Substring(0, storeprocName.IndexOf(".")) + ".", "");
-                    commad.CommandText =
-                        SqlQueryConstant.GetExecutionPlanOfStoreProc.Replace("@StoreprocName",
-                            "'" + newStoreprocName + "'");
-                    commad.CommandTimeout = 10 * 60;
+                using (var command = Database.GetDbConnection().CreateCommand())
+                { 
+                    var lStoreProcedureName = astrStoreProcedureName.Replace(astrStoreProcedureName.Substring(0, astrStoreProcedureName.IndexOf(".", StringComparison.Ordinal)) + ".", "");
+                    command.CommandText = SqlQueryConstant.GetExecutionPlanOfStoreProc.Replace("@StoreprocName", "'" + lStoreProcedureName + "'"); 
                     Database.OpenConnection();
-                    using (var reader = commad.ExecuteReader())
+                    using (var reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                             while (reader.Read())
-                                exeutionPlan.Add(new ExecutionPlanInfo
+                                lstExecutionPlanDetails.Add(new ExecutionPlanInfo
                                 {
                                     QueryPlanXML = reader.SafeGetString(0),
                                     UseAccounts = reader.SafeGetString(1),
@@ -207,35 +209,87 @@ namespace MSSQL.DIARY.EF
             catch (Exception)
             {
                 // ignored
-            }
-
-            return exeutionPlan;
+            } 
+            return lstExecutionPlanDetails;
         }
 
-        public void CreateOrUpdateStoreProcDescription(string astrDescriptionValue, string astrSchemaName,string storeprocName, string parameterName = null)
+        /// <summary>
+        /// Create or Update store procedure description
+        /// </summary>
+        /// <param name="astrDescriptionValue"></param>
+        /// <param name="astrSchemaName"></param>
+        /// <param name="astrStoreProcedureName"></param>
+        /// <param name="astrParameterName"></param>
+        public void CreateOrUpdateStoreProcedureDescription(string astrDescriptionValue, string astrSchemaName,string astrStoreProcedureName, string astrParameterName = null)
         {
             try
             {
-                UpdateStoreProcDescription(astrDescriptionValue, astrSchemaName, storeprocName, parameterName);
+                UpdateStoreProcedureDescription(astrDescriptionValue, astrSchemaName, astrStoreProcedureName, astrParameterName);
             }
             catch (Exception)
             {
-                CreateStoreprocDescription(astrDescriptionValue, astrSchemaName, storeprocName, parameterName);
+                CreateStoreProcedureDescription(astrDescriptionValue, astrSchemaName, astrStoreProcedureName, astrParameterName);
             }
         }
 
-        public string GetStoreProcMsDescription(string StoreprocName)
+        /// <summary>
+        /// Update the store procedure descriptions
+        /// </summary>
+        /// <param name="astrDescriptionValue"></param>
+        /// <param name="astrSchemaName"></param>
+        /// <param name="astrStoreProcedureName"></param>
+        /// <param name="astrParameterName"></param>
+        private void UpdateStoreProcedureDescription(string astrDescriptionValue, string astrSchemaName,string astrStoreProcedureName, string astrParameterName = null)
+        {
+            using (var command = Database.GetDbConnection().CreateCommand())
+            {
+                var lStoreProcedureName = astrStoreProcedureName.Replace(astrStoreProcedureName.Substring(0, astrStoreProcedureName.IndexOf(".", StringComparison.Ordinal)) + ".", "");
+                command.CommandText = astrParameterName == null ? SqlQueryConstant.UpdateStoreProcExtendedProperty.Replace("@sp_value", "'" + astrDescriptionValue + "'").Replace("@Schema_Name", "'" + astrSchemaName + "'").Replace("@sp_Name", "'" + lStoreProcedureName + "'") : SqlQueryConstant.UpdateStoreProcParameterExtendedProperty.Replace("@sp_value", "'" + astrDescriptionValue + "'").Replace("@Schema_Name", "'" + astrSchemaName + "'").Replace("@sp_Name", "'" + lStoreProcedureName + "'").Replace("@parmeterName", "'" + astrParameterName + "'"); 
+                Database.OpenConnection();
+                command.ExecuteNonQuery();
+            }
+        }
+
+        /// <summary>
+        /// Create a store  procedure descriptions
+        /// </summary>
+        /// <param name="astrDescriptionValue"></param>
+        /// <param name="astrSchemaName"></param>
+        /// <param name="astrStoreProcedureName"></param>
+        /// <param name="astrParameterName"></param>
+        private void CreateStoreProcedureDescription(string astrDescriptionValue, string astrSchemaName,string astrStoreProcedureName, string astrParameterName = null)
+        {
+            var lStoreProcedureName = astrStoreProcedureName.Replace(    astrStoreProcedureName.Substring(0, astrStoreProcedureName.IndexOf(".", StringComparison.Ordinal)) + ".", "");
+            using (var command = Database.GetDbConnection().CreateCommand())
+            {
+                command.CommandText = astrParameterName == null ? SqlQueryConstant.InsertStoreProcExtendedProperty.Replace("@sp_value", "'" + astrDescriptionValue + "'").Replace("@Schema_Name", "'" + astrSchemaName + "'").Replace("@sp_Name", "'" + lStoreProcedureName + "'") : SqlQueryConstant.InsertStoreProcParameterExtendedProperty.Replace("@sp_value", "'" + astrDescriptionValue + "'").Replace("@Schema_Name", "'" + astrSchemaName + "'").Replace("@sp_Name", "'" + lStoreProcedureName + "'").Replace("@parmeterName", "'" + astrParameterName + "'");  
+                Database.OpenConnection();
+                try
+                {
+                    command.ExecuteNonQuery();
+                }
+                catch (Exception)
+                {
+                    // ignored
+                }
+            }
+        }
+
+        /// <summary>
+        /// Get store procedure descriptions
+        /// </summary>
+        /// <param name="astrStoreProcedureName"></param>
+        /// <returns></returns>
+        public string GetStoreProcedureDescription(string astrStoreProcedureName)
         {
             var strSpDescription = "";
             try
             {
-                using (var commad = Database.GetDbConnection().CreateCommand())
+                using (var command = Database.GetDbConnection().CreateCommand())
                 {
-                    commad.CommandText =
-                        SqlQueryConstant.GetStoreProcMsDescription.Replace("@StoreprocName", "'" + StoreprocName + "'");
-                    commad.CommandTimeout = 10 * 60;
+                    command.CommandText = SqlQueryConstant.GetStoreProcMsDescription.Replace("@StoreprocName", "'" + astrStoreProcedureName + "'");
                     Database.OpenConnection();
-                    using (var reader = commad.ExecuteReader())
+                    using (var reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                             while (reader.Read())
@@ -247,73 +301,7 @@ namespace MSSQL.DIARY.EF
             {
                 // ignored
             }
-
             return strSpDescription;
-        }
-
-        private void UpdateStoreProcDescription(string astrDescriptionValue, string astrSchemaName,string storeprocName, string parameterName = null)
-        {
-            using (var commad = Database.GetDbConnection().CreateCommand())
-            {
-                var spName =
-                    storeprocName.Replace(
-                        storeprocName.Substring(0, storeprocName.IndexOf(".", StringComparison.Ordinal)) + ".", "");
-                if (parameterName == null)
-                    commad.CommandText = SqlQueryConstant
-                        .UpdateStoreProcExtendedProperty
-                        .Replace("@sp_value", "'" + astrDescriptionValue + "'")
-                        .Replace("@Schema_Name", "'" + astrSchemaName + "'")
-                        .Replace("@sp_Name", "'" + spName + "'");
-                else
-                    commad.CommandText = SqlQueryConstant
-                            .UpdateStoreProcParameterExtendedProperty
-                            .Replace("@sp_value", "'" + astrDescriptionValue + "'")
-                            .Replace("@Schema_Name", "'" + astrSchemaName + "'")
-                            .Replace("@sp_Name", "'" + spName + "'")
-                            .Replace("@parmeterName", "'" + parameterName + "'")
-                        ;
-
-
-                commad.CommandTimeout = 10 * 60;
-                Database.OpenConnection();
-                commad.ExecuteNonQuery();
-            }
-        }
-
-        private void CreateStoreprocDescription(string astrDescriptionValue, string astrSchemaName,string storeprocName, string parameterName = null)
-        {
-            var spName =
-                storeprocName.Replace(
-                    storeprocName.Substring(0, storeprocName.IndexOf(".", StringComparison.Ordinal)) + ".", "");
-            using (var commad = Database.GetDbConnection().CreateCommand())
-            {
-                if (parameterName == null)
-                    commad.CommandText = SqlQueryConstant
-                        .InsertStoreProcExtendedProperty
-                        .Replace("@sp_value", "'" + astrDescriptionValue + "'")
-                        .Replace("@Schema_Name", "'" + astrSchemaName + "'")
-                        .Replace("@sp_Name", "'" + spName + "'");
-                else
-                    commad.CommandText = SqlQueryConstant
-                            .InsertStoreProcParameterExtendedProperty
-                            .Replace("@sp_value", "'" + astrDescriptionValue + "'")
-                            .Replace("@Schema_Name", "'" + astrSchemaName + "'")
-                            .Replace("@sp_Name", "'" + spName + "'")
-                            .Replace("@parmeterName", "'" + parameterName + "'")
-                        ;
-
-
-                commad.CommandTimeout = 10 * 60;
-                Database.OpenConnection();
-                try
-                {
-                    commad.ExecuteNonQuery();
-                }
-                catch (Exception)
-                {
-                    // ignored
-                }
-            }
         }
     }
 }

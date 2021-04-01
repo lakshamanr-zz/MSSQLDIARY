@@ -16,7 +16,7 @@
         public static string DeleteSpDropextendedproperty =
             @"EXECUTE sys.sp_dropextendedproperty  MS_Description,@Properydesc,schema,@schemaName,table,@tableName,column,@columnName";
 
-        public static string GetListOfExtendedPropList =
+        public static string GetListOfExtendedPropertiesList =
             @" SELECT     distinct sep.Name  FROM   sys.tables t left JOIN     sys.extended_properties sep ON t.object_id = sep.major_id where sep.Name  is not null";
     }
 }

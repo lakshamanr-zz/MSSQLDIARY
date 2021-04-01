@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MSSQL.DIARY.COMN.Models;
 
 namespace MSSQL.DIARY.EF
 {

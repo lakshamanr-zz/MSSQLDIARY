@@ -12,21 +12,26 @@ namespace MSSQL.DIARY.EF
 {
     public partial class MssqlDiaryContext
     {
-        public List<TableIndexInfo> LoadTableIndexes(string istrtableName)
+
+        /// <summary>
+        /// Get list of Index on the table
+        /// </summary>
+        /// <param name="astrTableName"></param>
+        /// <returns></returns>
+        public List<TableIndexInfo> GetTableIndexes(string astrTableName)
         {
-            var tableIndex = new List<TableIndexInfo>();
+            var lstTableIndexes = new List<TableIndexInfo>();
             try
             {
-                using (var commad = Database.GetDbConnection().CreateCommand())
+                using (var command = Database.GetDbConnection().CreateCommand())
                 {
-                    commad.CommandText = SqlQueryConstant.GetTableIndex.Replace("@tblName", "'" + istrtableName + "'");
-                    commad.CommandTimeout = 10 * 60;
+                    command.CommandText = SqlQueryConstant.GetTableIndex.Replace("@tblName", "'" + astrTableName + "'");
                     Database.OpenConnection();
-                    using (var reader = commad.ExecuteReader())
+                    using (var reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                             while (reader.Read())
-                                tableIndex.Add
+                                lstTableIndexes.Add
                                 (
                                     new TableIndexInfo
                                     {
@@ -46,25 +51,28 @@ namespace MSSQL.DIARY.EF
                 // ignored
             }
 
-            return tableIndex;
+            return lstTableIndexes;
         }
 
-        public TableCreateScript GetTableCreateScript(string istrtableName)
+        /// <summary>
+        /// Get the table create script
+        /// </summary>
+        /// <param name="astrTableName"></param>
+        /// <returns></returns>
+        public TableCreateScript GetTableCreateScript(string astrTableName)
         {
-            var tableCreateScript = "";
+            var lstrTableCreateScript = string.Empty;
             try
             {
-                using (var commad = Database.GetDbConnection().CreateCommand())
+                using (var command = Database.GetDbConnection().CreateCommand())
                 {
-                    commad.CommandText =
-                        SqlQueryConstant.GetTableCreateScript.Replace("@table_name", "'" + istrtableName + "'");
-                    commad.CommandTimeout = 10 * 60;
+                    command.CommandText = SqlQueryConstant.GetTableCreateScript.Replace("@table_name", "'" + astrTableName + "'");
                     Database.OpenConnection();
-                    using (var reader = commad.ExecuteReader())
+                    using (var reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                             while (reader.Read())
-                                tableCreateScript = reader.GetString(0);
+                                lstrTableCreateScript = reader.GetString(0);
                     }
                 }
             }
@@ -73,41 +81,36 @@ namespace MSSQL.DIARY.EF
                 // ignored
             }
 
-            return new TableCreateScript {createscript = tableCreateScript};
+            return new TableCreateScript { createscript = lstrTableCreateScript };
         }
 
-        public List<Tabledependencies> GetAllTableDependencies(string istrtableName)
-        {
-            var tabledependencies = new List<Tabledependencies>();
+        /// <summary>
+        /// Get all the table related dependencies
+        /// </summary>
+        /// <param name="astrTableName"></param>
+        /// <returns></returns>
 
+        public List<Tabledependencies> GetTableDependencies(string astrTableName)
+        {
+            var lstTableDependencies = new List<Tabledependencies>();
             try
             {
-                using (var commad = Database.GetDbConnection().CreateCommand())
+                using (var command = Database.GetDbConnection().CreateCommand())
                 {
-                    try
+                    command.CommandText = SqlQueryConstant.GetTableDependencies.Replace("@tblName", "'" + astrTableName + "'");
+                    Database.OpenConnection();
+                    using (var reader = command.ExecuteReader())
                     {
-                        commad.CommandText =
-                            SqlQueryConstant.GetAllTabledependencies.Replace("@tblName", "'" + istrtableName + "'");
-
-                        commad.CommandTimeout = 10 * 60;
-                        Database.OpenConnection();
-                        using (var reader = commad.ExecuteReader())
-                        {
-                            if (reader.HasRows)
-                                while (reader.Read())
-                                    tabledependencies.Add
-                                    (
-                                        new Tabledependencies
-                                        {
-                                            name = reader.SafeGetString(0),
-                                            object_type = reader.SafeGetString(1)
-                                        }
-                                    );
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        // ignored
+                        if (reader.HasRows)
+                            while (reader.Read())
+                                lstTableDependencies.Add
+                                (
+                                    new Tabledependencies
+                                    {
+                                        name = reader.SafeGetString(0),
+                                        object_type = reader.SafeGetString(1)
+                                    }
+                                );
                     }
                 }
             }
@@ -115,27 +118,28 @@ namespace MSSQL.DIARY.EF
             {
                 // ignored
             }
-
-            return tabledependencies.DistinctBy(x => x.name).ToList();
+            return lstTableDependencies.DistinctBy(x => x.name).ToList();
         }
 
-        public List<TableColumns> GetAllTablesColumn(string istrtableName)
+        /// <summary>
+        /// Get tables columns details
+        /// </summary>
+        /// <param name="astrTableName"></param>
+        /// <returns></returns>
+        public List<TableColumns> GetTablesColumn(string astrTableName)
         {
-            var tablecolumns = new List<TableColumns>();
-
+            var lstTablesColumn = new List<TableColumns>();
             try
             {
-                using (var commad = Database.GetDbConnection().CreateCommand())
+                using (var command = Database.GetDbConnection().CreateCommand())
                 {
-                    commad.CommandText =
-                        SqlQueryConstant.GetAllTablesColumn.Replace("@tblName", "'" + istrtableName + "'");
-
+                    command.CommandText = SqlQueryConstant.GetTablesColumn.Replace("@tblName", "'" + astrTableName + "'");
                     Database.OpenConnection();
-                    using (var reader = commad.ExecuteReader())
+                    using (var reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                             while (reader.Read())
-                                tablecolumns.Add
+                                lstTablesColumn.Add
                                 (
                                     new TableColumns
                                     {
@@ -158,25 +162,28 @@ namespace MSSQL.DIARY.EF
                 // ignored
             }
 
-            return tablecolumns;
+            return lstTablesColumn;
         }
 
-        public List<TableFKDependency> GetAllTableForeignKeys(string istrtableName)
+        /// <summary>
+        /// Get table related foreign keys
+        /// </summary>
+        /// <param name="astrTableName"></param>
+        /// <returns></returns>
+        public List<TableFKDependency> GetTableForeignKeys(string astrTableName)
         {
-            var tableFKcolumns = new List<TableFKDependency>();
+            var lstTableFkColumns = new List<TableFKDependency>();
             try
             {
-                using (var commad = Database.GetDbConnection().CreateCommand())
+                using (var command = Database.GetDbConnection().CreateCommand())
                 {
-                    commad.CommandText =
-                        SqlQueryConstant.GetAllTableForeignKeys.Replace("@tblName", "'" + istrtableName + "'");
-
+                    command.CommandText = SqlQueryConstant.GetTableForeignKeys.Replace("@tblName", "'" + astrTableName + "'");
                     Database.OpenConnection();
-                    using (var reader = commad.ExecuteReader())
+                    using (var reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                             while (reader.Read())
-                                tableFKcolumns.Add
+                                lstTableFkColumns.Add
                                 (
                                     new TableFKDependency
                                     {
@@ -196,25 +203,29 @@ namespace MSSQL.DIARY.EF
                 // ignored
             }
 
-            return tableFKcolumns;
+            return lstTableFkColumns;
         }
 
-        public List<TableKeyConstraint> GetTableKeyConstraints(string istrtableName)
+
+        /// <summary>
+        /// Get table Key constraints
+        /// </summary>
+        /// <param name="astrTableName"></param>
+        /// <returns></returns>
+        public List<TableKeyConstraint> GetTableKeyConstraints(string astrTableName)
         {
-            var tableKeyConstraints = new List<TableKeyConstraint>();
+            var lstTableKeyConstraints = new List<TableKeyConstraint>();
             try
             {
-                using (var commad = Database.GetDbConnection().CreateCommand())
+                using (var command = Database.GetDbConnection().CreateCommand())
                 {
-                    commad.CommandText =
-                        SqlQueryConstant.GetAllKeyConstraints.Replace("@tblName", "'" + istrtableName + "'");
-
+                    command.CommandText = SqlQueryConstant.GetAllKeyConstraints.Replace("@tblName", "'" + astrTableName + "'");
                     Database.OpenConnection();
-                    using (var reader = commad.ExecuteReader())
+                    using (var reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                             while (reader.Read())
-                                tableKeyConstraints.Add
+                                lstTableKeyConstraints.Add
                                 (
                                     new TableKeyConstraint
                                     {
@@ -233,73 +244,88 @@ namespace MSSQL.DIARY.EF
                 // ignored
             }
 
-            return tableKeyConstraints;
+            return lstTableKeyConstraints;
         }
 
-        public List<TablePropertyInfo> GetAllTableDescription()
+        /// <summary>
+        /// Get tables with descriptions
+        /// </summary>
+        /// <returns></returns>
+        public List<TablePropertyInfo> GetTablesDescription()
         {
-            var getAllTbleDesc = new List<TablePropertyInfo>();
-            var getlstOfExtendedProps = new List<string>();
+            var lstTables = new List<TablePropertyInfo>();
+            var lstExtensionProperties = new List<string>();
 
             try
             {
-                using (var commad = Database.GetDbConnection().CreateCommand())
+                try
                 {
-                    commad.CommandText = SqlQueryConstant.GetListOfExtendedPropList;
-                    commad.CommandTimeout = 10 * 60;
-                    Database.OpenConnection();
-                    using (var reader = commad.ExecuteReader())
+                    using (var command = Database.GetDbConnection().CreateCommand())
                     {
-                        if (reader.HasRows)
-                            while (reader.Read())
-                                getlstOfExtendedProps.Add(reader.SafeGetString(0));
-                    }
-                }
-
-                getlstOfExtendedProps.ForEach(x =>
-                {
-                    using (var commad = Database.GetDbConnection().CreateCommand())
-                    {
-                        commad.CommandText =
-                            SqlQueryConstant.GetAllTableDescriptionWithAll.Replace("@ExtendedProp", "'" + x + "'");
-                        commad.CommandTimeout = 10 * 60;
+                        command.CommandText = SqlQueryConstant.GetListOfExtendedPropertiesList;
                         Database.OpenConnection();
-                        using (var reader = commad.ExecuteReader())
+                        using (var reader = command.ExecuteReader())
                         {
                             if (reader.HasRows)
                                 while (reader.Read())
-                                    getAllTbleDesc.Add(new TablePropertyInfo
+                                    lstExtensionProperties.Add(reader.SafeGetString(0));
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                    // ignored
+                }
+
+                lstExtensionProperties.ForEach(x =>
+                {
+                    using (var command = Database.GetDbConnection().CreateCommand())
+                    {
+                        command.CommandText = SqlQueryConstant.GetTablesWithDescription.Replace("@ExtendedProp", "'" + x + "'");
+                        Database.OpenConnection();
+                        using (var reader = command.ExecuteReader())
+                        {
+                            if (reader.HasRows)
+                                while (reader.Read())
+                                    lstTables.Add(new TablePropertyInfo
                                     {
                                         istrName = reader.SafeGetString(0),
                                         istrFullName = reader.SafeGetString(1),
                                         istrValue = reader.SafeGetString(2),
                                         istrSchemaName = reader.SafeGetString(3)
-                                        //tableColumns = GetAllTablesColumn(reader.SafeGetString(0))
-                                    });
+                                                //tableColumns = GetAllTablesColumn(reader.SafeGetString(0))
+                                            });
                         }
                     }
                 });
 
-                using (var commad = Database.GetDbConnection().CreateCommand())
+                try
                 {
-                    commad.CommandText = SqlQueryConstant.GetAllTableWithOutDesc;
-                    commad.CommandTimeout = 10 * 60;
-                    Database.OpenConnection();
-                    using (var reader = commad.ExecuteReader())
+                    using (var command = Database.GetDbConnection().CreateCommand())
                     {
-                        if (reader.HasRows)
-                            while (reader.Read())
-                                getAllTbleDesc.Add(new TablePropertyInfo
-                                {
-                                    istrName = reader.SafeGetString(0),
-                                    istrFullName = reader.SafeGetString(1),
-                                    istrValue = reader.SafeGetString(2),
-                                    istrSchemaName = reader.SafeGetString(3)
-                                });
+                        command.CommandText = SqlQueryConstant.GetTablesWithOutDescription;
+                        Database.OpenConnection();
+                        using (var reader = command.ExecuteReader())
+                        {
+                            if (reader.HasRows)
+                                while (reader.Read())
+                                    lstTables.Add(new TablePropertyInfo
+                                    {
+                                        istrName = reader.SafeGetString(0),
+                                        istrFullName = reader.SafeGetString(1),
+                                        istrValue = reader.SafeGetString(2),
+                                        istrSchemaName = reader.SafeGetString(3)
+                                    });
+                        }
                     }
-                } 
-                getAllTbleDesc.ForEach(tablePropertyInfo =>
-                { 
+                }
+                catch (Exception)
+                {
+                    // ignored
+                }
+
+                lstTables.ForEach(tablePropertyInfo =>
+                {
                     tablePropertyInfo.istrNevigation = GetDatabaseName + "/" + tablePropertyInfo.istrFullName + "/" + GetServerName();
                 });
             }
@@ -308,36 +334,42 @@ namespace MSSQL.DIARY.EF
                 // ignored
             }
 
-
-            return getAllTbleDesc;
+            return lstTables;
         }
-        public Ms_Description GetTableDescription(string istrtableName)
+
+        //Get table descriptions
+        public Ms_Description GetTableDescription(string astrTableName)
         {
-            var msDesc = "";
+            var lstrTableDescription = string.Empty;
             try
             {
-                using (var commad = Database.GetDbConnection().CreateCommand())
+                using (var command = Database.GetDbConnection().CreateCommand())
                 {
-                    commad.CommandText =
-                        SqlQueryConstant.GetTableDescription.Replace("@tblName", "'" + istrtableName + "'");
-
+                    command.CommandText = SqlQueryConstant.GetTableDescription.Replace("@tblName", "'" + astrTableName + "'");
                     Database.OpenConnection();
-                    using (var reader = commad.ExecuteReader())
+                    using (var reader = command.ExecuteReader())
                     {
-                        if (reader.HasRows)
-                            while (reader.Read())
-                                msDesc = reader.SafeGetString(1);
+                        if (!reader.HasRows) return new Ms_Description { desciption = lstrTableDescription };
+                        while (reader.Read())
+                            lstrTableDescription = reader.SafeGetString(1);
                     }
                 }
 
-                return new Ms_Description {desciption = msDesc};
+                return new Ms_Description { desciption = lstrTableDescription };
             }
             catch (Exception)
             {
-                return new Ms_Description {desciption = ""};
+                return new Ms_Description { desciption = "" };
             }
         }
-        public void CreateOrUpdateTableDescription(string astrDescriptionValue, string astrSchemaName,string astrTableName)
+
+        /// <summary>
+        /// Create or Update Table descriptions
+        /// </summary>
+        /// <param name="astrDescriptionValue"></param>
+        /// <param name="astrSchemaName"></param>
+        /// <param name="astrTableName"></param>
+        public void CreateOrUpdateTableDescription(string astrDescriptionValue, string astrSchemaName, string astrTableName)
         {
             try
             {
@@ -349,7 +381,72 @@ namespace MSSQL.DIARY.EF
             }
         }
 
-        public void CreateOrUpdateColumnDescription(string astrDescriptionValue, string astrSchemaName,string astrTableName, string astrColumnValue)
+        /// <summary>
+        /// Update the table descriptions
+        /// </summary>
+        /// <param name="astrDescriptionValue"></param>
+        /// <param name="astrSchemaName"></param>
+        /// <param name="astrTableName"></param>
+        private void UpdateTableDescription(string astrDescriptionValue, string astrSchemaName, string astrTableName)
+        {
+            using (var command = Database.GetDbConnection().CreateCommand())
+            {
+                var tableName =
+                    astrTableName.Replace(
+                        astrTableName.Substring(0, astrTableName.IndexOf(".", StringComparison.Ordinal)) + ".", "");
+
+                command.CommandText = SqlQueryConstant
+                    .UpdateTableExtendedProperty
+                    .Replace("@Table_value", "'" + astrDescriptionValue + "'")
+                    .Replace("@Schema_Name", "'" + astrSchemaName + "'")
+                    .Replace("@Table_Name", "'" + tableName + "'");
+
+                command.CommandTimeout = 10 * 60;
+                Database.OpenConnection();
+                command.ExecuteNonQuery();
+            }
+        }
+
+        /// <summary>
+        /// Create table descriptions
+        /// </summary>
+        /// <param name="astrDescriptionValue"></param>
+        /// <param name="astrSchemaName"></param>
+        /// <param name="astrTableName"></param>
+        private void CreateTableDescription(string astrDescriptionValue, string astrSchemaName, string astrTableName)
+        {
+            var tableName =
+                astrTableName.Replace(
+                    astrTableName.Substring(0, astrTableName.IndexOf(".", StringComparison.Ordinal)) + ".", "");
+            using (var command = Database.GetDbConnection().CreateCommand())
+            {
+                command.CommandText = SqlQueryConstant
+                    .InsertTableExtendedProperty
+                    .Replace("@Table_value", "'" + astrDescriptionValue + "'")
+                    .Replace("@Schema_Name", "'" + astrSchemaName + "'")
+                    .Replace("@Table_Name", "'" + tableName + "'");
+                command.CommandTimeout = 10 * 60;
+                Database.OpenConnection();
+                try
+                {
+                    command.ExecuteNonQuery();
+                }
+                catch (Exception)
+                {
+                    // ignored
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Create or update table column descriptions
+        /// </summary>
+        /// <param name="astrDescriptionValue"></param>
+        /// <param name="astrSchemaName"></param>
+        /// <param name="astrTableName"></param>
+        /// <param name="astrColumnValue"></param>
+        public void CreateOrUpdateColumnDescription(string astrDescriptionValue, string astrSchemaName, string astrTableName, string astrColumnValue)
         {
             try
             {
@@ -361,21 +458,67 @@ namespace MSSQL.DIARY.EF
             }
         }
 
-        public List<TableFragmentationDetails> GetAllTableFragmentations()
+        /// <summary>
+        /// Update table column descriptions
+        /// </summary>
+        /// <param name="astrDescriptionValue"></param>
+        /// <param name="astrSchemaName"></param>
+        /// <param name="astrTableName"></param>
+        /// <param name="astrColumnValue"></param>
+        private void UpdateColumnDescription(string astrDescriptionValue, string astrSchemaName, string astrTableName, string astrColumnValue)
         {
-            var tableFrgamentation = new List<TableFragmentationDetails>();
+            using (var command = Database.GetDbConnection().CreateCommand())
+            {
+                var lstrTableName = astrTableName.Replace(astrTableName.Substring(0, astrTableName.IndexOf(".", StringComparison.Ordinal)) + ".", "");
+                command.CommandText = SqlQueryConstant.UpdateTableColumnExtendedProperty.Replace("@Column_value", "'" + astrDescriptionValue + "'").Replace("@Schema_Name", "'" + astrSchemaName + "'").Replace("@Table_Name", "'" + lstrTableName + "'").Replace("@Column_Name", "'" + astrColumnValue + "'");
+                Database.OpenConnection();
+                command.ExecuteNonQuery();
+            }
+        }
+
+        /// <summary>
+        /// Create table column descriptions
+        /// </summary>
+        /// <param name="astrDescriptionValue"></param>
+        /// <param name="astrSchemaName"></param>
+        /// <param name="astrTableName"></param>
+        /// <param name="astrColumnValue"></param>
+        private void CreateColumnDescription(string astrDescriptionValue, string astrSchemaName, string astrTableName, string astrColumnValue)
+        {
+            using (var command = Database.GetDbConnection().CreateCommand())
+            {
+                var lstrTableName = astrTableName.Replace(astrTableName.Substring(0, astrTableName.IndexOf(".", StringComparison.Ordinal)) + ".", "");
+                command.CommandText = SqlQueryConstant.InsertTableColumnExtendedProperty.Replace("@Column_value", "'" + astrDescriptionValue + "'").Replace("@Schema_Name", "'" + astrSchemaName + "'").Replace("@Table_Name", "'" + lstrTableName + "'").Replace("@Column_Name", "'" + astrColumnValue + "'");
+                Database.OpenConnection();
+                try
+                {
+                    command.ExecuteNonQuery();
+                }
+                catch (Exception)
+                {
+                    // ignored
+                }
+            }
+        }
+
+        /// <summary>
+        /// Get table Fragmentation details
+        /// </summary>
+        /// <returns></returns>
+        public List<TableFragmentationDetails> GetTableFragmentation()
+        {
+            var lstTableFragmentation = new List<TableFragmentationDetails>();
             try
             {
-                using (var commad = Database.GetDbConnection().CreateCommand())
+                using (var command = Database.GetDbConnection().CreateCommand())
                 {
-                    commad.CommandText = SqlQueryConstant.AllTableFragmentation;
-
+                    command.CommandText = SqlQueryConstant.TableFragmentation;
                     Database.OpenConnection();
-                    using (var reader = commad.ExecuteReader())
+                    using (var reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                             while (reader.Read())
-                                tableFrgamentation.Add
+                                lstTableFragmentation.Add
                                 (
                                     new TableFragmentationDetails
                                     {
@@ -392,101 +535,13 @@ namespace MSSQL.DIARY.EF
                 // ignored
             }
 
-            return tableFrgamentation.Where(x => Convert.ToInt32(x.PercentFragmented) > 0).ToList();
+            return lstTableFragmentation.Where(x => Convert.ToInt32(x.PercentFragmented) > 0).ToList();
         }
 
-        private void UpdateTableDescription(string astrDescriptionValue, string astrSchemaName, string astrTableName)
-        {
-            using (var commad = Database.GetDbConnection().CreateCommand())
-            {
-                var tableName =
-                    astrTableName.Replace(
-                        astrTableName.Substring(0, astrTableName.IndexOf(".", StringComparison.Ordinal)) + ".", "");
-
-                commad.CommandText = SqlQueryConstant
-                    .UpdateTableExtendedProperty
-                    .Replace("@Table_value", "'" + astrDescriptionValue + "'")
-                    .Replace("@Schema_Name", "'" + astrSchemaName + "'")
-                    .Replace("@Table_Name", "'" + tableName + "'");
-
-                commad.CommandTimeout = 10 * 60;
-                Database.OpenConnection();
-                commad.ExecuteNonQuery();
-            }
-        }
-
-        private void CreateTableDescription(string astrDescriptionValue, string astrSchemaName, string astrTableName)
-        {
-            var tableName =
-                astrTableName.Replace(
-                    astrTableName.Substring(0, astrTableName.IndexOf(".", StringComparison.Ordinal)) + ".", "");
-            using (var commad = Database.GetDbConnection().CreateCommand())
-            {
-                commad.CommandText = SqlQueryConstant
-                    .InsertTableExtendedProperty
-                    .Replace("@Table_value", "'" + astrDescriptionValue + "'")
-                    .Replace("@Schema_Name", "'" + astrSchemaName + "'")
-                    .Replace("@Table_Name", "'" + tableName + "'");
-                commad.CommandTimeout = 10 * 60;
-                Database.OpenConnection();
-                try
-                {
-                    commad.ExecuteNonQuery();
-                }
-                catch (Exception)
-                {
-                    // ignored
-                }
-            }
-        }
-
-        private void UpdateColumnDescription(string astrDescriptionValue, string astrSchemaName, string astrTableName, string astrColumnValue)
-        {
-            using (var commad = Database.GetDbConnection().CreateCommand())
-            {
-                var tableName =
-                    astrTableName.Replace(
-                        astrTableName.Substring(0, astrTableName.IndexOf(".", StringComparison.Ordinal)) + ".", "");
-                commad.CommandText = SqlQueryConstant
-                    .UpdateTableColumnExtendedProperty
-                    .Replace("@Column_value", "'" + astrDescriptionValue + "'")
-                    .Replace("@Schema_Name", "'" + astrSchemaName + "'")
-                    .Replace("@Table_Name", "'" + tableName + "'")
-                    .Replace("@Column_Name", "'" + astrColumnValue + "'");
-
-                commad.CommandTimeout = 10 * 60;
-                Database.OpenConnection();
-                commad.ExecuteNonQuery();
-            }
-        }
-
-        private void CreateColumnDescription(string astrDescriptionValue, string astrSchemaName, string astrTableName, string astrColumnValue)
-        {
-            using (var commad = Database.GetDbConnection().CreateCommand())
-            {
-                var tableName =
-                    astrTableName.Replace(
-                        astrTableName.Substring(0, astrTableName.IndexOf(".", StringComparison.Ordinal)) + ".", "");
-                commad.CommandText = SqlQueryConstant
-                    .InsertTableColumnExtendedProperty
-                    .Replace("@Column_value", "'" + astrDescriptionValue + "'")
-                    .Replace("@Schema_Name", "'" + astrSchemaName + "'")
-                    .Replace("@Table_Name", "'" + tableName + "'")
-                    .Replace("@Column_Name", "'" + astrColumnValue + "'");
-
-                commad.CommandTimeout = 10 * 60;
-                Database.OpenConnection();
-                try
-                {
-                    commad.ExecuteNonQuery();
-                }
-                catch (Exception)
-                {
-                    // ignored
-                }
-            }
-        }
-
+        /// <summary>
+        /// Get table details
+        /// </summary>
+        /// <returns></returns>
         public List<string> GetTables()
         {
             var lstTables = new List<string>();
@@ -516,19 +571,18 @@ namespace MSSQL.DIARY.EF
         }
 
         /// <summary>
-        /// 
+        /// Get table columns
         /// </summary>
-        /// <param name="istrTableName"></param>
+        /// <param name="astrTableName"></param>
         /// <returns></returns>
-        public List<string> GetTableColumns(string istrTableName)
+        public List<string> GetTableColumns(string astrTableName)
         {
             var lstTableColumns = new List<string>();
             try
             {
                 using (var command = Database.GetDbConnection().CreateCommand())
                 {
-                    command.CommandText = SqlQueryConstant.GetTableColumns.Replace("@tableName", istrTableName);
-
+                    command.CommandText = SqlQueryConstant.GetTableColumns.Replace("@tableName", astrTableName);
                     Database.OpenConnection();
                     using (var reader = command.ExecuteReader())
                     {
@@ -584,7 +638,6 @@ namespace MSSQL.DIARY.EF
             {
                 // ignored
             }
-
             return lstTableFkDependencies;
         }
 

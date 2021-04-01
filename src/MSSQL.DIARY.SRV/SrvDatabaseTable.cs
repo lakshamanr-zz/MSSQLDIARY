@@ -27,7 +27,7 @@ namespace MSSQL.DIARY.SRV
             var lstTableDetails = new List<TablePropertyInfo>(); 
             using (var dbSqldocContext = new MssqlDiaryContext(istrDBConnection))
             {
-                dbSqldocContext.GetAllTableDescription().GroupBy(x => x.istrName).ToList().ForEach(Tables =>
+                dbSqldocContext.GetTablesDescription().GroupBy(x => x.istrName).ToList().ForEach(Tables =>
                 {
                     var tablePropertyInfo = new TablePropertyInfo();
                     foreach (var Table in Tables)
@@ -78,7 +78,7 @@ namespace MSSQL.DIARY.SRV
         {
             using (var dbSqldocContext = new MssqlDiaryContext(istrDBConnection))
             {
-                return dbSqldocContext.LoadTableIndexes(istrtableName);
+                return dbSqldocContext.GetTableIndexes(istrtableName);
             }
         }
 
@@ -94,7 +94,7 @@ namespace MSSQL.DIARY.SRV
         {
             using (var dbSqldocContext = new MssqlDiaryContext(istrDBConnection))
             {
-                return dbSqldocContext.GetAllTableDependencies(istrtableName);
+                return dbSqldocContext.GetTableDependencies(istrtableName);
             }
         }
 
@@ -103,7 +103,7 @@ namespace MSSQL.DIARY.SRV
             using (var dbSqldocContext = new MssqlDiaryContext(istrDBConnection))
             {
                 var lsttblcolumn = new List<TableColumns>();
-                foreach (var keyValue in dbSqldocContext.GetAllTablesColumn(istrtableName).GroupBy(x => x.columnname))
+                foreach (var keyValue in dbSqldocContext.GetTablesColumn(istrtableName).GroupBy(x => x.columnname))
                 {
                     var tblcolumn = new TableColumns {columnname = keyValue.Key}; 
                     foreach (var values in keyValue)
@@ -135,7 +135,7 @@ namespace MSSQL.DIARY.SRV
         {
             using (var dbSqldocContext = new MssqlDiaryContext(istrDBConnection))
             {
-                return dbSqldocContext.GetAllTableForeignKeys(istrtableName);
+                return dbSqldocContext.GetTableForeignKeys(istrtableName);
             }
         }
 
@@ -196,7 +196,7 @@ namespace MSSQL.DIARY.SRV
         {
             using (var dbSqldocContext = new MssqlDiaryContext(istrDBConnection))
             {
-                return dbSqldocContext.GetAllTableFragmentations();
+                return dbSqldocContext.GetTableFragmentation();
             }
         }
 

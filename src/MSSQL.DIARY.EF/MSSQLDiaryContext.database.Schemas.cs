@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using MSSQL.DIARY.COMN.Constant;
 using MSSQL.DIARY.COMN.Models;
+using System;
+using System.Collections.Generic;
 
 namespace MSSQL.DIARY.EF
 {
@@ -88,8 +88,7 @@ namespace MSSQL.DIARY.EF
                 Database.OpenConnection();
                 command.ExecuteNonQuery();
             }
-        }
-
+        } 
 
         /// <summary>
         /// Get schema references with table / view / store procedures etc. 

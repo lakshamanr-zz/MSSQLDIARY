@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using MSSQL.DIARY.COMN.Constant;
 using MSSQL.DIARY.COMN.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MSSQL.DIARY.EF
 {
@@ -40,6 +39,10 @@ namespace MSSQL.DIARY.EF
             return lstrServerName;
         }
 
+        /// <summary>
+        /// Get xml schemas
+        /// </summary>
+        /// <returns></returns>
 
         public List<string> GetXmlSchemas()
         {
@@ -49,7 +52,6 @@ namespace MSSQL.DIARY.EF
                 using (var command = Database.GetDbConnection().CreateCommand())
                 {
                     command.CommandText = SqlQueryConstant.GetXmlSchemas;
-                    command.CommandTimeout = 10 * 60;
                     Database.OpenConnection();
                     using (var reader = command.ExecuteReader())
                     {
@@ -68,18 +70,21 @@ namespace MSSQL.DIARY.EF
             return lstXmlSchemas;
         }
 
+        /// <summary>
+        /// Get server Properties
+        /// </summary>
+        /// <returns></returns>
+
         public List<PropertyInfo> GetServerProperties()
         {
             var lstServerProperties = new List<PropertyInfo>();
-            var count = 0;
             try
             {
-                foreach (var sqlQuery in SqlQueryConstant.GetServerProperties)
+                for (int count = 0; count < SqlQueryConstant.GetServerProperties.Count(); count++)
                 {
                     using (var command = Database.GetDbConnection().CreateCommand())
                     {
                         command.CommandText = SqlQueryConstant.GetServerProperties[count];
-                        command.CommandTimeout = 10 * 60;
                         Database.OpenConnection();
                         using (var reader = command.ExecuteReader())
                         {
@@ -87,15 +92,13 @@ namespace MSSQL.DIARY.EF
                                 while (reader.Read())
                                     lstServerProperties.Add(new PropertyInfo
                                     {
-                                        istrName = Enumerable.Range(0, reader.FieldCount).Select(reader.GetName)
-                                            .ToList().FirstOrDefault(),
+                                        istrName = Enumerable.Range(0, reader.FieldCount).Select(reader.GetName).FirstOrDefault(),
                                         istrValue = reader.GetString(0).Replace("\0", "")
                                     });
                         }
                     }
-
-                    count++;
                 }
+
             }
             catch (Exception)
             {
@@ -105,6 +108,10 @@ namespace MSSQL.DIARY.EF
             return lstServerProperties;
         }
 
+        /// <summary>
+        /// Get server advance properties.
+        /// </summary>
+        /// <returns></returns>
         public List<PropertyInfo> GetAdvancedServerSettings()
         {
             var lstAdvancedServerSettings = new List<PropertyInfo>();
@@ -113,7 +120,6 @@ namespace MSSQL.DIARY.EF
                 using (var command = Database.GetDbConnection().CreateCommand())
                 {
                     command.CommandText = SqlQueryConstant.GetAdvancedServerSettings;
-                    command.CommandTimeout = 10 * 60;
                     Database.OpenConnection();
                     using (var reader = command.ExecuteReader())
                     {
@@ -131,12 +137,8 @@ namespace MSSQL.DIARY.EF
             {
                 // ignored
             }
-
             return lstAdvancedServerSettings;
         }
 
-       
-
-      
     }
 }
