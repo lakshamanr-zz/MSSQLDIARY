@@ -9,77 +9,98 @@ using MSSQL.DIARY.ERDIAGRAM;
 
 namespace MSSQL.DIARY.SRV
 {
-    public class srvDatabaseERDiagram
+    public class SrvDatabaseErDiagram
     {
-        public srvDatabaseERDiagram()
+        public SrvDatabaseErDiagram()
         {
-            srvDatabaseTable = new SrvDatabaseTable();
+            IsrvDatabaseTable = new SrvDatabaseTable();
         }
 
-        public SrvDatabaseTable srvDatabaseTable { get; set; }
+        public SrvDatabaseTable IsrvDatabaseTable { get; set; }
 
-        public byte[] GetGraphHtmlString(string istrdbName, string FormatType, string istrSchemaName)
+
+        /// <summary>
+        /// Get the  Graph Html string
+        /// </summary>
+        /// <param name="astrDatabaseName"></param>
+        /// <param name="astrFormatType"></param>
+        /// <param name="astrSchemaName"></param>
+        /// <returns></returns>
+        public byte[] GetGraphHtmlString(string astrDatabaseName, string astrFormatType, string astrSchemaName)
         {
-            srvDatabaseTable.istrDBConnection = istrdbName;
+            IsrvDatabaseTable.istrDBConnection = astrDatabaseName;
             // adding sub graph 
-            var GraphHtml = new GraphSVG();
+            var lGraphSvg = new GraphSvg();
             var lstTablesAndColumns = new List<TableWithSchema>();
-              if (istrSchemaName.IsNullOrEmpty())
-                srvDatabaseTable.GetAllDatabaseTablesDescription().ForEach(x =>
+              if (astrSchemaName.IsNullOrEmpty())
+                IsrvDatabaseTable.GetAllDatabaseTablesDescription().ForEach(x =>
                 {
                     var columnDictionary = new Dictionary<string, string>();
                     x.tableColumns.ForEach(x2 =>
                     {
                         columnDictionary.AddIfNotContainsKey(x2.columnname, x2.data_type);
                     });
-                    var tableWithSchema = new TableWithSchema();
-                    var TablesAndColumns = new Dictionary<string, Dictionary<string, string>>();
-                    TablesAndColumns.Add(x.istrFullName, columnDictionary);
+                    var lTableWithSchema = new TableWithSchema();
+                    var ldcTablesAndColumns = new Dictionary<string, Dictionary<string, string>>
+                    {
+                        {x.istrFullName, columnDictionary}
+                    };
 
 
-                    tableWithSchema.keyValuePairs = TablesAndColumns;
-                    tableWithSchema.istrSchemaName = x.istrSchemaName;
-                    lstTablesAndColumns.Add(tableWithSchema);
+                    lTableWithSchema.keyValuePairs = ldcTablesAndColumns;
+                    lTableWithSchema.istrSchemaName = x.istrSchemaName;
+                    lstTablesAndColumns.Add(lTableWithSchema);
                 });
             else
-                srvDatabaseTable.GetAllDatabaseTablesDescription()
-                    .Where(x => x.istrSchemaName == istrSchemaName).ForEach(x =>
+                IsrvDatabaseTable.GetAllDatabaseTablesDescription()
+                    .Where(x => x.istrSchemaName == astrSchemaName).ForEach(x =>
                     {
                         var columnDictionary = new Dictionary<string, string>();
                         x.tableColumns.ForEach(x2 =>
                         {
                             columnDictionary.AddIfNotContainsKey(x2.columnname, x2.data_type);
                         });
-                        var tableWithSchema = new TableWithSchema();
-                        var TablesAndColumns = new Dictionary<string, Dictionary<string, string>>();
-                        TablesAndColumns.Add(x.istrFullName, columnDictionary);
+                        var lTableWithSchema = new TableWithSchema();
+                        var ldcTablesAndColumns = new Dictionary<string, Dictionary<string, string>>
+                        {
+                            {x.istrFullName, columnDictionary}
+                        };
 
 
-                        tableWithSchema.keyValuePairs = TablesAndColumns;
-                        tableWithSchema.istrSchemaName = x.istrSchemaName;
-                        lstTablesAndColumns.Add(tableWithSchema);
+                        lTableWithSchema.keyValuePairs = ldcTablesAndColumns;
+                        lTableWithSchema.istrSchemaName = x.istrSchemaName;
+                        lstTablesAndColumns.Add(lTableWithSchema);
                     });
 
-            GraphHtml.SetListOfTables(lstTablesAndColumns, istrSchemaName);
+            lGraphSvg.SetListOfTables(lstTablesAndColumns, astrSchemaName);
 
-            if (FormatType.Equals("pdf"))
-                return FileDotEngine.Pdf(GraphHtml.GraphSVGHTMLString(istrdbName, istrSchemaName));
-            if (FormatType.Equals("png"))
-                return FileDotEngine.Png(GraphHtml.GraphSVGHTMLString(istrdbName, istrSchemaName));
-            if (FormatType.Equals("jpg"))
-                return FileDotEngine.Jpg(GraphHtml.GraphSVGHTMLString(istrdbName, istrSchemaName));
+            if (astrFormatType.Equals("pdf"))
+                return FileDotEngine.Pdf(lGraphSvg.GraphSVGHTMLString(astrDatabaseName, astrSchemaName));
+            if (astrFormatType.Equals("png"))
+                return FileDotEngine.Png(lGraphSvg.GraphSVGHTMLString(astrDatabaseName, astrSchemaName));
+            if (astrFormatType.Equals("jpg"))
+                return FileDotEngine.Jpg(lGraphSvg.GraphSVGHTMLString(astrDatabaseName, astrSchemaName));
 
-            return FileDotEngine.Svg(GraphHtml.GraphSVGHTMLString(istrdbName, istrSchemaName));
+            return FileDotEngine.Svg(lGraphSvg.GraphSVGHTMLString(astrDatabaseName, astrSchemaName));
         }
-        public byte[] GetGraphHtmlString(string istrdbName, string FormatType, string istrSchemaName,List<string> alstOfSelectedTables)
+
+        /// <summary>
+        /// Get Graph Html string with specific schemaName
+        /// </summary>
+        /// <param name="astrDatabaseName"></param>
+        /// <param name="astrFormatType"></param>
+        /// <param name="astrSchemaName"></param>
+        /// <param name="alstOfSelectedTables"></param>
+        /// <returns></returns>
+        public byte[] GetGraphHtmlString(string astrDatabaseName, string astrFormatType, string astrSchemaName,List<string> alstOfSelectedTables)
         {
-            var GraphHtml = new GraphSVG();
+            var GraphHtml = new GraphSvg();
             var lstTablesAndColumns = new List<TableWithSchema>();
             var lstTablePropertyInfo = new List<TablePropertyInfo>();
-            srvDatabaseTable.istrDBConnection = istrdbName;
-            if (istrSchemaName.IsNullOrEmpty())
+            IsrvDatabaseTable.istrDBConnection = astrDatabaseName;
+            if (astrSchemaName.IsNullOrEmpty())
             {
-                srvDatabaseTable.GetAllDatabaseTablesDescription().ForEach(x =>
+                IsrvDatabaseTable.GetAllDatabaseTablesDescription().ForEach(x =>
                 {
                     if (alstOfSelectedTables.Any(argtbl=>argtbl.Equals(x.istrName)))
                     {
@@ -93,7 +114,7 @@ namespace MSSQL.DIARY.SRV
             }
             else
             { 
-                srvDatabaseTable.GetAllDatabaseTablesDescription().ForEach(x =>
+                IsrvDatabaseTable.GetAllDatabaseTablesDescription().ForEach(x =>
                 {
                     if (alstOfSelectedTables.Any(argtbl => argtbl.Equals(x.istrName)))
                     {
@@ -102,60 +123,70 @@ namespace MSSQL.DIARY.SRV
                 });
 
                lstTablePropertyInfo
-                    .Where(x => x.istrSchemaName == istrSchemaName)
+                    .Where(x => x.istrSchemaName == astrSchemaName)
                     .ForEach(x =>
                     {
-                        SelecctTableWithSchemaNames(x, lstTablesAndColumns);
+                        SelectTableWithSchemaNames(x, lstTablesAndColumns);
                     });
             }
 
-            GraphHtml.SetListOfTables(lstTablesAndColumns, istrSchemaName);
+            GraphHtml.SetListOfTables(lstTablesAndColumns, astrSchemaName);
 
-            if (FormatType.Equals("pdf"))
-                return FileDotEngine.Pdf(GraphHtml.GraphSVGHTMLString(istrdbName, istrSchemaName, alstOfSelectedTables));
-            if (FormatType.Equals("png"))
-                return FileDotEngine.Png(GraphHtml.GraphSVGHTMLString(istrdbName, istrSchemaName, alstOfSelectedTables));
-            if (FormatType.Equals("jpg"))
-                return FileDotEngine.Jpg(GraphHtml.GraphSVGHTMLString(istrdbName, istrSchemaName, alstOfSelectedTables));
+            if (astrFormatType.Equals("pdf"))
+                return FileDotEngine.Pdf(GraphHtml.GraphSVGHTMLString(astrDatabaseName, astrSchemaName, alstOfSelectedTables));
+            if (astrFormatType.Equals("png"))
+                return FileDotEngine.Png(GraphHtml.GraphSVGHTMLString(astrDatabaseName, astrSchemaName, alstOfSelectedTables));
+            if (astrFormatType.Equals("jpg"))
+                return FileDotEngine.Jpg(GraphHtml.GraphSVGHTMLString(astrDatabaseName, astrSchemaName, alstOfSelectedTables));
 
-            return FileDotEngine.Svg(GraphHtml.GraphSVGHTMLString(istrdbName, istrSchemaName, alstOfSelectedTables));
+            return FileDotEngine.Svg(GraphHtml.GraphSVGHTMLString(astrDatabaseName, astrSchemaName, alstOfSelectedTables));
         }
 
-        private static void SelecctTableWithSchemaNames(TablePropertyInfo x, List<TableWithSchema> lstTablesAndColumns)
+        /// <summary>
+        /// Select Table with sepecified schema
+        /// </summary>
+        /// <param name="aTablePropertyInfo"></param>
+        /// <param name="lstTablesAndColumns"></param>
+        private static void SelectTableWithSchemaNames(TablePropertyInfo aTablePropertyInfo, List<TableWithSchema> lstTablesAndColumns)
         {
             var columnDictionary = new Dictionary<string, string>();
-            x.tableColumns.ForEach(x2 =>
+            aTablePropertyInfo.tableColumns.ForEach(x2 =>
+            {
+                columnDictionary.AddIfNotContainsKey(x2.columnname, x2.data_type);
+            });
+            var lTableWithSchema = new TableWithSchema();
+            var lTablesAndColumns = new Dictionary<string, Dictionary<string, string>>();
+            lTablesAndColumns.Add(aTablePropertyInfo.istrFullName, columnDictionary);
+
+
+            lTableWithSchema.keyValuePairs = lTablesAndColumns;
+            lTableWithSchema.istrSchemaName = aTablePropertyInfo.istrSchemaName;
+            lstTablesAndColumns.Add(lTableWithSchema);
+        }
+
+        /// <summary>
+        /// Select Table with out schema
+        /// </summary>
+        /// <param name="aTablePropertyInfo"></param>
+        /// <param name="lstTablesAndColumns"></param>
+        private static void SelectTableWithOutSchemaNames(TablePropertyInfo aTablePropertyInfo, List<TableWithSchema> lstTablesAndColumns)
+        {
+            var columnDictionary = new Dictionary<string, string>();
+            aTablePropertyInfo.tableColumns.ForEach(x2 =>
             {
                 columnDictionary.AddIfNotContainsKey(x2.columnname, x2.data_type);
             });
             var tableWithSchema = new TableWithSchema();
             var TablesAndColumns = new Dictionary<string, Dictionary<string, string>>();
-            TablesAndColumns.Add(x.istrFullName, columnDictionary);
+            TablesAndColumns.Add(aTablePropertyInfo.istrFullName, columnDictionary);
 
 
             tableWithSchema.keyValuePairs = TablesAndColumns;
-            tableWithSchema.istrSchemaName = x.istrSchemaName;
+            tableWithSchema.istrSchemaName = aTablePropertyInfo.istrSchemaName;
             lstTablesAndColumns.Add(tableWithSchema);
         }
 
-        private static void SelectTableWithOutSchemaNames(TablePropertyInfo x, List<TableWithSchema> lstTablesAndColumns)
-        {
-            var columnDictionary = new Dictionary<string, string>();
-            x.tableColumns.ForEach(x2 =>
-            {
-                columnDictionary.AddIfNotContainsKey(x2.columnname, x2.data_type);
-            });
-            var tableWithSchema = new TableWithSchema();
-            var TablesAndColumns = new Dictionary<string, Dictionary<string, string>>();
-            TablesAndColumns.Add(x.istrFullName, columnDictionary);
-
-
-            tableWithSchema.keyValuePairs = TablesAndColumns;
-            tableWithSchema.istrSchemaName = x.istrSchemaName;
-            lstTablesAndColumns.Add(tableWithSchema);
-        }
-
-        public class GraphSVG
+        public class GraphSvg
         {
             private List<TableWithSchema> TablesAndColumns { get; set; }
             public string istrSchemaName { get; set; }
@@ -166,7 +197,7 @@ namespace MSSQL.DIARY.SRV
             public string GraphEnd => "}";
             public GraphNode graphNode { get; set; }
             public GraphEdge graphEdge { get; set; }
-            public List<TableSVG> tableSVGs { get; set; }
+            public List<TableSvg> tableSVGs { get; set; }
 
             public void SetListOfTables(List<TableWithSchema> TablesAndColumn, string istrSchemaName = null)
             {
@@ -214,7 +245,7 @@ namespace MSSQL.DIARY.SRV
                             {
                                 x.keyValuePairs.ForEach(x2 =>
                                 {
-                                    ReturnGraphDot += new TableSVG(x2.Key, x2.Value).GetTableHtml();
+                                    ReturnGraphDot += new TableSvg(x2.Key, x2.Value).GetTableHtml();
                                 });
                             });
                             ReturnGraphDot += "\t}\t";
@@ -235,7 +266,7 @@ namespace MSSQL.DIARY.SRV
                                     {
                                         x.keyValuePairs.ForEach(x2 =>
                                         {
-                                            ReturnGraphDot += new TableSVG(x2.Key, x2.Value).GetTableHtml();
+                                            ReturnGraphDot += new TableSvg(x2.Key, x2.Value).GetTableHtml();
                                         });
                                     });
                                     ReturnGraphDot += "\t}\t";
@@ -292,10 +323,10 @@ namespace MSSQL.DIARY.SRV
                                 var result = x.fk_refe_table_name.IsNull() ? x.current_table_name : x.fk_refe_table_name;
                                 if (alstOfSelectedTables.Any(argtable => result.Contains(argtable)))
                                 {
-                                    //x.fk_refe_table_name=x.fk_refe_table_name ??"";
-                                    //x.fk_refe_table_name = x.fk_refe_table_name.Replace(".", "_");
-                                    //x.current_table_name = x.current_table_name ?? "";
-                                    //x.current_table_name = x.current_table_name.Replace(".", "_");
+                                    //aTablePropertyInfo.fk_refe_table_name=aTablePropertyInfo.fk_refe_table_name ??"";
+                                    //aTablePropertyInfo.fk_refe_table_name = aTablePropertyInfo.fk_refe_table_name.Replace(".", "_");
+                                    //aTablePropertyInfo.current_table_name = aTablePropertyInfo.current_table_name ?? "";
+                                    //aTablePropertyInfo.current_table_name = aTablePropertyInfo.current_table_name.Replace(".", "_");
                                     tableReference.Add(x);
                                 }
                             }
@@ -310,10 +341,10 @@ namespace MSSQL.DIARY.SRV
                                 var result = x.fk_refe_table_name.IsNull() ? x.current_table_name : x.fk_refe_table_name;
                                 if (alstOfSelectedTables.Any(argtable => result.Contains(argtable)))
                                 {
-                                    //x.fk_refe_table_name = x.fk_refe_table_name ?? "";
-                                    //x.fk_refe_table_name = x.fk_refe_table_name.Replace(".", "_");
-                                    //x.current_table_name = x.current_table_name ?? "";
-                                    //x.current_table_name = x.current_table_name.Replace(".", "_");
+                                    //aTablePropertyInfo.fk_refe_table_name = aTablePropertyInfo.fk_refe_table_name ?? "";
+                                    //aTablePropertyInfo.fk_refe_table_name = aTablePropertyInfo.fk_refe_table_name.Replace(".", "_");
+                                    //aTablePropertyInfo.current_table_name = aTablePropertyInfo.current_table_name ?? "";
+                                    //aTablePropertyInfo.current_table_name = aTablePropertyInfo.current_table_name.Replace(".", "_");
                                     tableReference.Add(x);
                                      
                                 }
@@ -329,22 +360,9 @@ namespace MSSQL.DIARY.SRV
             }
         }
 
-        public class GraphNode
+        public class TableSvg
         {
-            public string istrGraphNode =>
-                " node [shape=box, style=filled, color=dodgerblue2, fillcolor=aliceblue];"; //"node [shape=none, margin=0]"; 
-        }
-
-        public class GraphEdge
-        {
-            public string istrGraphEdge => " edge [color=blue4, arrowhead=normal];";
-            // " edge [color=blue4, arrowhead=crow];"; 
-            //" edge [arrowhead=normal, arrowtail=none, dir=both]"; 
-        }
-
-        public class TableSVG
-        {
-            public TableSVG(string istrTableName, Dictionary<string, string> keyValuePairs)
+            public TableSvg(string istrTableName, Dictionary<string, string> keyValuePairs)
             {
                 TableName = istrTableName;
                 ColumnDescription = keyValuePairs;
@@ -357,8 +375,7 @@ namespace MSSQL.DIARY.SRV
                                                       "\tcellborder=" + "'1'" + "\tcellspacing=" + "'0'" +
                                                       "\tcellpadding=" + "'4'" + ">";
 
-            public string TableHTML =>
-                " <tr><td bgcolor=" + "'lightblue'" + ">" + TableName.Split('.')[1] + "</td></tr>";
+            public string TableHTML => " <tr><td bgcolor=" + "'lightblue'" + ">" + TableName.Split('.')[1] + "</td></tr>";
 
             public string istrTablelLabelEndHTML => "</table> >]";
 
@@ -375,12 +392,6 @@ namespace MSSQL.DIARY.SRV
                 TableHtml += istrTablelLabelEndHTML;
                 return TableHtml;
             }
-        }
-
-        public class TableWithSchema
-        {
-            public Dictionary<string, Dictionary<string, string>> keyValuePairs { get; set; }
-            public string istrSchemaName { get; set; }
-        }
+        } 
     }
 }

@@ -96,13 +96,13 @@ namespace MSSQL.DIARY.SRV
             { 
             }
             File.WriteAllBytes(istrPathToStoreSVG,
-                new srvDatabaseERDiagram().GetGraphHtmlString(istrDBConnection, "svg", istrSchemaName).ToArray());
+                new SrvDatabaseErDiagram().GetGraphHtmlString(istrDBConnection, "svg", istrSchemaName).ToArray());
             File.WriteAllBytes(istrPathToStoreSVG.Replace(".svg", ".pdf"),
-                new srvDatabaseERDiagram().GetGraphHtmlString(istrDBConnection, "pdf", istrSchemaName).ToArray());
+                new SrvDatabaseErDiagram().GetGraphHtmlString(istrDBConnection, "pdf", istrSchemaName).ToArray());
             File.WriteAllBytes(istrPathToStoreSVG.Replace(".svg", ".png"),
-                new srvDatabaseERDiagram().GetGraphHtmlString(istrDBConnection, "png", istrSchemaName).ToArray());
+                new SrvDatabaseErDiagram().GetGraphHtmlString(istrDBConnection, "png", istrSchemaName).ToArray());
             File.WriteAllBytes(istrPathToStoreSVG.Replace(".svg", ".jpg"),
-                new srvDatabaseERDiagram().GetGraphHtmlString(istrDBConnection, "jpg", istrSchemaName).ToArray());
+                new SrvDatabaseErDiagram().GetGraphHtmlString(istrDBConnection, "jpg", istrSchemaName).ToArray());
 
             return istrPathToStoreSVG;
         }
@@ -117,13 +117,13 @@ namespace MSSQL.DIARY.SRV
             {
             }
             File.WriteAllBytes(istrPathToStoreSVG,
-                new srvDatabaseERDiagram().GetGraphHtmlString(istrdbConn, "svg", istrSchemaName, alstOfSelectedTables).ToArray());
+                new SrvDatabaseErDiagram().GetGraphHtmlString(istrdbConn, "svg", istrSchemaName, alstOfSelectedTables).ToArray());
             File.WriteAllBytes(istrPathToStoreSVG.Replace(".svg", ".pdf"),
-                new srvDatabaseERDiagram().GetGraphHtmlString(istrdbConn, "pdf", istrSchemaName, alstOfSelectedTables).ToArray());
+                new SrvDatabaseErDiagram().GetGraphHtmlString(istrdbConn, "pdf", istrSchemaName, alstOfSelectedTables).ToArray());
             File.WriteAllBytes(istrPathToStoreSVG.Replace(".svg", ".png"),
-                new srvDatabaseERDiagram().GetGraphHtmlString(istrdbConn, "png", istrSchemaName, alstOfSelectedTables).ToArray());
+                new SrvDatabaseErDiagram().GetGraphHtmlString(istrdbConn, "png", istrSchemaName, alstOfSelectedTables).ToArray());
             File.WriteAllBytes(istrPathToStoreSVG.Replace(".svg", ".jpg"),
-                new srvDatabaseERDiagram().GetGraphHtmlString(istrdbConn, "jpg", istrSchemaName, alstOfSelectedTables).ToArray());
+                new SrvDatabaseErDiagram().GetGraphHtmlString(istrdbConn, "jpg", istrSchemaName, alstOfSelectedTables).ToArray());
 
             return istrPathToStoreSVG;
         }
