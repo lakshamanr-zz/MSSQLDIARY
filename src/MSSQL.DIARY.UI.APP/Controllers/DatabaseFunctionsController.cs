@@ -53,13 +53,13 @@ namespace MSSQL.DIARY.UI.APP.Controllers
         [HttpGet("[action]")]
         public List<PropertyInfo> GetAllScalarFunctionWithMsDescriptions(string istrdbName)
         {
-            return SrvDatabaseScalarFunction.GetAllFunctionWithMsDescriptions(istrdbName);
+            return SrvDatabaseScalarFunction.GetFunctionsWithDescription(istrdbName);
         }
 
         [HttpGet("[action]")]
         public PropertyInfo GetScalarFunctionMsDescriptions(string istrdbName, string astrFunctionName)
         {
-            return SrvDatabaseScalarFunction.GetFunctionMsDescriptions(istrdbName, astrFunctionName);
+            return SrvDatabaseScalarFunction.GetFunctionWithDescription(istrdbName, astrFunctionName);
         }
 
         [HttpGet("[action]")]
@@ -89,13 +89,13 @@ namespace MSSQL.DIARY.UI.APP.Controllers
         [HttpGet("[action]")]
         public List<PropertyInfo> GetAllTableValueFunctionWithMsDescriptions(string istrdbName)
         {
-            return SrvDatabaseTableValueFunction.GetAllFunctionWithMsDescriptions(istrdbName);
+            return SrvDatabaseTableValueFunction.GetFunctionsWithDescription(istrdbName);
         }
 
         [HttpGet("[action]")]
         public PropertyInfo GetTableValueFunctionMsDescriptions(string istrdbName, string astrFunctionName)
         {
-            return SrvDatabaseTableValueFunction.GetFunctionMsDescriptions(istrdbName, astrFunctionName);
+            return SrvDatabaseTableValueFunction.GetFunctionWithDescription(istrdbName, astrFunctionName);
         }
 
         [HttpGet("[action]")]

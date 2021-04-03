@@ -24,23 +24,23 @@ namespace MSSQL.DIARY.UI.APP.Controllers
         public DatabaseStoreProcedureController()
         {
             SrvDatabaseStoreProc = new SrvDatabaseStoreProc();
-            srvServerInfo = new SrvDatabaseServerInfo();
+            srvServerInfo = new SrvDatabaseServer();
             
         }
 
         public DatabaseStoreProcedureController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IHttpContextAccessor httpContextAccessor) : base(context, userManager, httpContextAccessor)
         {
             SrvDatabaseStoreProc = new SrvDatabaseStoreProc();
-            srvServerInfo = new SrvDatabaseServerInfo();
+            srvServerInfo = new SrvDatabaseServer();
         }
 
         private SrvDatabaseStoreProc SrvDatabaseStoreProc { get; }
-        private SrvDatabaseServerInfo srvServerInfo { get; }
+        private SrvDatabaseServer srvServerInfo { get; }
 
         [HttpGet("[action]")]
         public List<SP_PropertyInfo> GetAllStoreprocedureDescription(string istrdbName, bool iblnSearchInSSISPackages)
         {
-            var AllStoreprocedure = SrvDatabaseStoreProc.GetAllStoreprocedureDescription(istrdbName);
+            var AllStoreprocedure = SrvDatabaseStoreProc.GetStoreProceduresWithDescription(istrdbName);
             var serverName = srvServerInfo.GetServerName().FirstOrDefault();
             //var SSRS_package = new List<PackageJsonHandler>();
             //SSISPackageInfoHandlerController.GetAllSSISPackages(_hostingEnv.WebRootPath);
@@ -76,39 +76,39 @@ namespace MSSQL.DIARY.UI.APP.Controllers
         [HttpGet("[action]")]
         public Ms_Description GetCreateScriptOfStoreProc(string istrdbName, string StoreprocName)
         {
-            return SrvDatabaseStoreProc.GetCreateScriptOfStoreProc(istrdbName, StoreprocName);
+            return SrvDatabaseStoreProc.GetStoreProcedureCreateScript(istrdbName, StoreprocName);
         }
 
         [HttpGet("[action]")]
         public List<SP_Depencancy> GetStoreProcDependancy(string istrdbName, string StoreprocName)
         {
-            return SrvDatabaseStoreProc.GetStoreProcDependancy(istrdbName, StoreprocName);
+            return SrvDatabaseStoreProc.GetStoreProceduresDependency(istrdbName, StoreprocName);
         }
 
         [HttpGet("[action]")]
         public List<SP_Parameters> GetStoreProcParameters(string istrdbName, string StoreprocName)
         {
-            return SrvDatabaseStoreProc.GetStoreProcParameters(istrdbName, StoreprocName);
+            return SrvDatabaseStoreProc.GetStoreProceduresParametersWithDescription(istrdbName, StoreprocName);
         }
 
         [HttpGet("[action]")]
         public Ms_Description GetStoreProcMsDescription(string istrdbName, string StoreprocName)
         {
             return new Ms_Description
-                {desciption = SrvDatabaseStoreProc.GetStoreProcMsDescription(istrdbName, StoreprocName)};
+                {desciption = SrvDatabaseStoreProc.GetStoreProcedureDescription(istrdbName, StoreprocName)};
         }
 
         [HttpGet("[action]")]
         public List<ExecutionPlanInfo> GetCachedExecutionPlan(string istrdbName, string StoreprocName)
         {
-            return SrvDatabaseStoreProc.GetCachedExecutionPlan(istrdbName, StoreprocName);
+            return SrvDatabaseStoreProc.GetStoreProcedureExecutionPlan(istrdbName, StoreprocName);
         }
 
         [HttpGet("[action]")]
         public object GetDependancyTree(string istrdbName, string StoreprocName)
         {
             return JsonConvert.DeserializeObject(
-                SrvDatabaseStoreProc.CreatorOrGetDependancyTree(istrdbName, StoreprocName));
+                SrvDatabaseStoreProc.CreatorOrGetStoreProcedureDependencyTree(istrdbName, StoreprocName));
         }
 
         [HttpGet("[action]")]
@@ -123,7 +123,7 @@ namespace MSSQL.DIARY.UI.APP.Controllers
         public void CreateOrUpdateStoreProcDescription(string istrdbName, string astrDescription_Value,
             string astrSP_Name)
         {
-            SrvDatabaseStoreProc.CreateOrUpdateStoreProcDescription(istrdbName, astrDescription_Value,
+            SrvDatabaseStoreProc.CreateOrUpdateStoreProcedureDescription(istrdbName, astrDescription_Value,
                 astrSP_Name.Split(".")[0], astrSP_Name);
         }
     }

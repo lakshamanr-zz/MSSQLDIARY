@@ -9,7 +9,7 @@ using MSSQL.DIARY.ERDIAGRAM;
 
 namespace MSSQL.DIARY.SRV
 {
-    public class SrvDatabaseErDiagram
+    public class SrvDatabaseErDiagram : SrvMain
     {
         public SrvDatabaseErDiagram()
         {
@@ -28,12 +28,12 @@ namespace MSSQL.DIARY.SRV
         /// <returns></returns>
         public byte[] GetGraphHtmlString(string astrDatabaseName, string astrFormatType, string astrSchemaName)
         {
-            IsrvDatabaseTable.istrDBConnection = astrDatabaseName;
+            IsrvDatabaseTable.istrDatabaseConnection = astrDatabaseName;
             // adding sub graph 
             var lGraphSvg = new GraphSvg();
             var lstTablesAndColumns = new List<TableWithSchema>();
               if (astrSchemaName.IsNullOrEmpty())
-                IsrvDatabaseTable.GetAllDatabaseTablesDescription().ForEach(x =>
+                IsrvDatabaseTable.GetTablesDescription().ForEach(x =>
                 {
                     var columnDictionary = new Dictionary<string, string>();
                     x.tableColumns.ForEach(x2 =>
@@ -52,7 +52,7 @@ namespace MSSQL.DIARY.SRV
                     lstTablesAndColumns.Add(lTableWithSchema);
                 });
             else
-                IsrvDatabaseTable.GetAllDatabaseTablesDescription()
+                IsrvDatabaseTable.GetTablesDescription()
                     .Where(x => x.istrSchemaName == astrSchemaName).ForEach(x =>
                     {
                         var columnDictionary = new Dictionary<string, string>();
@@ -75,13 +75,13 @@ namespace MSSQL.DIARY.SRV
             lGraphSvg.SetListOfTables(lstTablesAndColumns, astrSchemaName);
 
             if (astrFormatType.Equals("pdf"))
-                return FileDotEngine.Pdf(lGraphSvg.GraphSVGHTMLString(astrDatabaseName, astrSchemaName));
+                return FileDotEngine.Pdf(lGraphSvg.GraphSvgHtmlString(astrDatabaseName, astrSchemaName));
             if (astrFormatType.Equals("png"))
-                return FileDotEngine.Png(lGraphSvg.GraphSVGHTMLString(astrDatabaseName, astrSchemaName));
+                return FileDotEngine.Png(lGraphSvg.GraphSvgHtmlString(astrDatabaseName, astrSchemaName));
             if (astrFormatType.Equals("jpg"))
-                return FileDotEngine.Jpg(lGraphSvg.GraphSVGHTMLString(astrDatabaseName, astrSchemaName));
+                return FileDotEngine.Jpg(lGraphSvg.GraphSvgHtmlString(astrDatabaseName, astrSchemaName));
 
-            return FileDotEngine.Svg(lGraphSvg.GraphSVGHTMLString(astrDatabaseName, astrSchemaName));
+            return FileDotEngine.Svg(lGraphSvg.GraphSvgHtmlString(astrDatabaseName, astrSchemaName));
         }
 
         /// <summary>
@@ -94,13 +94,13 @@ namespace MSSQL.DIARY.SRV
         /// <returns></returns>
         public byte[] GetGraphHtmlString(string astrDatabaseName, string astrFormatType, string astrSchemaName,List<string> alstOfSelectedTables)
         {
-            var GraphHtml = new GraphSvg();
+            var graphHtml = new GraphSvg();
             var lstTablesAndColumns = new List<TableWithSchema>();
             var lstTablePropertyInfo = new List<TablePropertyInfo>();
-            IsrvDatabaseTable.istrDBConnection = astrDatabaseName;
+            IsrvDatabaseTable.istrDatabaseConnection = astrDatabaseName;
             if (astrSchemaName.IsNullOrEmpty())
             {
-                IsrvDatabaseTable.GetAllDatabaseTablesDescription().ForEach(x =>
+                IsrvDatabaseTable.GetTablesDescription().ForEach(x =>
                 {
                     if (alstOfSelectedTables.Any(argtbl=>argtbl.Equals(x.istrName)))
                     {
@@ -114,7 +114,7 @@ namespace MSSQL.DIARY.SRV
             }
             else
             { 
-                IsrvDatabaseTable.GetAllDatabaseTablesDescription().ForEach(x =>
+                IsrvDatabaseTable.GetTablesDescription().ForEach(x =>
                 {
                     if (alstOfSelectedTables.Any(argtbl => argtbl.Equals(x.istrName)))
                     {
@@ -130,16 +130,16 @@ namespace MSSQL.DIARY.SRV
                     });
             }
 
-            GraphHtml.SetListOfTables(lstTablesAndColumns, astrSchemaName);
+            graphHtml.SetListOfTables(lstTablesAndColumns, astrSchemaName);
 
             if (astrFormatType.Equals("pdf"))
-                return FileDotEngine.Pdf(GraphHtml.GraphSVGHTMLString(astrDatabaseName, astrSchemaName, alstOfSelectedTables));
+                return FileDotEngine.Pdf(graphHtml.GraphSvgHtmlString(astrDatabaseName, astrSchemaName, alstOfSelectedTables));
             if (astrFormatType.Equals("png"))
-                return FileDotEngine.Png(GraphHtml.GraphSVGHTMLString(astrDatabaseName, astrSchemaName, alstOfSelectedTables));
+                return FileDotEngine.Png(graphHtml.GraphSvgHtmlString(astrDatabaseName, astrSchemaName, alstOfSelectedTables));
             if (astrFormatType.Equals("jpg"))
-                return FileDotEngine.Jpg(GraphHtml.GraphSVGHTMLString(astrDatabaseName, astrSchemaName, alstOfSelectedTables));
+                return FileDotEngine.Jpg(graphHtml.GraphSvgHtmlString(astrDatabaseName, astrSchemaName, alstOfSelectedTables));
 
-            return FileDotEngine.Svg(GraphHtml.GraphSVGHTMLString(astrDatabaseName, astrSchemaName, alstOfSelectedTables));
+            return FileDotEngine.Svg(graphHtml.GraphSvgHtmlString(astrDatabaseName, astrSchemaName, alstOfSelectedTables));
         }
 
         /// <summary>
@@ -177,11 +177,11 @@ namespace MSSQL.DIARY.SRV
                 columnDictionary.AddIfNotContainsKey(x2.columnname, x2.data_type);
             });
             var tableWithSchema = new TableWithSchema();
-            var TablesAndColumns = new Dictionary<string, Dictionary<string, string>>();
-            TablesAndColumns.Add(aTablePropertyInfo.istrFullName, columnDictionary);
+            var tablesAndColumns = new Dictionary<string, Dictionary<string, string>>();
+            tablesAndColumns.Add(aTablePropertyInfo.istrFullName, columnDictionary);
 
 
-            tableWithSchema.keyValuePairs = TablesAndColumns;
+            tableWithSchema.keyValuePairs = tablesAndColumns;
             tableWithSchema.istrSchemaName = aTablePropertyInfo.istrSchemaName;
             lstTablesAndColumns.Add(tableWithSchema);
         }
@@ -189,66 +189,63 @@ namespace MSSQL.DIARY.SRV
         public class GraphSvg
         {
             private List<TableWithSchema> TablesAndColumns { get; set; }
-            public string istrSchemaName { get; set; }
+            public string IstrSchemaName { get; set; }
 
             public string GraphStart => "digraph ERDiagram {  splines=ortho   nodesep=0.8; size=50 ;";
 
             //  "digraph ERDiagram {  splines=ortho rankdir=LR;  size=50 ";
             public string GraphEnd => "}";
-            public GraphNode graphNode { get; set; }
-            public GraphEdge graphEdge { get; set; }
-            public List<TableSvg> tableSVGs { get; set; }
 
-            public void SetListOfTables(List<TableWithSchema> TablesAndColumn, string istrSchemaName = null)
+            public void SetListOfTables(List<TableWithSchema> tablesAndColumn, string astrSchemaName = null)
             {
-                TablesAndColumns = TablesAndColumn;
-                this.istrSchemaName = istrSchemaName;
+                TablesAndColumns = tablesAndColumn;
+                this.IstrSchemaName = astrSchemaName;
             }
 
-            public string GraphSVGHTMLString(string istrdbName, string istrSchemaName)
+            public string GraphSvgHtmlString(string astrdatabaseName, string istrSchemaName)
             {
-                string ReturnGraphDot = GenHtmlSting(istrSchemaName);
+                string returnGraphDot = GenHtmlString(istrSchemaName);
 
-                ReturnGraphDot += GetAllTableRefernce(istrdbName, istrSchemaName);
-                ReturnGraphDot += GraphEnd;
+                returnGraphDot += GetAllTableRefernce(astrdatabaseName, istrSchemaName);
+                returnGraphDot += GraphEnd;
 
-                return ReturnGraphDot;
+                return returnGraphDot;
             }
 
-            public string GraphSVGHTMLString(string istrdbName, string istrSchemaName,List<string> alstOfSelectedTables)
+            public string GraphSvgHtmlString(string astrdatabaseName, string istrSchemaName,List<string> alstOfSelectedTables)
             {
-                string ReturnGraphDot = GenHtmlSting(istrSchemaName);
+                string returnGraphDot = GenHtmlString(istrSchemaName);
 
-                ReturnGraphDot += GetAllTableRefernce(istrdbName, istrSchemaName, alstOfSelectedTables);
-                ReturnGraphDot += GraphEnd;
+                returnGraphDot += GetAllTableRefernce(astrdatabaseName, istrSchemaName, alstOfSelectedTables);
+                returnGraphDot += GraphEnd;
 
-                return ReturnGraphDot;
+                return returnGraphDot;
             }
-            private string GenHtmlSting(string istrSchemaName)
+            private string GenHtmlString(string istrSchemaName)
             {
                 var node = new GraphNode();
                 var edge = new GraphEdge();
-                var ReturnGraphDot = "";
-                ReturnGraphDot += GraphStart;
-                ReturnGraphDot += node.istrGraphNode;
-                ReturnGraphDot += edge.istrGraphEdge;
+                var returnGraphDot = "";
+                returnGraphDot += GraphStart;
+                returnGraphDot += node.istrGraphNode;
+                returnGraphDot += edge.istrGraphEdge;
                 var clusterIncrement = 0;
                 if (istrSchemaName.IsNullOrEmpty())
                     TablesAndColumns.Select(x => x.istrSchemaName).DistinctBy(x => x).ToList().ForEach(x1 =>
                     {
                         TablesAndColumns.Select(x => x.istrSchemaName).DistinctBy(x => x).ToList().ForEach(SchemaName =>
                         {
-                            ReturnGraphDot += "subgraph cluster_" + clusterIncrement + " {\t label=" + SchemaName +
+                            returnGraphDot += "subgraph cluster_" + clusterIncrement + " {\t label=" + SchemaName +
                                               ";\t";
-                            ReturnGraphDot += "bgcolor=" + "\"" + RandomColor() + "\";";
+                            returnGraphDot += "bgcolor=" + "\"" + RandomColor() + "\";";
                             TablesAndColumns.Where(x => x.istrSchemaName.Equals(SchemaName)).ForEach(x =>
                             {
                                 x.keyValuePairs.ForEach(x2 =>
                                 {
-                                    ReturnGraphDot += new TableSvg(x2.Key, x2.Value).GetTableHtml();
+                                    returnGraphDot += new TableSvg(x2.Key, x2.Value).GetTableHtml();
                                 });
                             });
-                            ReturnGraphDot += "\t}\t";
+                            returnGraphDot += "\t}\t";
                             clusterIncrement++;
                         });
                     });
@@ -259,21 +256,21 @@ namespace MSSQL.DIARY.SRV
                             TablesAndColumns.Select(x => x.istrSchemaName).DistinctBy(x => x).ToList().ForEach(
                                 SchemaName =>
                                 {
-                                    ReturnGraphDot += "subgraph cluster_" + clusterIncrement + " {\t label=" +
+                                    returnGraphDot += "subgraph cluster_" + clusterIncrement + " {\t label=" +
                                                       SchemaName + ";\t";
-                                    ReturnGraphDot += "bgcolor=" + "\"" + RandomColor() + "\";";
+                                    returnGraphDot += "bgcolor=" + "\"" + RandomColor() + "\";";
                                     TablesAndColumns.Where(x => x.istrSchemaName.Equals(SchemaName)).ForEach(x =>
                                     {
                                         x.keyValuePairs.ForEach(x2 =>
                                         {
-                                            ReturnGraphDot += new TableSvg(x2.Key, x2.Value).GetTableHtml();
+                                            returnGraphDot += new TableSvg(x2.Key, x2.Value).GetTableHtml();
                                         });
                                     });
-                                    ReturnGraphDot += "\t}\t";
+                                    returnGraphDot += "\t}\t";
                                     clusterIncrement++;
                                 });
                         });
-                return ReturnGraphDot;
+                return returnGraphDot;
             }
 
             public string RandomColor()

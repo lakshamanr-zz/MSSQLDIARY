@@ -4,30 +4,43 @@ using MSSQL.DIARY.EF;
 
 namespace MSSQL.DIARY.SRV
 {
-    public class srvDatabaseTrigger
+    public class SrvDatabaseTrigger
     {
-        public List<PropertyInfo> GetAllDatabaseTrigger(string istrdbName)
+        /// <summary>
+        /// Get Database Triggers
+        /// </summary>
+        /// <returns></returns>
+        public List<PropertyInfo> GetTriggers(string astrDatabaseName)
         {
-            using (var dbSqldocContext = new MsSqlDiaryContext(istrdbName))
+            using (var dbSqldocContext = new MsSqlDiaryContext(astrDatabaseName))
             {
                 return dbSqldocContext.GetTriggers();
             }
         }
 
-        public List<TriggerInfo> GetTriggerInfosByName(string istrdbName, string istrTriggerName)
+        /// <summary>
+        /// Get Trigger Details by trigger name
+        /// </summary>
+        /// <returns></returns>
+        public List<TriggerInfo> GetTrigger(string astrDatabaseName, string istrTriggerName)
         {
-            using (var dbSqldocContext = new MsSqlDiaryContext(istrdbName))
+            using (var dbSqldocContext = new MsSqlDiaryContext(astrDatabaseName))
             {
                 return dbSqldocContext.GetTrigger(istrTriggerName);
             }
         }
 
-        public void CreateOrUpdateTriggerDescription(string istrdbName, string astrDescription_Value,
-            string astrTrigger_Name)
+        /// <summary>
+        /// Create or update the trigger descriptions
+        /// </summary>
+        /// <param name="astrDatabaseName"></param>
+        /// <param name="astrDescriptionValue"></param>
+        /// <param name="astrTriggerName"></param>
+        public void CreateOrUpdateTriggerDescription(string astrDatabaseName, string astrDescriptionValue, string astrTriggerName)
         {
-            using (var dbSqldocContext = new MsSqlDiaryContext(istrdbName))
+            using (var dbSqldocContext = new MsSqlDiaryContext(astrDatabaseName))
             {
-                dbSqldocContext.CreateOrUpdateTriggerDescription(astrDescription_Value, astrTrigger_Name);
+                dbSqldocContext.CreateOrUpdateTriggerDescription(astrDescriptionValue, astrTriggerName);
             }
         }
     }

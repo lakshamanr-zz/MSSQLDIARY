@@ -9,17 +9,17 @@ using MSSQL.DIARY.EF;
 
 namespace MSSQL.DIARY.SRV
 {
-    public class srvObjectExplorerDetails
+    public class SrvObjectExplorerDetails
     {
         public static NaiveCache<string> ObjectExplorerDetails = new NaiveCache<string>();
-        public SrvDatabaseObjectDependncy srvDatabaseObjectDependncy = new SrvDatabaseObjectDependncy(); 
-        public srvObjectExplorerDetails()
+        public SrvDatabaseObjectDependency SrvDatabaseObjectDependency; 
+        public SrvObjectExplorerDetails()
         {
             ObjectExplorerDetails = new NaiveCache<string>();
-            srvDatabaseObjectDependncy = new SrvDatabaseObjectDependncy();
+            SrvDatabaseObjectDependency = new SrvDatabaseObjectDependency();
         }
         public static string IstrProjectName { get; set; }
-        public static string IstrServerName { get; set; }
+        public static string astrServerName { get; set; }
         public static string IstrDatabaseName { get; set; }
 
         private TreeViewJson SearchInDb()
@@ -29,7 +29,7 @@ namespace MSSQL.DIARY.SRV
                 text = "Search",
                 icon = "fa fa-search",
                 mdaIcon = "Search",
-                link = $"/{IstrProjectName}/{IstrServerName}/User Database/{IstrDatabaseName}/Tables",
+                link = $"/{IstrProjectName}/{astrServerName}/User Database/{IstrDatabaseName}/Tables",
                 selected = true,
                 badge = 12,
                 expand = true,
@@ -40,7 +40,7 @@ namespace MSSQL.DIARY.SRV
 
         private List<TreeViewJson> SearchInDbObjects()
         {
-            var SearchInDbObject = new List<TreeViewJson>
+            var searchInDbObject = new List<TreeViewJson>
             {
                 new TreeViewJson
                 {
@@ -48,7 +48,7 @@ namespace MSSQL.DIARY.SRV
                     icon = "fa fa-search",
                     mdaIcon = "Search In column",
                     expand = false,
-                    link = $"/{IstrProjectName}/{IstrServerName}/User Database/{IstrDatabaseName}/Search/Column",
+                    link = $"/{IstrProjectName}/{astrServerName}/User Database/{IstrDatabaseName}/Search/Column",
                     selected = true,
                     badge = 12
                     //SchemaEnums = SchemaEnums.TableCoumns,
@@ -59,23 +59,23 @@ namespace MSSQL.DIARY.SRV
                     icon = "fa fa-search",
                     mdaIcon = "Search In column",
                     expand = false,
-                    link = $"/{IstrProjectName}/{IstrServerName}/User Database/{IstrDatabaseName}/Search/Column",
+                    link = $"/{IstrProjectName}/{astrServerName}/User Database/{IstrDatabaseName}/Search/Column",
                     selected = true,
                     badge = 12
                     //SchemaEnums = SchemaEnums.TableCoumns,
                 }
             };
-            return SearchInDbObject;
+            return searchInDbObject;
         }
 
-        public static TreeViewJson GetDatabase(string astrdatabaseName = null, string dbConnections = null)
+        public static TreeViewJson GetDatabase(string astrdatabaseName = null, string astrDatabaseConnection = null)
         {
             return new TreeViewJson
             {
                 text = astrdatabaseName,
                 icon = "fa fa-database fa-fw",
                 mdaIcon = astrdatabaseName,
-                link = $"/{IstrProjectName}/{IstrServerName}/User Database/{IstrDatabaseName}",
+                link = $"/{IstrProjectName}/{astrServerName}/User Database/{IstrDatabaseName}",
                 selected = true,
                 badge = 12,
                 expand = true,
@@ -83,9 +83,9 @@ namespace MSSQL.DIARY.SRV
                 children = new List<TreeViewJson>
                 {
                     // SearchInDb(),
-                    GetTables(dbConnections),
-                    GetViews(dbConnections),
-                    GetProgrammability(dbConnections)
+                    GetTables(astrDatabaseConnection),
+                    GetViews(astrDatabaseConnection),
+                    GetProgrammability(astrDatabaseConnection)
                     //GetStorage(),
                     //GetSecurity()
                 }
@@ -109,15 +109,15 @@ namespace MSSQL.DIARY.SRV
             };
         }
 
-        public static TreeViewJson GetProjectName(string astrProjectName = null, string astrServerName = null, string astrdatabaseName = null, List<string> astrdbNamelist = null, string dbConnections=null)
+        public static TreeViewJson GetProjectName(string astrProjectName = null, string astrServerName = null, string astrdatabaseName = null, List<string> astrDatabaseNames = null, string astrDatabaseConnection=null)
         {
-            IstrServerName = astrServerName;
+            astrServerName = astrServerName;
             IstrDatabaseName = astrdatabaseName;
             IstrProjectName = astrProjectName;
-            return AddDbInformations(astrProjectName, astrServerName, astrdbNamelist, dbConnections);
+            return AddDbInformations(astrProjectName, astrServerName, astrDatabaseNames, astrDatabaseConnection);
         }
 
-        public static TreeViewJson AddDbInformations(string astrProjectName, string astrServerName,  List<string> astrdbNamelist = null, string dbConnections=null)
+        public static TreeViewJson AddDbInformations(string astrProjectName, string astrServerName,  List<string> astrDatabaseNames = null, string astrDatabaseConnection=null)
         {
             var leftTreeJoson = new TreeViewJson
             {
@@ -129,105 +129,99 @@ namespace MSSQL.DIARY.SRV
                 expand = true,
                 badge = 12,
                 SchemaEnums = SchemaEnums.ProjectInfo,
-                children = new List<TreeViewJson> {GetServerName(astrServerName, astrdbNamelist, dbConnections) }
+                children = new List<TreeViewJson> {GetServerName(astrServerName, astrDatabaseNames, astrDatabaseConnection) }
             }; 
             return leftTreeJoson;
         }
 
-        public static TreeViewJson GetServerName(string istrServerName = null, List<string> astrdbNamelist = null, string dbConnections= null)
+        public static TreeViewJson GetServerName(string astrServerName = null, List<string> astrDatabaseNames = null, string astrDatabaseConnection= null)
         {
             var result = new TreeViewJson
             {
-                text = istrServerName,
+                text = astrServerName,
                 icon = "fa  fa-desktop fa-fw",
-                mdaIcon = istrServerName,
-                link = $"/{IstrProjectName}/{istrServerName}",
+                mdaIcon = astrServerName,
+                link = $"/{IstrProjectName}/{astrServerName}",
                 selected = true,
                 expand = true,
                 badge = 12,
                 SchemaEnums = SchemaEnums.DatabaseServer,
-                children = new List<TreeViewJson> {DatabaseInform(astrdbNamelist, dbConnections) }
+                children = new List<TreeViewJson> {GetDatabases(astrDatabaseNames, astrDatabaseConnection) }
             };
 
 
             return result;
         }
 
-        public static TreeViewJson DatabaseInform(List<string> astrdbNamelist = null, string dbConnections= null)
+        public static TreeViewJson GetDatabases(List<string> astrDatabaseNames = null, string astrDatabaseConnection= null)
         {
             var rest = new TreeViewJson
             {
                 text = "User Database",
                 icon = "fa fa-folder",
                 mdaIcon = "User Database",
-                link = $"/{IstrProjectName}/{IstrServerName}/User Database",
+                link = $"/{IstrProjectName}/{astrServerName}/User Database",
                 selected = true,
                 expand = true,
                 badge = 12,
                 children = new List<TreeViewJson>()
             };
-            astrdbNamelist.ForEach(dbInstance =>
+            astrDatabaseNames?.ForEach(dbInstance =>
             {
                 IstrDatabaseName = dbInstance;
-                var DatabaseConnection = string.Empty;
-                DatabaseConnection += dbConnections?.Split(';')[0] + ";";
-                DatabaseConnection += $"Database={IstrDatabaseName};";
-                DatabaseConnection += dbConnections?.Split(';')[2] + ";";
-                DatabaseConnection += dbConnections?.Split(';')[3] + ";";
-                DatabaseConnection += "Trusted_Connection=false;";
-                rest.children.Add(GetDatabase(dbInstance, DatabaseConnection));
+                var databaseConnection = string.Empty;
+                databaseConnection += astrDatabaseConnection?.Split(';')[0] + ";";
+                databaseConnection += $"Database={IstrDatabaseName};";
+                databaseConnection += astrDatabaseConnection?.Split(';')[2] + ";";
+                databaseConnection += astrDatabaseConnection?.Split(';')[3] + ";";
+                databaseConnection += "Trusted_Connection=false;";
+                rest.children.Add(GetDatabase(dbInstance, databaseConnection));
             });
             return rest;
         } 
-        public static List<TreeViewJson> GetObjectExplorer(string dbConnections,string astrDatabaseName=null)
+        public static List<TreeViewJson> GetObjectExplorer(string astrDatabaseConnection,string astrDatabaseName=null)
         {
-            List<string> lstOfdatabase = new List<string>();
-            string lstrDefaultDBName = string.Empty;
+            var lstDatabase = new List<string>();
+            string lstrDefaultDbName;
             if (astrDatabaseName.IsNotNullOrEmpty())
             {
-                lstrDefaultDBName = astrDatabaseName;
-                lstOfdatabase.Add(astrDatabaseName);
+                lstrDefaultDbName = astrDatabaseName;
+                lstDatabase.Add(astrDatabaseName);
             }
             else
             {
-                lstrDefaultDBName = GetDatabaseName(dbConnections).FirstOrDefault(); 
-                 lstOfdatabase = GetDatabaseName(dbConnections);
+                lstrDefaultDbName = GetDatabaseName(astrDatabaseConnection).FirstOrDefault(); 
+                 lstDatabase = GetDatabaseName(astrDatabaseConnection);
             }
 
             var data = new List<TreeViewJson>
             {
-                GetProjectName(
-                    "Project",
-                    dbConnections?.Split(';')[0].Replace("Data Source =", "").Replace("Data Source=", "") ,
-                    lstrDefaultDBName,
-                    lstOfdatabase,
-                    dbConnections
-                    )
-            };
+                GetProjectName("Project", astrDatabaseConnection?.Split(';')[0].Replace("Data Source =", "").Replace("Data Source=", "") , lstrDefaultDbName, lstDatabase, astrDatabaseConnection)};
             return data;
         }
+
         #region Tables
 
-        public static TreeViewJson GetTables(string dbConnections=null)
+        public static TreeViewJson GetTables(string astrDatabaseConnection=null)
         {
             return new TreeViewJson
             {
                 text = "Tables",
                 icon = "fa fa-folder",
                 mdaIcon = "Tables",
-                link = $"/{IstrProjectName}/{IstrServerName}/User Database/{IstrDatabaseName}/Tables",
+                link = $"/{IstrProjectName}/{astrServerName}/User Database/{IstrDatabaseName}/Tables",
                 selected = true,
                 badge = 12,
                 expand = true,
                 SchemaEnums = SchemaEnums.AllTable,
-                children = GetTablesChildren(dbConnections)
+                children = GetTablesChildren(astrDatabaseConnection)
             };
         }
 
-        public static List<TreeViewJson> GetTablesChildren(string dbConnections=null)
+        public static List<TreeViewJson> GetTablesChildren(string astrDatabaseConnection=null)
         {
             var tablesList = new List<TreeViewJson>();
-            GetTables(IstrDatabaseName, dbConnections).ForEach(tables =>
+            GetTables(IstrDatabaseName, astrDatabaseConnection).ForEach(tables =>
             {
                 tablesList.Add(
                     new TreeViewJson
@@ -236,34 +230,31 @@ namespace MSSQL.DIARY.SRV
                         icon = "fa fa-table fa-fw", 
                         mdaIcon = tables,
                         expand = false,
-                        link = $"/{IstrProjectName}/{IstrServerName}/User Database/{IstrDatabaseName}/Tables/{tables}",
+                        link = $"/{IstrProjectName}/{astrServerName}/User Database/{IstrDatabaseName}/Tables/{tables}",
                         selected = true,
                         badge = 12,
                         SchemaEnums = SchemaEnums.Table,
-                      // children = GetTableColumns(tables, dbConnections)
+                      // children = GetTableColumns(tables, astrDatabaseConnection)
                     }
                 );
             });
             return tablesList;
         }
 
-        public static IList<TreeViewJson> GetTableColumns(string tables, string dbConnections=null)
+        public static IList<TreeViewJson> GetTableColumns(string tables, string astrDatabaseConnection=null)
         {
             var tablesColumns = new List<TreeViewJson>();
-            GetTablesColumns(
-                tables.Replace(tables.Substring(0, tables.IndexOf(".")) + ".", ""),
-                IstrDatabaseName,
-                dbConnections
-                ).ForEach(Column =>
+            GetTablesColumns(tables.Replace(tables.Substring(0, tables.IndexOf(".")) + ".", ""), IstrDatabaseName, astrDatabaseConnection).
+                ForEach(Columns =>
             {
                 tablesColumns.Add(
                     new TreeViewJson
                     {
-                        text = Column,
+                        text = Columns,
                         icon = "fa fa fa-columns",
-                        mdaIcon = Column,
+                        mdaIcon = Columns,
                         expand = false,
-                        link = $"/{IstrProjectName}/{IstrServerName}/User Database/{IstrDatabaseName}/Tables/{Column}",
+                        link = $"/{IstrProjectName}/{astrServerName}/User Database/{IstrDatabaseName}/Tables/{Columns}",
                         selected = true,
                         badge = 12,
                         SchemaEnums = SchemaEnums.TableCoumns
@@ -277,71 +268,71 @@ namespace MSSQL.DIARY.SRV
 
         #region Views
 
-        public static TreeViewJson GetViews( string dbConnections=null)
+        public static TreeViewJson GetViews( string astrDatabaseConnection=null)
         {
             return new TreeViewJson
             {
                 text = "Views",
                 icon = "fa fa-folder",
                 mdaIcon = "Views",
-                link = $"/{IstrProjectName}/{IstrServerName}/User Database/{IstrDatabaseName}/Views",
+                link = $"/{IstrProjectName}/{astrServerName}/User Database/{IstrDatabaseName}/Views",
                 selected = true,
                 badge = 12,
                 expand = true,
                 SchemaEnums = SchemaEnums.AllViews,
-                children = GetViewsChildrens(dbConnections)
+                children = GetViewsChildrens(astrDatabaseConnection)
             };
         }
 
-        public static List<TreeViewJson> GetViewsChildrens( string dbConnections=null)
+        public static List<TreeViewJson> GetViewsChildrens( string astrDatabaseConnection=null)
         {
-            var viewsChildens = new List<TreeViewJson>(); 
-            GetViews(IstrDatabaseName, dbConnections).ForEach(view =>
+            var lstViewChildren = new List<TreeViewJson>(); 
+            GetViews(IstrDatabaseName, astrDatabaseConnection).ForEach(view =>
             {
-                viewsChildens.Add(
+                lstViewChildren.Add(
                     new TreeViewJson
                     {
                         text = view,
                         icon = "fa fa-table fa-fw",
                         mdaIcon = view,
                         expand = true,
-                        link = $"/{IstrProjectName}/{IstrServerName}/User Database/{IstrDatabaseName}/Views/{view}",
+                        link = $"/{IstrProjectName}/{astrServerName}/User Database/{IstrDatabaseName}/Views/{view}",
                         selected = true,
                         badge = 12,
                         SchemaEnums = SchemaEnums.Views
                     }
                 );
             });
-            return viewsChildens;
+            return lstViewChildren;
         }
 
         #endregion
 
         #region Programmability
 
-        public static TreeViewJson GetProgrammability(string dbConnections=null)
+        public static TreeViewJson GetProgrammability(string astrDatabaseConnection=null)
         {
             return new TreeViewJson
             {
                 text = "Programmability",
                 icon = "fa fa-folder",
                 mdaIcon = "Programmability",
-                link = $"/{IstrProjectName}/{IstrServerName}/User Database/{IstrDatabaseName}/Programmability",
+                link = $"/{IstrProjectName}/{astrServerName}/User Database/{IstrDatabaseName}/Programmability",
                 selected = true,
                 badge = 12,
                 expand = true,
                 SchemaEnums = SchemaEnums.AllProgrammability,
                 children = new List<TreeViewJson>
                 {
-                    GetStoredProcedures(dbConnections),
-                    GetFunction(dbConnections),
-                    GetDatabaseTrigger(dbConnections),
-                    GetDataBaseType(dbConnections)
+                    GetStoredProcedures(astrDatabaseConnection),
+                    GetFunction(astrDatabaseConnection),
+                    GetDatabaseTrigger(astrDatabaseConnection),
+                    GetDataBaseDataTypes(astrDatabaseConnection)
                 }
             };
         }
 
-        public static TreeViewJson GetStoredProcedures(string dbConnections=null)
+        public static TreeViewJson GetStoredProcedures(string astrDatabaseConnection=null)
         {
             return new TreeViewJson
             {
@@ -349,19 +340,19 @@ namespace MSSQL.DIARY.SRV
                 icon = "fa fa-folder",
                 mdaIcon = "StoredProcedures",
                 link =
-                    $"/{IstrProjectName}/{IstrServerName}/User Database/{IstrDatabaseName}/Programmability/StoredProcedures",
+                    $"/{IstrProjectName}/{astrServerName}/User Database/{IstrDatabaseName}/Programmability/StoredProcedures",
                 selected = true,
                 expand = true,
                 badge = 12,
                 SchemaEnums = SchemaEnums.AllStoreprocedure,
-                children = GetStoredProceduresChildren(dbConnections)
+                children = GetStoredProceduresChildren(astrDatabaseConnection)
             };
         }
 
-        public static List<TreeViewJson> GetStoredProceduresChildren(string dbConnections =null)
+        public static List<TreeViewJson> GetStoredProceduresChildren(string astrDatabaseConnection =null)
         {
             var storeProcedureList = new List<TreeViewJson>();
-            GetStoreProcedures(IstrDatabaseName, dbConnections).ForEach(storeProcedure =>
+            GetStoreProcedures(IstrDatabaseName, astrDatabaseConnection).ForEach(storeProcedure =>
             {
                 storeProcedureList.Add(new TreeViewJson
                 {
@@ -369,7 +360,7 @@ namespace MSSQL.DIARY.SRV
                     icon = "fa fa-table fa-fw",
                     mdaIcon = storeProcedure,
                     link =
-                        $"/{IstrProjectName}/{IstrServerName}/User Database/{IstrDatabaseName}/Programmability/StoredProcedures/{storeProcedure}",
+                        $"/{IstrProjectName}/{astrServerName}/User Database/{IstrDatabaseName}/Programmability/StoredProcedures/{storeProcedure}",
                     selected = true,
                     badge = 12,
                     SchemaEnums = SchemaEnums.Storeprocedure
@@ -379,7 +370,7 @@ namespace MSSQL.DIARY.SRV
             return storeProcedureList;
         }
 
-        public static TreeViewJson GetFunction(string dbConnections= null)
+        public static TreeViewJson GetFunction(string astrDatabaseConnection= null)
         {
             return new TreeViewJson
             {
@@ -387,21 +378,21 @@ namespace MSSQL.DIARY.SRV
                 icon = "fa fa-folder",
                 mdaIcon = "Functions",
                 link =
-                    $"/{IstrProjectName}/{IstrServerName}/User Database/{IstrDatabaseName}/Programmability/Functions",
+                    $"/{IstrProjectName}/{astrServerName}/User Database/{IstrDatabaseName}/Programmability/Functions",
                 selected = true,
                 badge = 12,
                 expand = true,
                 SchemaEnums = SchemaEnums.AllFunctions,
                 children = new List<TreeViewJson>
                 {
-                    GetTableValuedFunctions(dbConnections),
-                    GetScalarValuedFunctions(dbConnections),
-                    GetAggregateFunctions(dbConnections)
+                    GetTableValuedFunctions(astrDatabaseConnection),
+                    GetScalarValuedFunctions(astrDatabaseConnection),
+                    GetAggregateFunctions(astrDatabaseConnection)
                 }
             };
         }
 
-        public static TreeViewJson GetTableValuedFunctions(string dbConnections=null)
+        public static TreeViewJson GetTableValuedFunctions(string astrDatabaseConnection=null)
         {
             return new TreeViewJson
             {
@@ -409,28 +400,28 @@ namespace MSSQL.DIARY.SRV
                 icon = "fa fa-folder",
                 mdaIcon = "Table-valued Functions",
                 link =
-                    $"/{IstrProjectName}/{IstrServerName}/User Database/{IstrDatabaseName}/Programmability/Functions/TableValuedFunctions",
+                    $"/{IstrProjectName}/{astrServerName}/User Database/{IstrDatabaseName}/Programmability/Functions/TableValuedFunctions",
                 selected = true,
                 expand = true,
                 badge = 12,
                 SchemaEnums = SchemaEnums.AllTableValueFunction,
-                children = GetTableValuedFunctionsChildren(dbConnections)
+                children = GetTableValuedFunctionsChildren(astrDatabaseConnection)
             };
         }
 
-        public static List<TreeViewJson> GetTableValuedFunctionsChildren(string dbConnections=null)
+        public static List<TreeViewJson> GetTableValuedFunctionsChildren(string astrDatabaseConnection=null)
         {
-             var TableValuedFunctions = new List<TreeViewJson>();
-                GetTableValueFunctions(IstrDatabaseName, dbConnections).ForEach(Function =>
+             var tableValuedFunctions = new List<TreeViewJson>();
+            GetTableValueFunctions(IstrDatabaseName, astrDatabaseConnection).ForEach(lDatabaseFunctions =>
             {
-                TableValuedFunctions.Add(
+                tableValuedFunctions.Add(
                     new TreeViewJson
                     {
-                        text = Function,
+                        text = lDatabaseFunctions,
                         icon = "fa fa-table fa-fw",
-                        mdaIcon = Function,
+                        mdaIcon = lDatabaseFunctions,
                         link =
-                            $"/{IstrProjectName}/{IstrServerName}/User Database/{IstrDatabaseName}/Programmability/Functions/TableValuedFunctions/{Function}",
+                            $"/{IstrProjectName}/{astrServerName}/User Database/{IstrDatabaseName}/Programmability/Functions/TableValuedFunctions/{lDatabaseFunctions}",
                         selected = true,
                         expand = true,
                         badge = 12,
@@ -438,10 +429,10 @@ namespace MSSQL.DIARY.SRV
                     }
                 );
             });
-            return TableValuedFunctions;
+            return tableValuedFunctions;
         }
 
-        public static TreeViewJson GetScalarValuedFunctions(string dbConnections =null)
+        public static TreeViewJson GetScalarValuedFunctions(string astrDatabaseConnection =null)
         {
             return new TreeViewJson
             {
@@ -449,29 +440,29 @@ namespace MSSQL.DIARY.SRV
                 icon = "fa fa-folder",
                 mdaIcon = "Scalar-valued Functions",
                 link =
-                    $"/{IstrProjectName}/{IstrServerName}/User Database/{IstrDatabaseName}/Programmability/Functions/ScalarValuedFunctions",
+                    $"/{IstrProjectName}/{astrServerName}/User Database/{IstrDatabaseName}/Programmability/Functions/ScalarValuedFunctions",
                 selected = true,
                 expand = true,
                 badge = 12,
                 SchemaEnums = SchemaEnums.AllScalarValueFunctions,
-                children = GetScalarValuedFunctionsChildren(dbConnections)
+                children = GetScalarValuedFunctionsChildren(astrDatabaseConnection)
             };
         }
 
-        public static List<TreeViewJson> GetScalarValuedFunctionsChildren(string dbConnections= null)
+        public static List<TreeViewJson> GetScalarValuedFunctionsChildren(string astrDatabaseConnection= null)
         {
-            var ScalarValuedFunctions = new List<TreeViewJson>();
+            var lstScalarFunctions = new List<TreeViewJson>();
 
-             GetScalarFunctions(IstrDatabaseName, dbConnections).ForEach(Function =>
+             GetScalarFunctions(IstrDatabaseName, astrDatabaseConnection).ForEach(lDatabaseFunctions =>
             {
-                ScalarValuedFunctions.Add(
+                lstScalarFunctions.Add(
                     new TreeViewJson
                     {
-                        text = Function,
+                        text = lDatabaseFunctions,
                         icon = "fa fa-table fa-fw",
-                        mdaIcon = Function,
+                        mdaIcon = lDatabaseFunctions,
                         link =
-                            $"/{IstrProjectName}/{IstrServerName}/User Database/{IstrDatabaseName}/Programmability/Functions/ScalarValuedFunctions/{Function}",
+                            $"/{IstrProjectName}/{astrServerName}/User Database/{IstrDatabaseName}/Programmability/Functions/ScalarValuedFunctions/{lDatabaseFunctions}",
                         selected = true,
                         expand = true,
                         badge = 12,
@@ -479,10 +470,10 @@ namespace MSSQL.DIARY.SRV
                     }
                 );
             });
-            return ScalarValuedFunctions;
+            return lstScalarFunctions;
         }
 
-        public static TreeViewJson GetAggregateFunctions(string dbConnections =null)
+        public static TreeViewJson GetAggregateFunctions(string astrDatabaseConnection =null)
         {
             return new TreeViewJson
             {
@@ -490,28 +481,28 @@ namespace MSSQL.DIARY.SRV
                 icon = "fa fa-folder",
                 mdaIcon = "Aggregate Functions",
                 link =
-                    $"/{IstrProjectName}/{IstrServerName}/User Database/{IstrDatabaseName}/Programmability/Functions/AggregateFunctions",
+                    $"/{IstrProjectName}/{astrServerName}/User Database/{IstrDatabaseName}/Programmability/Functions/AggregateFunctions",
                 selected = true,
                 expand = true,
                 badge = 12,
                 SchemaEnums = SchemaEnums.AllAggregateFunciton,
-                children = GetAggregateFunctionsChildren(dbConnections)
+                children = GetAggregateFunctionsChildren(astrDatabaseConnection)
             };
         }
 
-        public static List<TreeViewJson> GetAggregateFunctionsChildren(string dbConnections= null)
+        public static List<TreeViewJson> GetAggregateFunctionsChildren(string astrDatabaseConnection= null)
         {
-            var AggregateFunctions = new List<TreeViewJson>();
-            GetAggregateFunctions(IstrDatabaseName, dbConnections).ForEach(Function =>
+            var lstAggregateFunctions = new List<TreeViewJson>();
+            GetAggregateFunctions(IstrDatabaseName, astrDatabaseConnection).ForEach(lDatabaseFunctions =>
             {
-                AggregateFunctions.Add(
+                lstAggregateFunctions.Add(
                     new TreeViewJson
                     {
-                        text = Function,
+                        text = lDatabaseFunctions,
                         icon = "fa fa-table fa-fw",
-                        mdaIcon = Function,
+                        mdaIcon = lDatabaseFunctions,
                         link =
-                            $"/{IstrProjectName}/{IstrServerName}/User Database/{IstrDatabaseName}/Programmability/Functions/AggregateFunctions/{Function}",
+                            $"/{IstrProjectName}/{astrServerName}/User Database/{IstrDatabaseName}/Programmability/Functions/AggregateFunctions/{lDatabaseFunctions}",
                         selected = true,
                         expand = true,
                         badge = 12,
@@ -519,10 +510,10 @@ namespace MSSQL.DIARY.SRV
                     }
                 );
             });
-            return AggregateFunctions;
+            return lstAggregateFunctions;
         }
 
-        public static TreeViewJson GetDatabaseTrigger(string dbConnections=null)
+        public static TreeViewJson GetDatabaseTrigger(string astrDatabaseConnection=null)
         {
             return new TreeViewJson
             {
@@ -530,28 +521,28 @@ namespace MSSQL.DIARY.SRV
                 icon = "fa fa-folder",
                 mdaIcon = "DatabaseTrigger",
                 link =
-                    $"/{IstrProjectName}/{IstrServerName}/User Database/{IstrDatabaseName}/Programmability/DatabaseTrigger",
+                    $"/{IstrProjectName}/{astrServerName}/User Database/{IstrDatabaseName}/Programmability/DatabaseTrigger",
                 selected = true,
                 expand = true,
                 SchemaEnums = SchemaEnums.AllTriggers,
                 badge = 12,
-                children = GetDatabaseTriggerChildren(dbConnections)
+                children = GetDatabaseTriggerChildren(astrDatabaseConnection)
             };
         }
 
-        public static List<TreeViewJson> GetDatabaseTriggerChildren(string dbConnections= null)
+        public static List<TreeViewJson> GetDatabaseTriggerChildren(string astrDatabaseConnection= null)
         {
             var databaseTrigger = new List<TreeViewJson>();
-            GetTriggers(IstrDatabaseName, dbConnections).ForEach(trigger =>
+            GetTriggers(IstrDatabaseName, astrDatabaseConnection).ForEach(lDatabaseTrigger =>
             {
                 databaseTrigger.Add(
                     new TreeViewJson
                     {
-                        text = trigger,
+                        text = lDatabaseTrigger,
                         icon = "fa fa-table fa-fw",
-                        mdaIcon = trigger,
+                        mdaIcon = lDatabaseTrigger,
                         link =
-                            $"/{IstrProjectName}/{IstrServerName}/User Database/{IstrDatabaseName}/Programmability/DatabaseTrigger/{trigger}",
+                            $"/{IstrProjectName}/{astrServerName}/User Database/{IstrDatabaseName}/Programmability/DatabaseTrigger/{lDatabaseTrigger}",
                         selected = true,
                         expand = true,
                         badge = 12,
@@ -562,7 +553,7 @@ namespace MSSQL.DIARY.SRV
             return databaseTrigger;
         }
 
-        public static TreeViewJson GetDataBaseType( string dbConnections =null)
+        public static TreeViewJson GetDataBaseDataTypes( string astrDatabaseConnection =null)
         {
             return new TreeViewJson
             {
@@ -570,20 +561,20 @@ namespace MSSQL.DIARY.SRV
                 icon = "fa fa-folder",
                 mdaIcon = "Type",
                 link =
-                    $"/{IstrProjectName}/{IstrServerName}/User Database/{IstrDatabaseName}/Programmability/DataBaseType",
+                    $"/{IstrProjectName}/{astrServerName}/User Database/{IstrDatabaseName}/Programmability/DataBaseType",
                 selected = true,
                 expand = true,
                 badge = 12,
                 SchemaEnums = SchemaEnums.AllDatabaseDataTypes,
                 children = new List<TreeViewJson>
                 {
-                    GetUserDefinedDataType(dbConnections),
-                    GetXmlSchemaCollectionTree(dbConnections)
+                    GetUserDefinedDataType(astrDatabaseConnection),
+                    GetXmlSchemas(astrDatabaseConnection)
                 }
             };
         }
 
-        public static TreeViewJson GetUserDefinedDataType( string dbConnections=null)
+        public static TreeViewJson GetUserDefinedDataType( string astrDatabaseConnection=null)
         {
             return new TreeViewJson
             {
@@ -591,28 +582,28 @@ namespace MSSQL.DIARY.SRV
                 icon = "fa fa-folder",
                 mdaIcon = "User Defined Data Types",
                 link =
-                    $"/{IstrProjectName}/{IstrServerName}/User Database/{IstrDatabaseName}/Programmability/DataBaseType/UserDefinedDataType",
+                    $"/{IstrProjectName}/{astrServerName}/User Database/{IstrDatabaseName}/Programmability/DataBaseType/UserDefinedDataType",
                 selected = true,
                 expand = true,
                 badge = 12,
                 SchemaEnums = SchemaEnums.AllUserDefinedDataType,
-                children = GetUserDefinedDataTypeChildren(dbConnections)
+                children = GetUserDefinedDataTypeChildren(astrDatabaseConnection)
             };
         }
 
-        public static List<TreeViewJson> GetUserDefinedDataTypeChildren( string dbConnections=null)
+        public static List<TreeViewJson> GetUserDefinedDataTypeChildren( string astrDatabaseConnection=null)
         {
             var userDefinedType = new List<TreeViewJson>();
-             GetUserDefinedType(IstrDatabaseName, dbConnections).ForEach(userdefinedfunction =>
+             GetUserDefinedType(IstrDatabaseName, astrDatabaseConnection).ForEach(lUserDefinedType =>
             {
                 userDefinedType.Add(
                     new TreeViewJson
                     {
-                        text = userdefinedfunction,
+                        text = lUserDefinedType,
                         icon = "fa fa-table fa-fw",
-                        mdaIcon = userdefinedfunction,
+                        mdaIcon = lUserDefinedType,
                         link =
-                            $"/{IstrProjectName}/{IstrServerName}/User Database/{IstrDatabaseName}/Programmability/DataBaseType/UserDefinedDataType/{userdefinedfunction}",
+                            $"/{IstrProjectName}/{astrServerName}/User Database/{IstrDatabaseName}/Programmability/DataBaseType/UserDefinedDataType/{lUserDefinedType}",
                         selected = true,
                         expand = true,
                         badge = 12,
@@ -623,7 +614,7 @@ namespace MSSQL.DIARY.SRV
             return userDefinedType;
         }
 
-        public static TreeViewJson GetXmlSchemaCollectionTree(string dbConnections=null)
+        public static TreeViewJson GetXmlSchemas(string astrDatabaseConnection=null)
         {
             return new TreeViewJson
             {
@@ -631,28 +622,28 @@ namespace MSSQL.DIARY.SRV
                 icon = "fa fa-folder",
                 mdaIcon = "XML Schema Collections",
                 link =
-                    $"/{IstrProjectName}/{IstrServerName}/User Database/{IstrDatabaseName}/Programmability/DataBaseType/XmlSchemaCollection",
+                    $"/{IstrProjectName}/{astrServerName}/User Database/{IstrDatabaseName}/Programmability/DataBaseType/XmlSchemaCollection",
                 selected = true,
                 expand = true,
                 badge = 12,
                 SchemaEnums = SchemaEnums.AllXMLSchemaCollection,
-                children = GetXmlSchemaCollectionChildren(dbConnections)
+                children = GetXmlSchemasChildren(astrDatabaseConnection)
             };
         }
 
-        public static List<TreeViewJson> GetXmlSchemaCollectionChildren(string dbConnections =null)
+        public static List<TreeViewJson> GetXmlSchemasChildren(string astrDatabaseConnection =null)
         {
             var definedType = new List<TreeViewJson>();
-            GetTriggers(IstrDatabaseName, dbConnections).ForEach(XmlSchema =>
+            GetTriggers(IstrDatabaseName, astrDatabaseConnection).ForEach(lXmlSchema =>
             {
                 definedType.Add(
                     new TreeViewJson
                     {
-                        text = XmlSchema,
+                        text = lXmlSchema,
                         //icon = "fa fa-home fa-fw",
-                        mdaIcon = XmlSchema,
+                        mdaIcon = lXmlSchema,
                         link =
-                            $"/{IstrProjectName}/{IstrServerName}/User Database/{IstrDatabaseName}/Programmability/DataBaseType/XmlSchemaCollection/{XmlSchema}",
+                            $"/{IstrProjectName}/{astrServerName}/User Database/{IstrDatabaseName}/Programmability/DataBaseType/XmlSchemaCollection/{lXmlSchema}",
                         selected = true,
                         expand = true,
                         badge = 12,
@@ -679,61 +670,36 @@ namespace MSSQL.DIARY.SRV
 
         #endregion
 
-        #region Security
-
-        public static TreeViewJson GetSecurity()
+        public static List<string> GetDatabaseName(string astrDatabaseConnection = null)
         {
-            return new TreeViewJson();
-        }
-
-        public static TreeViewJson GetSecurityUsers()
-        {
-            return new TreeViewJson();
-        }
-
-        public static TreeViewJson GetSecurityRoles()
-        {
-            return new TreeViewJson();
-        }
-
-        private TreeViewJson GetSecuritySchema()
-        {
-            return new TreeViewJson();
-        }
-
-        #endregion
-      
-        public static List<string> GetDatabaseName(string dbConnections = null)
-        {
-            var lst = new List<string>();
-            using (var dbSqldocContext = new MsSqlDiaryContext(dbConnections))
+             
+            using (var dbSqldocContext = new MsSqlDiaryContext(astrDatabaseConnection))
             {
-                lst = dbSqldocContext.GetDatabaseNames().ToList();
-            }
-            return lst;
+                 return dbSqldocContext.GetDatabaseNames();
+            } 
         }
 
-        public static List<string> GetTables(string dbInstanceName = null, string dbConnections = null)
+        public static List<string> GetTables(string astrDatabaseName = null, string astrDatabaseConnection = null)
         {
-            return GetTableList(dbInstanceName, dbConnections);
+            return GetTableList(astrDatabaseName, astrDatabaseConnection);
         }
 
-        public static List<string> GetTableList(string dbInstanceName = null, string dbConnections = null)
+        public static List<string> GetTableList(string astrDatabaseNames = null, string astrDatabaseConnection = null)
         {
-            using (var dbSqldocContext = new MsSqlDiaryContext(dbConnections))
+            using (var dbSqldocContext = new MsSqlDiaryContext(astrDatabaseConnection))
             {
-                return dbSqldocContext.GetTables().Where(x => x != null).ToList();
+                return dbSqldocContext.GetTables();
             }
         }
 
-        public static List<string> GetTablesColumns(string astrTableName, string dbInstanceName = null, string dbConnections = null)
+        public static List<string> GetTablesColumns(string astrTableName, string astrDatabaseNames = null, string astrDatabaseConnection = null)
         {
-            return GetTablesColumnsList(astrTableName, dbInstanceName, dbConnections);
+            return GetTablesColumnsList(astrTableName, astrDatabaseNames, astrDatabaseConnection);
         }
 
-        public static List<string> GetTablesColumnsList(string astrTableName, string dbInstanceName = null, string dbConnections = null)
+        public static List<string> GetTablesColumnsList(string astrTableName, string astrDatabaseNames = null, string astrDatabaseConnection = null)
         {
-            using (var dbSqldocContext = new MsSqlDiaryContext(dbConnections))
+            using (var dbSqldocContext = new MsSqlDiaryContext(astrDatabaseConnection))
             {
                 return dbSqldocContext.GetTableColumns(astrTableName);
             }
@@ -748,113 +714,99 @@ namespace MSSQL.DIARY.SRV
             }
         }
 
-        public static List<string> GetViews(string dbInstanceName = null, string dbConnections = null)
+        public static List<string> GetViews(string astrDatabaseNames = null, string astrDatabaseConnection = null)
         {
-            return GetViewsList(dbInstanceName, dbConnections);
+            return GetViewsList(astrDatabaseNames, astrDatabaseConnection);
         }
 
-        public static List<string> GetViewsList(string dbInstanceName = null, string dbConnections = null)
+        public static List<string> GetViewsList(string astrDatabaseNames = null, string astrDatabaseConnection = null)
         {
-            using (var dbSqldocContext = new MsSqlDiaryContext(dbConnections))
+            using (var dbSqldocContext = new MsSqlDiaryContext(astrDatabaseConnection))
             {
-                return dbSqldocContext.GetViewsWithDescription().Where(x => x.istrName != null).Select(x=>x.istrName).ToList();
+                return dbSqldocContext.GetViewsWithDescription().Select(x=>x.istrName).ToList();
             }
         }
 
-        public static List<string> GetStoreProcedures(string dbInstanceName = null, string dbConnections = null)
+        public static List<string> GetStoreProcedures(string astrDatabaseNames = null, string astrDatabaseConnection = null)
         {
-            return GetStoreProceduresList(dbInstanceName, dbConnections);
+            return GetStoreProceduresList(astrDatabaseNames, astrDatabaseConnection);
         }
 
-        public static List<string> GetStoreProceduresList(string dbInstanceName = null, string dbConnections = null)
+        public static List<string> GetStoreProceduresList(string astrDatabaseNames = null, string astrDatabaseConnection = null)
         {
-            using (var dbSqldocContext = new MsSqlDiaryContext(dbConnections))
+            using (var dbSqldocContext = new MsSqlDiaryContext(astrDatabaseConnection))
             {
                 return dbSqldocContext.GetStoreProcedures().Where(x => x != null).ToList();
             }
         }
 
-        public static List<string> GetScalarFunctions(string dbInstanceName = null, string dbConnections = null)
+        public static List<string> GetScalarFunctions(string astrDatabaseNames = null, string astrDatabaseConnection = null)
         {
-            return GetScalarFunctionsList(dbInstanceName, dbConnections);
+            return GetScalarFunctionsList(astrDatabaseNames, astrDatabaseConnection);
         }
 
-        public static List<string> GetScalarFunctionsList(string dbInstanceName = null, string dbConnections = null)
+        public static List<string> GetScalarFunctionsList(string astrDatabaseNames = null, string astrDatabaseConnection = null)
         {
-            using (var dbSqldocContext = new MsSqlDiaryContext(dbConnections))
+            using (var dbSqldocContext = new MsSqlDiaryContext(astrDatabaseConnection))
             {
                 return dbSqldocContext.GetScalarFunctions().Where(x => x != null).ToList();
                 ;
             }
         }
 
-        public static List<string> GetTableValueFunctions(string dbInstanceName = null, string dbConnections = null)
+        public static List<string> GetTableValueFunctions(string astrDatabaseNames = null, string astrDatabaseConnection = null)
         {
-            return GetTableValueFunctionsList(dbInstanceName, dbConnections);
+            return GetTableValueFunctionsList(astrDatabaseNames, astrDatabaseConnection);
         }
 
-        public static List<string> GetTableValueFunctionsList(string dbInstanceName = null, string dbConnections = null)
+        public static List<string> GetTableValueFunctionsList(string astrDatabaseNames = null, string astrDatabaseConnection = null)
         {
-            using (var dbSqldocContext = new MsSqlDiaryContext(dbConnections))
+            using (var dbSqldocContext = new MsSqlDiaryContext(astrDatabaseConnection))
             {
                 return dbSqldocContext.GetTableValueFunctions().Where(x => x != null).ToList();
             }
         }
 
-        public static List<string> GetAggregateFunctions(string dbInstanceName = null, string dbConnections = null)
+        public static List<string> GetAggregateFunctions(string astrDatabaseNames = null, string astrDatabaseConnection = null)
         {
-            return GetAggregateFunctionsList(dbInstanceName, dbConnections);
+            return GetAggregateFunctionsList(astrDatabaseNames, astrDatabaseConnection);
         }
 
-        public static List<string> GetAggregateFunctionsList(string dbInstanceName = null, string dbConnections = null)
+        public static List<string> GetAggregateFunctionsList(string astrDatabaseNames = null, string astrDatabaseConnection = null)
         {
-            using (var dbSqldocContext = new MsSqlDiaryContext(dbConnections))
+            using (var dbSqldocContext = new MsSqlDiaryContext(astrDatabaseConnection))
             {
                 return dbSqldocContext.GetAggregateFunctions().Where(x => x != null).ToList();
             }
         }
 
-        public static List<string> GetTriggers(string dbInstanceName = null, string dbConnections = null)
+        public static List<string> GetTriggers(string astrDatabaseNames = null, string astrDatabaseConnection = null)
         {
-            return GetTriggersList(dbInstanceName, dbConnections);
+            return GetTriggersList(astrDatabaseNames, astrDatabaseConnection);
         }
 
-        public   static List<string> GetTriggersList(string dbInstanceName = null, string dbConnections = null)
+        public   static List<string> GetTriggersList(string astrDatabaseNames = null, string astrDatabaseConnection = null)
         {
-            using (var dbSqldocContext = new MsSqlDiaryContext(dbConnections))
+            using (var dbSqldocContext = new MsSqlDiaryContext(astrDatabaseConnection))
             {
                 return dbSqldocContext.GetTriggers().Where(x => x.istrName != null).Select(x=>x.istrName).ToList();
             }
         }
-        public static List<string> GetUserDefinedTypesList(string dbInstanceName = null)
+        public static List<string> GetUserDefinedTypesList(string astrDatabaseNames = null)
         {
-            using (var dbSqldocContext = new MsSqlDiaryContext(dbInstanceName))
+            using (var dbSqldocContext = new MsSqlDiaryContext(astrDatabaseNames))
             {
                 return dbSqldocContext.GetUserDefinedDataTypes().Where(x => x.name != null).Select(x=>x.name).ToList();
             }
         }
 
-        public static List<string> GetUserDefinedType(string istrDatabaseName, string dbConnections)
+        public static List<string> GetUserDefinedType(string istrDatabaseName, string astrDatabaseConnection)
         {
-            using (var dbSqldocContext = new MsSqlDiaryContext(dbConnections))
+            using (var dbSqldocContext = new MsSqlDiaryContext(astrDatabaseConnection))
             {
-                return dbSqldocContext.GetUserDefinedDataTypes().Where(x => x.name != null).Select(x=>x.name).ToList();
+                return dbSqldocContext.GetUserDefinedDataTypes().Where(x => x.name != null).Select(x => x.name)
+                    .ToList();
             }
-        }
-
-        public List<string> GetFulllTextLogs()
-        {
-            return new List<string>();
-        }
-
-        public List<string> GetDatabaseRoles()
-        {
-            return new List<string>();
-        }
-
-        public List<string> GetSchemas()
-        {
-            return new List<string>();
         }
     }
      

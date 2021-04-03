@@ -20,21 +20,21 @@ namespace MSSQL.DIARY.UI.APP.Controllers
 
         public DatabaseTriggersController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IHttpContextAccessor httpContextAccessor) : base(context, userManager, httpContextAccessor)
         {
-            srvDatabaseTrigger = new srvDatabaseTrigger();
+            srvDatabaseTrigger = new SrvDatabaseTrigger();
         }
 
-        private srvDatabaseTrigger srvDatabaseTrigger { get; }
+        private SrvDatabaseTrigger srvDatabaseTrigger { get; }
 
         [HttpGet("[action]")]
         public List<PropertyInfo> GetAllDatabaseTrigger(string istrdbName)
         {
-            return srvDatabaseTrigger.GetAllDatabaseTrigger(istrdbName);
+            return srvDatabaseTrigger.GetTriggers(istrdbName);
         }
 
         [HttpGet("[action]")]
         public TriggerInfo GetTriggerInfosByName(string istrdbName, string istrTriggerName)
         {
-            return srvDatabaseTrigger.GetTriggerInfosByName(istrdbName, istrTriggerName).FirstOrDefault();
+            return srvDatabaseTrigger.GetTrigger(istrdbName, istrTriggerName).FirstOrDefault();
         }
 
         [HttpGet("[action]")]

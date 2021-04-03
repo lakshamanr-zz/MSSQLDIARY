@@ -143,7 +143,7 @@ namespace MSSQL.DIARY.EF
         /// </summary>
         /// <param name="astrStoreProcedureName"></param>
         /// <returns></returns>
-        public List<SP_Parameters> GetStoreProceduresParametersWithDescriptions(string astrStoreProcedureName)
+        public List<SP_Parameters> GetStoreProceduresParametersWithDescription(string astrStoreProcedureName)
         {
             var lstStoreProceduresParametersWithDescriptions = new List<SP_Parameters>();
             try

@@ -7,51 +7,62 @@ using MSSQL.DIARY.EF;
 
 namespace MSSQL.DIARY.SRV
 {
-    public class SrvDatabaseObjectDependncy
+    public class SrvDatabaseObjectDependency :SrvMain
     {
-        public string GetObjectThatDependsOn(string istrdbConn, string astrObjectName)
+
+        /// <summary>
+        /// Get object details that depends
+        /// </summary>
+        /// <param name="astrDatabaseConnection"></param>
+        /// <param name="astrObjectName"></param>
+        /// <returns></returns>
+        public string GetObjectThatDependsOn(string astrDatabaseConnection, string astrObjectName)
         {
-            using (var dbSqlDocContext = new MsSqlDiaryContext(istrdbConn))
+            using (var dbSqlDocContext = new MsSqlDiaryContext(astrDatabaseConnection))
             {
                 return GetObjectThatDependsOnJson(dbSqlDocContext.GetObjectThatDependsOn(astrObjectName));
             }
         }
 
-        private string GetObjectThatDependsOnJson(List<ReferencesModel> referencesModels)
+        /// <summary>
+        /// Get object that depends on Json
+        /// </summary>
+        /// <param name="alstReferenceModels"></param>
+        /// <returns></returns>
+        private string GetObjectThatDependsOnJson(List<ReferencesModel> alstReferenceModels)
         {
-            var e = new HierarchyJsonGenerator(
-                AddObjectTypeInfo(referencesModels).Select(x => x.ThePath.Replace("\\", " ")).ToList(),
-                "That Depends On");
-            var result = e.root.PrimengToJson();
-            return result;
-        }
+            HierarchyJsonGenerator lHierarchyJsonGenerator = new HierarchyJsonGenerator(AddObjectTypeInfo(alstReferenceModels).Select(x => x.ThePath.Replace("\\", " ")).ToList(), "That Depends On"); 
+            return  lHierarchyJsonGenerator.root.PrimengToJson();
+        } 
 
-        public string GetBusinessWorkFlowJson(List<string> referencesModels)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="astrDatabaseConnection"></param>
+        /// <param name="astrObjectName"></param>
+        /// <returns></returns>
+        public string GetObjectOnWhichDepends(string astrDatabaseConnection, string astrObjectName)
         {
-            var e = new HierarchyJsonGenerator(referencesModels.Select(x => x.Replace("\\", " ")).ToList(), "");
-            e.root.IblnFirstNode = true;
-            var result = e.root.PrimengToJson();
-            return result;
-        }
-
-
-        public string GetObjectOnWhichDepends(string istrdbConn, string astrObjectName)
-        {
-            using (var dbSqlDocContext = new MsSqlDiaryContext(istrdbConn))
+            using (var dbSqlDocContext = new MsSqlDiaryContext(astrDatabaseConnection))
             {
                 return GetObjectOnWhichDependsOnJson(dbSqlDocContext.GetObjectOnWhichDepends(astrObjectName));
             }
         }
-
-        private string GetObjectOnWhichDependsOnJson(List<ReferencesModel> referencesModels)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="alstReferenceModels"></param>
+        /// <returns></returns>
+        private string GetObjectOnWhichDependsOnJson(List<ReferencesModel> alstReferenceModels)
         {
-            var e = new HierarchyJsonGenerator(
-                AddObjectTypeInfo(referencesModels).Select(x => x.ThePath.Replace("\\", " ")).ToList(),
-                "On Which Depends");
-            var result = e.root.PrimengToJson();
-            return result;
+            HierarchyJsonGenerator lHierarchyJsonGenerator = new HierarchyJsonGenerator(AddObjectTypeInfo(alstReferenceModels).Select(x => x.ThePath.Replace("\\", " ")).ToList(), "On Which Depends");
+            return lHierarchyJsonGenerator.root.PrimengToJson(); 
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="referencesModels"></param>
+        /// <returns></returns>
         private List<ReferencesModel> AddObjectTypeInfo(List<ReferencesModel> referencesModels)
         {
             referencesModels.DistinctBy(x => x.ThePath).ForEach(x =>
@@ -198,16 +209,22 @@ namespace MSSQL.DIARY.SRV
                         x.ThePath += "(XML Data Type)";
                     }
                         break;
-                    //XMLC 
+                    
                 }
             });
 
             return referencesModels;
         }
-
-        public string JsonResutl(string ObjectThatDependsOn, string ObjectOnWhichDepends, string ObjectName)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="astrObjectThatDependsOn"></param>
+        /// <param name="astrObjectOnWhichDepends"></param>
+        /// <param name="astrObjectName"></param>
+        /// <returns></returns>
+        public string GetJsonResult(string astrObjectThatDependsOn, string astrObjectOnWhichDepends, string astrObjectName)
         {
-            var data = "{" +
+            var lstrDependencyTreeDetails = "{" +
                        "  \"data\": [" +
                        "    {" +
                        "      \"label\": \"Dependency Tree\"," +
@@ -215,19 +232,15 @@ namespace MSSQL.DIARY.SRV
                        "      \"collapsedIcon\": \"fa fa-folder-close\"," +
                        "      \"children\": " +
                        "	  [" +
-                       $"{ObjectThatDependsOn}" +
+                       $"{astrObjectThatDependsOn}" +
                        " ," +
-                       $"{ObjectOnWhichDepends}" +
+                       $"{astrObjectOnWhichDepends}" +
                        "   ]" +
                        "} " +
                        "]" +
                        "}";
-            return data;
+            return lstrDependencyTreeDetails;
         }
-
-        public string WorkFlowJsonResutl(string ObjectThatDependsOn, string ParentObjectName)
-        {
-            return ObjectThatDependsOn;
-        }
+         
     }
 }

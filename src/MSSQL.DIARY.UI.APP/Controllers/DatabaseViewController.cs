@@ -29,13 +29,13 @@ namespace MSSQL.DIARY.UI.APP.Controllers
         public List<PropertyInfo> GetAllViewsDetails(string istrdbName)
         {
             string lstrDbConnection = getActiveDatabaseInfo(istrdbName);
-            return SrvDatabaseViews.GetAllViewsDetailsWithms_description(lstrDbConnection);
+            return SrvDatabaseViews.GetViewsWithDescription(lstrDbConnection);
         }
 
         [HttpGet("[action]")]
         public List<ViewDependancy> GetView_Dependancies(string istrdbName, string astrViewName)
         {
-            return SrvDatabaseViews.GetView_Dependancies(istrdbName, astrViewName);
+            return SrvDatabaseViews.GetViewDependencies(istrdbName, astrViewName);
         }
 
         [HttpGet("[action]")]
@@ -59,7 +59,7 @@ namespace MSSQL.DIARY.UI.APP.Controllers
         [HttpGet("[action]")]
         public PropertyInfo GetViewNameWithMs_description(string istrdbName, string astrViewName)
         {
-            return SrvDatabaseViews.GetViewNameWithMs_description(istrdbName, astrViewName);
+            return SrvDatabaseViews.GetViewsWithDescription(istrdbName, astrViewName);
         }
     }
 }

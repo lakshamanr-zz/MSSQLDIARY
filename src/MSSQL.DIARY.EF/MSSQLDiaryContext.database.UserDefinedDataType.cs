@@ -158,7 +158,7 @@ namespace MSSQL.DIARY.EF
         /// </summary>
         /// <param name="astrTypeName"></param>
         /// <param name="astrDescValue"></param>
-        public void CreateUsedDefinedDataTypeDescription(string astrTypeName, string astrDescValue)
+        private void CreateUsedDefinedDataTypeDescription(string astrTypeName, string astrDescValue)
         {
             try
             {
@@ -180,7 +180,7 @@ namespace MSSQL.DIARY.EF
         /// </summary>
         /// <param name="astrTypeName"></param>
         /// <param name="astrDescValue"></param>
-        public void UpdateUsedDefinedDataTypeDescription(string astrTypeName, string astrDescValue)
+        private void UpdateUsedDefinedDataTypeDescription(string astrTypeName, string astrDescValue)
         {
             try
             {
@@ -197,6 +197,22 @@ namespace MSSQL.DIARY.EF
                 // ignored
             }
         }
-         
+
+        /// <summary>
+        /// Create or update the user defined data type extended properties
+        /// </summary>
+        /// <param name="astrTypeName"></param>
+        /// <param name="astrDescriptionValue"></param>
+        public void CreateOrUpdateUsedDefinedDataTypeExtendedProperties(string astrTypeName, string astrDescriptionValue)
+        {
+            try
+            {
+                  UpdateUsedDefinedDataTypeDescription(astrTypeName, astrDescriptionValue); 
+            }
+            catch (Exception)
+            {   
+                CreateUsedDefinedDataTypeDescription(astrTypeName, astrDescriptionValue); 
+            }
+        }
     }
 }

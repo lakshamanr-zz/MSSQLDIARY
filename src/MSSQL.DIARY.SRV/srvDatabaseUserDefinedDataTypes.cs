@@ -5,60 +5,69 @@ using MSSQL.DIARY.EF;
 
 namespace MSSQL.DIARY.SRV
 {
-    public class srvDatabaseUserDefinedDataTypes
+    public class SrvDatabaseUserDefinedDataTypes
     {
-        public List<UserDefinedDataTypeDetails> GetAllUserDefinedDataTypes(string istrdbName)
+        /// <summary>
+        /// Get details about all used defined data types
+        /// </summary>
+        /// <param name="astrDatabaseName"></param>
+        /// <returns></returns>
+        public List<UserDefinedDataTypeDetails> GetUserDefinedDataTypes(string astrDatabaseName)
         {
-            using (var dbSqldocContext = new MsSqlDiaryContext(istrdbName))
+            using (var dbSqldocContext = new MsSqlDiaryContext(astrDatabaseName))
             {
                 return dbSqldocContext.GetUserDefinedDataTypes();
             }
         }
+        /// <summary>
+        /// Get details about specific user defined data type
+        /// </summary>
+        /// <param name="astrDatabaseName"></param>
+        /// <param name="istrTypeName"></param>
+        /// <returns></returns>
 
-        public UserDefinedDataTypeDetails GetUserDefinedDataTypeDetails(string istrdbName, string istrTypeName)
+        public UserDefinedDataTypeDetails GetUserDefinedDataType(string astrDatabaseName, string istrTypeName)
         {
-            using (var dbSqldocContext = new MsSqlDiaryContext(istrdbName))
+            using (var dbSqldocContext = new MsSqlDiaryContext(astrDatabaseName))
             {
                 return dbSqldocContext.GetUserDefinedDataType(istrTypeName);
             }
         }
+        /// <summary>
+        /// Get user defined data type references
+        /// </summary>
+        /// <param name="astrDatabaseName"></param>
+        /// <param name="astrTypeName"></param>
+        /// <returns></returns>
 
-        public List<UserDefinedDataTypeReferance> GetUsedDefinedDataTypeReferance(string istrdbName,
-            string istrTypeName)
+        public List<UserDefinedDataTypeReferance> GetUsedDefinedDataTypeReference(string astrDatabaseName, string astrTypeName)
         {
-            using (var dbSqldocContext = new MsSqlDiaryContext(istrdbName))
+            using (var dbSqldocContext = new MsSqlDiaryContext(astrDatabaseName))
             {
-                return dbSqldocContext.GetUsedDefinedDataTypeReference(istrTypeName);
+                return dbSqldocContext.GetUsedDefinedDataTypeReference(astrTypeName);
             }
         }
+        /// <summary>
+        /// Get user defined data type extended properties
+        /// </summary>
+        /// <param name="astrDatabaseName"></param>
+        /// <param name="istrTypeName"></param>
+        /// <returns></returns>
 
-        public Ms_Description GetUsedDefinedDataTypeExtendedProperties(string istrdbName, string istrTypeName)
+        public Ms_Description GetUsedDefinedDataTypeExtendedProperties(string astrDatabaseName, string istrTypeName)
         {
-            using (var dbSqldocContext = new MsSqlDiaryContext(istrdbName))
+            using (var dbSqldocContext = new MsSqlDiaryContext(astrDatabaseName))
             {
                 return dbSqldocContext.GetUsedDefinedDataTypeExtendedProperties(istrTypeName);
             }
         }
-
-        public void CreateOrUpdateUsedDefinedDataTypeExtendedProperties(string istrdbName, string istrTypeName,
-            string istrdescValue)
+        ///
+        public void CreateOrUpdateUsedDefinedDataTypeExtendedProperties(string astrDatabaseName, string astrTypeName, string astrDescriptionValue)
         {
-            try
+            using (var dbSqldocContext = new MsSqlDiaryContext(astrDatabaseName))
             {
-                using (var dbSqldocContext = new MsSqlDiaryContext(istrdbName))
-                {
-                    dbSqldocContext.UpdateUsedDefinedDataTypeDescription(istrTypeName, istrdescValue);
-                }
+                dbSqldocContext.CreateOrUpdateUsedDefinedDataTypeExtendedProperties(astrTypeName, astrDescriptionValue);
             }
-            catch (Exception ex)
-            {
-                using (var dbSqldocContext = new MsSqlDiaryContext(istrdbName))
-                {
-                    dbSqldocContext.CreateUsedDefinedDataTypeDescription(istrTypeName, istrdescValue);
-                }
-            }
-
-            //
         }
     }
 }

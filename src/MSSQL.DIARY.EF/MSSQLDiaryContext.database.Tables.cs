@@ -505,7 +505,7 @@ namespace MSSQL.DIARY.EF
         /// Get table Fragmentation details
         /// </summary>
         /// <returns></returns>
-        public List<TableFragmentationDetails> GetTableFragmentation()
+        public List<TableFragmentationDetails> GetTablesFragmentation()
         {
             var lstTableFragmentation = new List<TableFragmentationDetails>();
             try

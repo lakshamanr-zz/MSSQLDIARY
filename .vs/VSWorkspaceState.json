@@ -1,8 +1,9 @@
 {
   "ExpandedNodes": [
     "",
-    "\\src"
+    "\\src",
+    "\\src\\MSSQL.DIARY.SRV"
   ],
-  "SelectedNode": "\\MSSQL.DIARY.sln",
+  "SelectedNode": "\\src\\MSSQL.DIARY.SRV\\SrvDatabaseFunctions.cs",
   "PreviewInSolutionExplorer": false
 }

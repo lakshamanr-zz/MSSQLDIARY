@@ -17,28 +17,28 @@ namespace MSSQL.DIARY.UI.APP.Controllers
     {
         public DatabaseUserDefinedDataTypesController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IHttpContextAccessor httpContextAccessor) : base(context, userManager, httpContextAccessor)
         {
-            srvDatabaseUserDefinedDataTypes = new srvDatabaseUserDefinedDataTypes();
+            srvDatabaseUserDefinedDataTypes = new SrvDatabaseUserDefinedDataTypes();
         }
 
-        private srvDatabaseUserDefinedDataTypes srvDatabaseUserDefinedDataTypes { get; }
+        private SrvDatabaseUserDefinedDataTypes srvDatabaseUserDefinedDataTypes { get; }
 
         [HttpGet("[action]")]
         public List<UserDefinedDataTypeDetails> GetAllUserDefinedDataTypes(string istrdbName)
         {
-            return srvDatabaseUserDefinedDataTypes.GetAllUserDefinedDataTypes(istrdbName);
+            return srvDatabaseUserDefinedDataTypes.GetUserDefinedDataTypes(istrdbName);
         }
 
         [HttpGet("[action]")]
         public UserDefinedDataTypeDetails GetUserDefinedDataTypeDetails(string istrdbName, string istrTypeName)
         {
-            return srvDatabaseUserDefinedDataTypes.GetUserDefinedDataTypeDetails(istrdbName, istrTypeName);
+            return srvDatabaseUserDefinedDataTypes.GetUserDefinedDataType(istrdbName, istrTypeName);
         }
 
         [HttpGet("[action]")]
         public List<UserDefinedDataTypeReferance> GetUsedDefinedDataTypeReferance(string istrdbName,
             string istrTypeName)
         {
-            return srvDatabaseUserDefinedDataTypes.GetUsedDefinedDataTypeReferance(istrdbName, istrTypeName);
+            return srvDatabaseUserDefinedDataTypes.GetUsedDefinedDataTypeReference(istrdbName, istrTypeName);
         }
 
         [HttpGet("[action]")]

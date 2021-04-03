@@ -45,22 +45,22 @@ namespace MSSQL.DIARY.UI.APP.Controllers
         [HttpGet("[action]")]
         public List<PropertyInfo> GetdbPropertValues(string istrdbName)
         {
-            SrvDatabaseInfo.istrDBConnection = getActiveDatabaseInfo(istrdbName);
-            return SrvDatabaseInfo.GetdbPropertValues();
+            SrvDatabaseInfo.istrDatabaseConnection = getActiveDatabaseInfo(istrdbName);
+            return SrvDatabaseInfo.GetDatabaseProperties();
         }
 
         [HttpGet("[action]")]
         public List<PropertyInfo> GetdbOptionValues(string istrdbName)
         {
-            SrvDatabaseInfo.istrDBConnection = getActiveDatabaseInfo(istrdbName);
-            return SrvDatabaseInfo.GetdbOptionValues();
+            SrvDatabaseInfo.istrDatabaseConnection = getActiveDatabaseInfo(istrdbName);
+            return SrvDatabaseInfo.GetDatabaseOptions();
         }
 
         [HttpGet("[action]")]
         public List<FileInfomration> GetdbFilesDetails(string istrdbName)
         {
-            SrvDatabaseInfo.istrDBConnection = getActiveDatabaseInfo(istrdbName); 
-            return SrvDatabaseInfo.GetdbFilesDetails();
+            SrvDatabaseInfo.istrDatabaseConnection = getActiveDatabaseInfo(istrdbName); 
+            return SrvDatabaseInfo.GetDatabaseFiles();
         }
     }
 }

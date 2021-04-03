@@ -7,202 +7,257 @@ using MSSQL.DIARY.EF;
 
 namespace MSSQL.DIARY.SRV
 {
-    public class SrvDatabaseTable
+    public class SrvDatabaseTable:SrvMain
     {
         public static NaiveCache<string> CacheThatDependsOn = new NaiveCache<string>();
 
-        public static NaiveCache<List<TablePropertyInfo>> CacheAllTableDetails =
-            new NaiveCache<List<TablePropertyInfo>>();
+        public static NaiveCache<List<TablePropertyInfo>> CacheAllTableDetails = new NaiveCache<List<TablePropertyInfo>>();
 
-        public static NaiveCache<List<TableFragmentationDetails>> CacheAllTableFragmentationDetails =
-            new NaiveCache<List<TableFragmentationDetails>>();
-        public string istrDBConnection { get; set; }
-        public List<TablePropertyInfo> GetAllDatabaseTablesDescription()
+        public static NaiveCache<List<TableFragmentationDetails>> CacheTableFragmentation = new NaiveCache<List<TableFragmentationDetails>>();
+    
+        public List<TablePropertyInfo> GetTablesDescription()
         {
-            return CacheAllTableDetails.GetOrCreate(istrDBConnection, () => CreateCacheIfNot());
+            return CacheAllTableDetails.GetOrCreate(istrDatabaseConnection, GetTablesDescriptionFromCache);
         }
-
-        private  List<TablePropertyInfo> CreateCacheIfNot()
+         
+        /// <summary>
+        /// If the table information is not present in cache then create
+        /// </summary>
+        /// <returns></returns>
+        private  List<TablePropertyInfo> GetTablesDescriptionFromCache()
         {
             var lstTableDetails = new List<TablePropertyInfo>(); 
-            using (var dbSqldocContext = new MsSqlDiaryContext(istrDBConnection))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrDatabaseConnection))
             {
-                dbSqldocContext.GetTablesDescription().GroupBy(x => x.istrName).ToList().ForEach(Tables =>
+                dbSqldocContext.GetTablesDescription().GroupBy(x => x.istrName).ToList().ForEach(lstTableProperties =>
                 {
-                    var tablePropertyInfo = new TablePropertyInfo();
-                    foreach (var Table in Tables)
+                    var lTableProperty = new TablePropertyInfo();
+                    foreach (var lTableProperties in lstTableProperties)
                     {
-                        tablePropertyInfo.istrFullName = Table.istrFullName;
-                        tablePropertyInfo.istrName = Table.istrName;
-                        tablePropertyInfo.istrSchemaName = Table.istrSchemaName;
-                        tablePropertyInfo.istrNevigation = Table.istrNevigation;
-                        if (Table.istrValue.Length > 0)
+                        lTableProperty.istrFullName = lTableProperties.istrFullName;
+                        lTableProperty.istrName = lTableProperties.istrName;
+                        lTableProperty.istrSchemaName = lTableProperties.istrSchemaName;
+                        lTableProperty.istrNevigation = lTableProperties.istrNevigation;
+                        if (lTableProperties.istrValue.Length > 0)
                         {
-                            tablePropertyInfo.istrValue += Table.istrValue;
+                            lTableProperty.istrValue += lTableProperties.istrValue;
                         }
                         else
                         {
-                            if (tablePropertyInfo.istrValue != null && tablePropertyInfo.istrValue.Length > 0)
-                                tablePropertyInfo.istrValue += ";";
+                            if (!string.IsNullOrEmpty(lTableProperty.istrValue))
+                                lTableProperty.istrValue += ";";
                             else
-                                tablePropertyInfo.istrValue +=
-                                    "Purpose of the " + Table.istrFullName + " is missing.. ";
-                        }
-
-                        tablePropertyInfo.tableColumns = Table.tableColumns;
+                                lTableProperty.istrValue += "description of the " + lTableProperties.istrFullName + " is missing.";
+                        } 
+                        lTableProperty.tableColumns = lTableProperties.tableColumns;
                     }
 
-                    if (!(tablePropertyInfo.istrName.Contains("$") || tablePropertyInfo.istrFullName.Contains("\\") ||
-                          tablePropertyInfo.istrFullName.Contains("-")))
-                        
-                        lstTableDetails.Add(tablePropertyInfo);
+                    if (!(lTableProperty.istrName.Contains("$") || lTableProperty.istrFullName.Contains("\\") || lTableProperty.istrFullName.Contains("-")))
+                                 lstTableDetails.Add(lTableProperty);
                 });
             } 
 
             lstTableDetails.ForEach(tablePropertyInfo =>
             {
-                 tablePropertyInfo.tableColumns = GetAllTablesColumn(tablePropertyInfo.istrFullName).DistinctBy(x1 => x1.columnname).ToList(); 
+                 tablePropertyInfo.tableColumns = GetTableColumns(tablePropertyInfo.istrFullName).DistinctBy(x1 => x1.columnname).ToList(); 
             });
             return lstTableDetails;
         }
 
-        public Ms_Description GetTableDescription(string istrtableName)
+        /// <summary>
+        /// Get Table descriptions
+        /// </summary>
+        /// <param name="astrTableName"></param>
+        /// <returns></returns>
+        public Ms_Description GetTableDescription(string astrTableName)
         {
-            using (var dbSqldocContext = new MsSqlDiaryContext(istrDBConnection))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrDatabaseConnection))
             {
-                return dbSqldocContext.GetTableDescription(istrtableName);
+                return dbSqldocContext.GetTableDescription(astrTableName);
             }
         }
 
-        public List<TableIndexInfo> LoadTableIndexes(string istrtableName )
+        /// <summary>
+        /// Get table Indexes
+        /// </summary>
+        /// <param name="astrTableName"></param>
+        /// <returns></returns>
+        public List<TableIndexInfo> LoadTableIndexes(string astrTableName )
         {
-            using (var dbSqldocContext = new MsSqlDiaryContext(istrDBConnection))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrDatabaseConnection))
             {
-                return dbSqldocContext.GetTableIndexes(istrtableName);
+                return dbSqldocContext.GetTableIndexes(astrTableName);
             }
         }
 
-        public TableCreateScript GetTableCreateScript(string istrtableName)
+        /// <summary>
+        /// Get table create script
+        /// </summary>
+        /// <param name="astrTableName"></param>
+        /// <returns></returns>
+        public TableCreateScript GetTableCreateScript(string astrTableName)
         {
-            using (var dbSqldocContext = new MsSqlDiaryContext(istrDBConnection))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrDatabaseConnection))
             {
-                return dbSqldocContext.GetTableCreateScript(istrtableName);
+                return dbSqldocContext.GetTableCreateScript(astrTableName);
             }
         }
 
-        public List<Tabledependencies> GetAllTabledependencies(string istrtableName )
+        /// <summary>
+        /// Get table dependencies
+        /// </summary>
+        /// <param name="astrTableName"></param>
+        /// <returns></returns>
+        public List<Tabledependencies> GetTableDependencies(string astrTableName )
         {
-            using (var dbSqldocContext = new MsSqlDiaryContext(istrDBConnection))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrDatabaseConnection))
             {
-                return dbSqldocContext.GetTableDependencies(istrtableName);
+                return dbSqldocContext.GetTableDependencies(astrTableName);
             }
         }
+        /// <summary>
+        /// Get column information of the table
+        /// </summary>
+        /// <param name="astrTableName"></param>
+        /// <returns></returns>
 
-        public List<TableColumns> GetAllTablesColumn(string istrtableName)
+        public List<TableColumns> GetTableColumns(string astrTableName)
         {
-            using (var dbSqldocContext = new MsSqlDiaryContext(istrDBConnection))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrDatabaseConnection))
             {
-                var lsttblcolumn = new List<TableColumns>();
-                foreach (var keyValue in dbSqldocContext.GetTablesColumn(istrtableName).GroupBy(x => x.columnname))
+                var lstTableColumns = new List<TableColumns>();
+                foreach (var lTableColumnKeyValuePairs in dbSqldocContext.GetTablesColumn(astrTableName).GroupBy(x => x.columnname))
                 {
-                    var tblcolumn = new TableColumns {columnname = keyValue.Key}; 
-                    foreach (var values in keyValue)
+                    var lTableColumn = new TableColumns {columnname = lTableColumnKeyValuePairs.Key}; 
+                    foreach (var lTableColumnValue in lTableColumnKeyValuePairs)
                     {
-                        tblcolumn.tablename = values.tablename;
-                        tblcolumn.key = values.key;
-                        tblcolumn.identity = values.identity;
-                        tblcolumn.max_length = values.max_length;
-                        tblcolumn.allow_null = values.allow_null;
-                        tblcolumn.defaultValue = values.defaultValue;
-                        tblcolumn.data_type = values.data_type;
-                        tblcolumn.description += values.description;
-                        tblcolumn.HideEdit = false; 
+                        lTableColumn.tablename = lTableColumnValue.tablename;
+                        lTableColumn.key = lTableColumnValue.key;
+                        lTableColumn.identity = lTableColumnValue.identity;
+                        lTableColumn.max_length = lTableColumnValue.max_length;
+                        lTableColumn.allow_null = lTableColumnValue.allow_null;
+                        lTableColumn.defaultValue = lTableColumnValue.defaultValue;
+                        lTableColumn.data_type = lTableColumnValue.data_type;
+                        lTableColumn.description += lTableColumnValue.description;
+                        lTableColumn.HideEdit = false; 
                     }
-
-                    lsttblcolumn.Add(tblcolumn);
+                    lstTableColumns.Add(lTableColumn);
                 }
                 int count = 1;
-                lsttblcolumn.ForEach(tblcolumn => 
+                lstTableColumns.ForEach(tableColumn => 
                 {
-                    tblcolumn.id = count;
+                    tableColumn.id = count;
                     count++;
                 });
-                return lsttblcolumn;
+                return lstTableColumns;
             }
         }
 
-        public List<TableFKDependency> GetAllTableForeignKeys(string istrtableName)
+        /// <summary>
+        /// Get Table foreign key details
+        /// </summary>
+        /// <param name="astrTableName"></param>
+        /// <returns></returns>
+        public List<TableFKDependency> GetTableForeignKeys(string astrTableName)
         {
-            using (var dbSqldocContext = new MsSqlDiaryContext(istrDBConnection))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrDatabaseConnection))
             {
-                return dbSqldocContext.GetTableForeignKeys(istrtableName);
+                return dbSqldocContext.GetTableForeignKeys(astrTableName);
+            }
+        }
+        /// <summary>
+        /// Get table Key constraints
+        /// </summary>
+        /// <param name="astrTableName"></param>
+        /// <returns></returns>
+        public List<TableKeyConstraint> GetTableKeyConstraints(string astrTableName)
+        {
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrDatabaseConnection))
+            {
+                return dbSqldocContext.GetTableKeyConstraints(astrTableName);
             }
         }
 
-        public List<TableKeyConstraint> GetTableKeyConstraints(string istrtableName)
+        /// <summary>
+        /// Create or update column descriptions
+        /// </summary>
+        /// <param name="astrDescriptionValue"></param>
+        /// <param name="astrSchemaName"></param>
+        /// <param name="astrTableName"></param>
+        /// <param name="astrColumnDescription"></param>
+        /// <returns></returns>
+        public bool CreateOrUpdateColumnDescription(string astrDescriptionValue, string astrSchemaName, string astrTableName, string astrColumnDescription)
         {
-            using (var dbSqldocContext = new MsSqlDiaryContext(istrDBConnection))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrDatabaseConnection))
             {
-                return dbSqldocContext.GetTableKeyConstraints(istrtableName);
-            }
-        }
-
-        public bool CreateOrUpdateColumnDescription(string astrDescription_Value,
-            string astrSchema_Name, string astrTableName, string astrColumnValue)
-        {
-            using (var dbSqldocContext = new MsSqlDiaryContext(istrDBConnection))
-            {
-                dbSqldocContext.CreateOrUpdateColumnDescription(astrDescription_Value, astrSchema_Name, astrTableName,
-                    astrColumnValue);
+                dbSqldocContext.CreateOrUpdateColumnDescription(astrDescriptionValue, astrSchemaName, astrTableName, astrColumnDescription);
                 return true;
             }
         }
 
-        public void CreateOrUpdateTableDescription( string astrDescription_Value,
-            string astrSchema_Name, string astrTableName)
+        /// <summary>
+        /// Create or update the table descriptions
+        /// </summary>
+        /// <param name="astrDescriptionValue"></param>
+        /// <param name="astrSchemaName"></param>
+        /// <param name="aastrTableName"></param>
+        public void CreateOrUpdateTableDescription( string astrDescriptionValue, string astrSchemaName, string aastrTableName)
         {
-            using (var dbSqldocContext = new MsSqlDiaryContext(istrDBConnection))
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrDatabaseConnection))
             {
-                dbSqldocContext.CreateOrUpdateTableDescription(astrDescription_Value, astrSchema_Name, astrTableName);
+                dbSqldocContext.CreateOrUpdateTableDescription(astrDescriptionValue, astrSchemaName, aastrTableName);
             }
         }
 
-        public string CreatorOrGetDependancyTree(  string istrtableName)
+        public string CreatorOrGetDependancyTree(  string astrTableName)
         {
             return CacheThatDependsOn.GetOrCreate
             (
-                istrDBConnection + "Table" + istrtableName,
+                istrDatabaseConnection + "Table" + astrTableName,
                 () =>
-                    CreateOrGetcacheTableThatDependsOn( istrtableName)
+                    CreateOrGetCacheTableThatDependenceOn( astrTableName)
             );
         }
 
-        public string CreateOrGetcacheTableThatDependsOn( string ObjectName)
+        /// <summary>
+        /// Cache table related dependency
+        /// </summary>
+        /// <param name="astrObjectName"></param>
+        /// <returns></returns>
+        public string CreateOrGetCacheTableThatDependenceOn( string astrObjectName)
         {
-            var srvDatabaseObjectDependncy = new SrvDatabaseObjectDependncy();
-            return srvDatabaseObjectDependncy.JsonResutl(
-                srvDatabaseObjectDependncy.GetObjectThatDependsOn(istrDBConnection, ObjectName),
-                srvDatabaseObjectDependncy.GetObjectOnWhichDepends(istrDBConnection, ObjectName),
-                ObjectName);
+            var srvDatabaseObjectDependency = new SrvDatabaseObjectDependency();
+            return srvDatabaseObjectDependency.GetJsonResult(srvDatabaseObjectDependency.GetObjectThatDependsOn(istrDatabaseConnection, astrObjectName), srvDatabaseObjectDependency.GetObjectOnWhichDepends(istrDatabaseConnection, astrObjectName), astrObjectName);
         }
 
-        public List<TableFragmentationDetails> CacheTblFramentationDetails( )
-        {
-            return CacheAllTableFragmentationDetails.GetOrCreate(istrDBConnection,
-                () => GetAllTableFragmentationDetails( ));
-        }
 
-        private List<TableFragmentationDetails> GetAllTableFragmentationDetails( )
+        /// <summary>
+        /// Cache table related fragmentation details
+        /// </summary>
+        /// <returns></returns>
+        public List<TableFragmentationDetails> CacheTableFragmentationDetails( )
         {
-            using (var dbSqldocContext = new MsSqlDiaryContext(istrDBConnection))
+            return CacheTableFragmentation.GetOrCreate(istrDatabaseConnection, GetTablesFragmentation);
+        }
+        /// <summary>
+        /// Get all table fragmentation details
+        /// </summary>
+        /// <returns></returns>
+        private List<TableFragmentationDetails> GetTablesFragmentation( )
+        {
+            using (var dbSqldocContext = new MsSqlDiaryContext(istrDatabaseConnection))
             {
-                return dbSqldocContext.GetTableFragmentation();
+                return dbSqldocContext.GetTablesFragmentation();
             }
         }
-
-        public List<TableFragmentationDetails> TableFragmentationDetails(  string istrtableName)
+        /// <summary>
+        /// Get Table Fragmentation for the cache
+        /// </summary>
+        /// <param name="astrTableName"></param>
+        /// <returns></returns>
+        public List<TableFragmentationDetails> GetTableFragmentationDetails(  string astrTableName)
         {
-            return CacheTblFramentationDetails().Where(x => x.TableName.Equals(istrtableName)).ToList();
+            return CacheTableFragmentationDetails().Where(x => x.TableName.Equals(astrTableName)).ToList();
         }
     }
 }

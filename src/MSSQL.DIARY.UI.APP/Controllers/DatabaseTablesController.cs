@@ -32,56 +32,56 @@ namespace MSSQL.DIARY.UI.APP.Controllers
         [HttpGet("[action]")]
         public List<TablePropertyInfo> GetAllDatabaseTable(string astrdbName)
         {
-            srvDatabaseTable.istrDBConnection = getActiveDatabaseInfo(astrdbName); 
-           return srvDatabaseTable.GetAllDatabaseTablesDescription(); 
+            srvDatabaseTable.istrDatabaseConnection = getActiveDatabaseInfo(astrdbName); 
+           return srvDatabaseTable.GetTablesDescription(); 
         }
 
         [HttpGet("[action]")]
         public List<TableIndexInfo> LoadTableIndexes(string astrtableName, string astrdbName )
         {
-            srvDatabaseTable.istrDBConnection = getActiveDatabaseInfo(astrdbName);
+            srvDatabaseTable.istrDatabaseConnection = getActiveDatabaseInfo(astrdbName);
             return srvDatabaseTable.LoadTableIndexes(astrtableName);
         }
 
         [HttpGet("[action]")]
         public TableCreateScript GetTableCreateScript(string astrtableName, string astrdbName )
         {
-            srvDatabaseTable.istrDBConnection = getActiveDatabaseInfo(astrdbName);
+            srvDatabaseTable.istrDatabaseConnection = getActiveDatabaseInfo(astrdbName);
             return srvDatabaseTable.GetTableCreateScript(astrtableName);
         }
 
         [HttpGet("[action]")]
         public List<Tabledependencies> GetAllTabledependencies(string astrtableName, string astrdbName )
         {
-            srvDatabaseTable.istrDBConnection = getActiveDatabaseInfo(astrdbName);
-            return srvDatabaseTable.GetAllTabledependencies(astrtableName);
+            srvDatabaseTable.istrDatabaseConnection = getActiveDatabaseInfo(astrdbName);
+            return srvDatabaseTable.GetTableDependencies(astrtableName);
         }
 
         [HttpGet("[action]")]
         public List<TableColumns> GetAllTablesColumn(string astrtableName, string astrdbName )
         {
-            srvDatabaseTable.istrDBConnection = getActiveDatabaseInfo(astrdbName);
-            return srvDatabaseTable.GetAllTablesColumn(astrtableName);
+            srvDatabaseTable.istrDatabaseConnection = getActiveDatabaseInfo(astrdbName);
+            return srvDatabaseTable.GetTableColumns(astrtableName);
         }
 
         [HttpGet("[action]")]
         public Ms_Description GetTableDescription(string astrtableName, string astrdbName )
         {
-            srvDatabaseTable.istrDBConnection = getActiveDatabaseInfo(astrdbName);
+            srvDatabaseTable.istrDatabaseConnection = getActiveDatabaseInfo(astrdbName);
             return srvDatabaseTable.GetTableDescription(astrtableName);
         }
 
         [HttpGet("[action]")]
         public List<TableFKDependency> GetAllTableForeignKeys(string astrtableName, string astrdbName )
         {
-            srvDatabaseTable.istrDBConnection = getActiveDatabaseInfo(astrdbName);
-            return srvDatabaseTable.GetAllTableForeignKeys(astrtableName);
+            srvDatabaseTable.istrDatabaseConnection = getActiveDatabaseInfo(astrdbName);
+            return srvDatabaseTable.GetTableForeignKeys(astrtableName);
         }
 
         [HttpGet("[action]")]
         public List<TableKeyConstraint> GetTableKeyConstraints(string astrtableName, string astrdbName )
         {
-            srvDatabaseTable.istrDBConnection = getActiveDatabaseInfo(astrdbName);
+            srvDatabaseTable.istrDatabaseConnection = getActiveDatabaseInfo(astrdbName);
             return srvDatabaseTable.GetTableKeyConstraints(astrtableName);
         }
 
@@ -89,7 +89,7 @@ namespace MSSQL.DIARY.UI.APP.Controllers
         public bool CreateOrUpdateColumnDescription(string astrTableName, string astrdbName, string astrDescription_Value,
             string astrColumnName)
         {
-            srvDatabaseTable.istrDBConnection = getActiveDatabaseInfo(astrdbName);
+            srvDatabaseTable.istrDatabaseConnection = getActiveDatabaseInfo(astrdbName);
             return srvDatabaseTable.CreateOrUpdateColumnDescription( astrDescription_Value,
                 astrTableName.Split(".")[0], astrTableName, astrColumnName);
         }
@@ -97,7 +97,7 @@ namespace MSSQL.DIARY.UI.APP.Controllers
         [HttpGet("[action]")]
         public bool CreateOrUpdateTableDescription(string astrTableName, string astrdbName, string astrDescription_Value)
         {
-            srvDatabaseTable.istrDBConnection = getActiveDatabaseInfo(astrdbName);
+            srvDatabaseTable.istrDatabaseConnection = getActiveDatabaseInfo(astrdbName);
             srvDatabaseTable.CreateOrUpdateTableDescription( astrDescription_Value,astrTableName.Split(".")[0], astrTableName);
             return true;
         }
@@ -105,7 +105,7 @@ namespace MSSQL.DIARY.UI.APP.Controllers
         [HttpGet("[action]")]
         public object GetDependancyTree(string astrtableName, string astrdbName)
         {
-            srvDatabaseTable.istrDBConnection = getActiveDatabaseInfo(astrdbName);
+            srvDatabaseTable.istrDatabaseConnection = getActiveDatabaseInfo(astrdbName);
             var returnResult= JsonConvert.DeserializeObject( srvDatabaseTable.CreatorOrGetDependancyTree(astrtableName));
             return returnResult;
         }
@@ -113,8 +113,8 @@ namespace MSSQL.DIARY.UI.APP.Controllers
         [HttpGet("[action]")]
         public List<TableFragmentationDetails> TableFragmentationDetails(string astrtableName, string astrdbName)
         {
-            srvDatabaseTable.istrDBConnection = getActiveDatabaseInfo(astrdbName);
-            return srvDatabaseTable.TableFragmentationDetails( astrtableName);
+            srvDatabaseTable.istrDatabaseConnection = getActiveDatabaseInfo(astrdbName);
+            return srvDatabaseTable.GetTableFragmentationDetails( astrtableName);
         }
     }
 }
