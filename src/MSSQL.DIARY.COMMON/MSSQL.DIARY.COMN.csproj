@@ -12,6 +12,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Constant\SqlQueryConstant.Database.ExtendedProperties.cs" />
+    <Compile Remove="Constant\SqlQueryConstant.Database.Functions.cs" />
+    <Compile Remove="Constant\SqlQueryConstant.Database.Schemas.cs" />
+    <Compile Remove="Constant\SqlQueryConstant.Database.Server.cs" />
+    <Compile Remove="Constant\SqlQueryConstant.Database.StoreProcedures.cs" />
+    <Compile Remove="Constant\SqlQueryConstant.Database.Tables.cs" />
+    <Compile Remove="Constant\SqlQueryConstant.Database.Triggers.cs" />
+    <Compile Remove="Constant\SqlQueryConstant.Database.UserDefinedDataType.cs" />
+    <Compile Remove="Constant\SqlQueryConstant.Database.Views.cs" />
+    <Compile Remove="Constant\SqlQueryConstant.DependancyObject.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="morelinq" Version="3.2.0" />
     <PackageReference Include="Z.ExtensionMethods" Version="2.1.1" />
   </ItemGroup>
