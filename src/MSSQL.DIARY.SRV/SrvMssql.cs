@@ -2140,7 +2140,7 @@ namespace MSSQL.DIARY.SRV
         public static List<string> GetStoreProceduresList(string astrDatabaseNames = null, string astrDatabaseConnection = null)
         {
             using var lSqlDatabaseContext = new MsSqlDiaryContext(astrDatabaseConnection);
-            return lSqlDatabaseContext.GetStoreProcedures().Where(x => x != null).ToList();
+            return lSqlDatabaseContext.GetStoreProceduresWithDescription().Where(x => x != null).Select((x=>x.istrName)).ToList();
         }
 
         public static List<string> GetScalarFunctions(string astrDatabaseNames = null, string astrDatabaseConnection = null)

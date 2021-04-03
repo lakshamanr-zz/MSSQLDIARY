@@ -789,16 +789,7 @@ namespace MSSQL.DIARY.EF
                         lstAdvancedServerSettings.Add(lPropertyInfo);
                     }
 
-                }
-
-                //using var reader = command.ExecuteReader();
-                //if (reader.HasRows)
-                //    while (reader.Read())
-                //        lstAdvancedServerSettings.Add(new PropertyInfo
-                //        {
-                //            istrName = reader.GetString(0),
-                //            istrValue = reader.GetString(1).Replace("\0", "")
-                //        });
+                } 
             }
             catch (Exception)
             {
@@ -807,29 +798,7 @@ namespace MSSQL.DIARY.EF
             return lstAdvancedServerSettings;
         }
 
-        /// <summary>
-        /// Get store procedures.
-        /// </summary>
-        /// <returns></returns>
-        public List<string> GetStoreProcedures()
-        {
-            var lstStoreProcedures = new List<string>();
-            try
-            {
-                using var command = Database.GetDbConnection().CreateCommand();
-                command.CommandText = SqlQueryConstant.GetStoreProcedures;
-                Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstStoreProcedures.Add(reader.GetString(0));
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
-            return lstStoreProcedures;
-        }
+         
 
         /// <summary>
         /// Get store procedures with descriptions
@@ -842,17 +811,29 @@ namespace MSSQL.DIARY.EF
             {
                 using var command = Database.GetDbConnection().CreateCommand();
                 command.CommandText = SqlQueryConstant.GetStoreProceduresWithDescription;
-                Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstStoreProceduresWithDescription.Add(new PropertyInfo
+                Database.OpenConnection(); 
+                DataTable ldtStoreProcedures = new DataTable();
+                ldtStoreProcedures.Load(command.ExecuteReader());
+                Type lTypePropertyInfo = typeof(PropertyInfo);
+                PropertyInfo lPropertyInfo;
+                if (ldtStoreProcedures.IsNotNull() && ldtStoreProcedures.Rows.Count > 0)
+                {
+                    foreach (DataRow ldtRow in ldtStoreProcedures.Rows)
+                    {
+                        lPropertyInfo = new PropertyInfo();
+                        foreach (DataColumn ldtColumn in ldtStoreProcedures.Columns)
                         {
-                            istrName = reader.SafeGetString(0),
-                            istrValue = reader.SafeGetString(1)
-                        });
+                            if (!Convert.IsDBNull(ldtRow[ldtColumn]))
+                            {
+                                var piShared = lTypePropertyInfo.GetProperty(ldtColumn.ColumnName);
+                                piShared.SetValue(lPropertyInfo, ldtRow[ldtColumn]);
+                            }
+                        }
+                        lstStoreProceduresWithDescription.Add(lPropertyInfo);
+                    } 
+                } 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 // ignored
             }
