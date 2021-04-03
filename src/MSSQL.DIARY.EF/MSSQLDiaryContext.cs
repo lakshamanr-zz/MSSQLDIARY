@@ -852,14 +852,27 @@ namespace MSSQL.DIARY.EF
                 using var command = Database.GetDbConnection().CreateCommand();
                 command.CommandText = SqlQueryConstant.GetStoreProcedureCreateScript.Replace("@StoreprocName", "'" + astrStoreProcedureName + "'");
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstrStoreProcedureCreateScript.Add(new PropertyInfo
+                DataTable ldtStoreProcedureCreateScript = new DataTable();
+                ldtStoreProcedureCreateScript.Load(command.ExecuteReader()); 
+                Type lTypePropertyInfo = typeof(PropertyInfo);
+                PropertyInfo lPropertyInfo;
+                if (ldtStoreProcedureCreateScript.IsNotNull() && ldtStoreProcedureCreateScript.Rows.Count > 0)
+                {
+                    foreach (DataRow ldtRow in ldtStoreProcedureCreateScript.Rows)
+                    {
+                        lPropertyInfo = new PropertyInfo();
+                        foreach (DataColumn ldtColumn in ldtStoreProcedureCreateScript.Columns)
                         {
-                            istrName = reader.SafeGetString(0),
-                            istrValue = reader.SafeGetString(1)
-                        });
+                            if (!Convert.IsDBNull(ldtRow[ldtColumn]))
+                            {
+                                var piShared = lTypePropertyInfo.GetProperty(ldtColumn.ColumnName);
+                                piShared.SetValue(lPropertyInfo, ldtRow[ldtColumn]);
+                            }
+                        }
+                        lstrStoreProcedureCreateScript.Add(lPropertyInfo);
+                    }
+                }
+
             }
             catch (Exception)
             {
