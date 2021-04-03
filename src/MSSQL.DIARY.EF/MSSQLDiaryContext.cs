@@ -219,13 +219,26 @@ namespace MSSQL.DIARY.EF
                     var newFunctionName = astrFunctionName.Replace(astrFunctionName.Substring(0, astrFunctionName.IndexOf(".", StringComparison.Ordinal)) + ".", "");
                     command.CommandText = SqlQueryConstant.GetFunctionDependencies.Replace("@function_Type", "'" + astrFunctionType + "'").Replace("@function_name", "'" + newFunctionName + "'");
                     Database.OpenConnection();
-                    using var reader = command.ExecuteReader();
-                    if (reader.HasRows)
-                        while (reader.Read())
-                            lstInterdependency.Add(new FunctionDependencies
+                    DataTable ldtFunctionDependencies = new DataTable();
+                    ldtFunctionDependencies.Load(command.ExecuteReader());
+                    FunctionDependencies lFunctionDependencies = new FunctionDependencies();
+                    if (ldtFunctionDependencies.IsNotNull() && ldtFunctionDependencies.Rows.Count > 0)
+                    {
+                        foreach (DataRow ldtRow in ldtFunctionDependencies.Rows)
+                        {
+                            foreach (DataColumn ldtColumn in ldtFunctionDependencies.Columns)
                             {
-                                name = reader.SafeGetString(0)
-                            });
+                                if (!Convert.IsDBNull(ldtRow[ldtColumn]))
+                                {
+                                    var piShared = ldtFunctionDependencies.GetProperty(ldtColumn.ColumnName);
+                                    piShared.SetValue(lFunctionDependencies, ldtRow[ldtColumn]);
+                                }
+                            }
+                            lstInterdependency.Add(lFunctionDependencies);
+                        }
+
+                    }
+                    
                 }
                 catch (Exception)
                 {
@@ -756,14 +769,36 @@ namespace MSSQL.DIARY.EF
                 using var command = Database.GetDbConnection().CreateCommand();
                 command.CommandText = SqlQueryConstant.GetAdvancedServerSettings;
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstAdvancedServerSettings.Add(new PropertyInfo
+                DataTable ldtAdvServerSetting = new DataTable();
+                ldtAdvServerSetting.Load(command.ExecuteReader());
+                Type lTypePropertyInfo = typeof(PropertyInfo);
+                PropertyInfo lPropertyInfo = new PropertyInfo();
+                if (ldtAdvServerSetting.IsNotNull() && ldtAdvServerSetting.Rows.Count > 0)
+                {
+                    foreach (DataRow ldtRow in ldtAdvServerSetting.Rows)
+                    {
+                        lPropertyInfo = new PropertyInfo();
+                        foreach (DataColumn ldtColumn in ldtAdvServerSetting.Columns)
                         {
-                            istrName = reader.GetString(0),
-                            istrValue = reader.GetString(1).Replace("\0", "")
-                        });
+                            if (!Convert.IsDBNull(ldtRow[ldtColumn]))
+                            {
+                                var piShared = lTypePropertyInfo.GetProperty(ldtColumn.ColumnName);
+                                piShared.SetValue(lPropertyInfo, ldtRow[ldtColumn]);
+                            }
+                        }
+                        lstAdvancedServerSettings.Add(lPropertyInfo);
+                    }
+
+                }
+
+                //using var reader = command.ExecuteReader();
+                //if (reader.HasRows)
+                //    while (reader.Read())
+                //        lstAdvancedServerSettings.Add(new PropertyInfo
+                //        {
+                //            istrName = reader.GetString(0),
+                //            istrValue = reader.GetString(1).Replace("\0", "")
+                //        });
             }
             catch (Exception)
             {
