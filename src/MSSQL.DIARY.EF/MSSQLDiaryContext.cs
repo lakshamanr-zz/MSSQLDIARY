@@ -11,7 +11,7 @@ using System.Linq;
 
 namespace MSSQL.DIARY.EF
 {
-    public class MsSqlDiaryContext : DbContext
+    public partial class MsSqlDiaryContext : DbContext
     {
         public MsSqlDiaryContext(string astrDatabaseConnection = null)
         {
@@ -130,16 +130,26 @@ namespace MSSQL.DIARY.EF
                 var command = lDbConnection.CreateCommand();
                 command.CommandText = SqlQueryConstant.GetDatabaseFiles.Replace("@DatabaseName", $"'{lDbConnection.Database}'");
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstDatabaseFiles.Add(new FileInfomration
+                DataTable ldtDatabaseFiles = new DataTable();
+                ldtDatabaseFiles.Load(command.ExecuteReader());
+                Type lTypeFileInformation = typeof(FileInfomration);
+                FileInfomration lFileInfomration = new FileInfomration();
+                if (ldtDatabaseFiles.IsNotNull()&& ldtDatabaseFiles.Rows.Count>0)
+                {
+                    foreach (DataRow ldtRow in ldtDatabaseFiles.Rows)
+                    {
+                        foreach (DataColumn ldtColumn in ldtDatabaseFiles.Columns)
                         {
-                            Name = reader.GetString(0),
-                            FileType = reader.GetString(1),
-                            FileLocation = reader.GetString(2),
-                            FileSize = reader.GetInt32(3).ToString()
-                        });
+                            if (!Convert.IsDBNull(ldtRow[ldtColumn]))
+                            {
+                                var piShared = lTypeFileInformation.GetProperty(ldtColumn.ColumnName);
+                                piShared.SetValue(lFileInfomration, ldtRow[ldtColumn]);
+                            } 
+                        }
+                        lstDatabaseFiles.Add(lFileInfomration);
+                    }
+                    
+                } 
             }
             catch (Exception)
             {
