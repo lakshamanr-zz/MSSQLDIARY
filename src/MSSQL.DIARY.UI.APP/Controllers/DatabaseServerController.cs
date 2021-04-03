@@ -36,18 +36,19 @@ namespace MSSQL.DIARY.UI.APP.Controllers
         }
 
         [HttpGet("[action]")]
-        public List<string> GetDatabaseNames()
+        public List<DatabaseName> GetDatabaseNames()
         {
             SrvServerInfo.IstrDatabaseConnection = getActiveDatabaseInfo();
             return SrvServerInfo.GetDatabaseNames();
         }
         [HttpGet("[action]")]
-        public List<string> GetDatabaseNamesByServername(string astrServerName)
+        public List<DatabaseName> GetDatabaseNamesByServerName(string astrServerName)
         {
-            SrvServerInfo.IstrDatabaseConnection = GetConnectionString(astrServerName); 
-
-            List<string> lstDatabaseName = new List<string>();
-            lstDatabaseName.Add("Select Database");
+            SrvServerInfo.IstrDatabaseConnection = GetConnectionString(astrServerName);
+            List<DatabaseName> lstDatabaseName = new List<DatabaseName>
+            {
+                new DatabaseName {databaseName = "Select Database"}
+            };
             lstDatabaseName.AddRange(SrvServerInfo.GetDatabaseNames());
             return lstDatabaseName;
         }

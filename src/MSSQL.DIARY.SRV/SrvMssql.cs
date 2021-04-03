@@ -965,7 +965,7 @@ namespace MSSQL.DIARY.SRV
         /// Get database names.
         /// </summary>
         /// <returns></returns>
-        public List<string> GetDatabaseNames()
+        public List<DatabaseName> GetDatabaseNames()
         {
             using var lSqlDatabaseContext = new MsSqlDiaryContext(IstrDatabaseConnection);
             return lSqlDatabaseContext.GetDatabaseNames();
@@ -1384,13 +1384,13 @@ namespace MSSQL.DIARY.SRV
         /// <param name="astrDatabaseName"></param>
         /// <param name="astrDatabaseConnection"></param>
         /// <returns></returns>
-        public static TreeViewJson GetDatabase(string astrDatabaseName, string astrDatabaseConnection =null)
+        public static TreeViewJson GetDatabase(DatabaseName astrDatabaseName, string astrDatabaseConnection =null)
         {
             return new TreeViewJson
             {
-                text = astrDatabaseName,
+                text = astrDatabaseName.databaseName,
                 icon = "fa fa-database fa-fw",
-                mdaIcon = astrDatabaseName,
+                mdaIcon = astrDatabaseName.databaseName,
                 link = $"/{IstrProjectName}/{IstrServerName}/User Database/{IstrDatabaseName}",
                 selected = true,
                 badge = 12,
@@ -1407,30 +1407,9 @@ namespace MSSQL.DIARY.SRV
                 }
             };
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="astrUserDataBaseName"></param>
-        /// <param name="astrdatabaseName"></param>
-        /// <returns></returns>
-        public static TreeViewJson GetUserDatabaseNames(string astrUserDataBaseName = null, string astrdatabaseName = null)
-        {
-            return new TreeViewJson
-            {
-                text = astrUserDataBaseName,
-                //icon = "fa fa-home fa-fw",
-                mdaIcon = astrUserDataBaseName,
-                link = "/home/dashboard",
-                selected = true,
-                badge = 12,
-                children = new List<TreeViewJson>
-                {
-                    GetDatabase(astrdatabaseName)
-                }
-            };
-        }
+         
 
-        public static TreeViewJson GetProjectName(string astrProjectName = null, string astrServerName = null, string astrdatabaseName = null, List<string> astrDatabaseNames = null, string astrDatabaseConnection = null)
+        public static TreeViewJson GetProjectName(string astrProjectName = null, string astrServerName = null, string astrdatabaseName = null, List<DatabaseName> astrDatabaseNames = null, string astrDatabaseConnection = null)
         {
             IstrDatabaseName = astrdatabaseName;
             IstrProjectName = astrProjectName;
@@ -1444,7 +1423,7 @@ namespace MSSQL.DIARY.SRV
         /// <param name="astrDatabaseNames"></param>
         /// <param name="astrDatabaseConnection"></param>
         /// <returns></returns>
-        public static TreeViewJson AddDbInformation(string astrProjectName, string astrServerName, List<string> astrDatabaseNames = null, string astrDatabaseConnection = null)
+        public static TreeViewJson AddDbInformation(string astrProjectName, string astrServerName, List<DatabaseName> astrDatabaseNames = null, string astrDatabaseConnection = null)
         {
             var leftTreeJson = new TreeViewJson
             {
@@ -1467,7 +1446,7 @@ namespace MSSQL.DIARY.SRV
         /// <param name="astrDatabaseNames"></param>
         /// <param name="astrDatabaseConnection"></param>
         /// <returns></returns>
-        public static TreeViewJson GetServerName(string astrServerName , List<string> astrDatabaseNames , string astrDatabaseConnection )
+        public static TreeViewJson GetServerName(string astrServerName , List<DatabaseName> astrDatabaseNames , string astrDatabaseConnection )
         {
             var result = new TreeViewJson
             {
@@ -1491,7 +1470,7 @@ namespace MSSQL.DIARY.SRV
         /// <param name="astrDatabaseNames"></param>
         /// <param name="astrDatabaseConnection"></param>
         /// <returns></returns>
-        public static TreeViewJson GetDatabases(List<string> astrDatabaseNames = null, string astrDatabaseConnection = null)
+        public static TreeViewJson GetDatabases(List<DatabaseName> astrDatabaseNames = null, string astrDatabaseConnection = null)
         {
             var rest = new TreeViewJson
             {
@@ -1506,7 +1485,7 @@ namespace MSSQL.DIARY.SRV
             };
             astrDatabaseNames?.ForEach(dbInstance =>
             {
-                IstrDatabaseName = dbInstance;
+                IstrDatabaseName = dbInstance.databaseName;
                 var databaseConnection = string.Empty;
                 databaseConnection += astrDatabaseConnection?.Split(';')[0] + ";";
                 databaseConnection += $"Database={IstrDatabaseName};";
@@ -1525,22 +1504,22 @@ namespace MSSQL.DIARY.SRV
         /// <returns></returns>
         public static List<TreeViewJson> GetObjectExplorer(string astrDatabaseConnection, string astrDatabaseName = null)
         {
-            var lstDatabase = new List<string>();
+            var lstDatabaseNames = new List<DatabaseName>();
             string lstrDefaultDbName;
             if (astrDatabaseName.IsNotNullOrEmpty())
             {
                 lstrDefaultDbName = astrDatabaseName;
-                lstDatabase.Add(astrDatabaseName);
+                lstDatabaseNames.Add(new DatabaseName() {databaseName = astrDatabaseName } );
             }
             else
             {
-                lstrDefaultDbName = GetDatabaseName(astrDatabaseConnection).FirstOrDefault();
-                lstDatabase = GetDatabaseName(astrDatabaseConnection);
+                lstrDefaultDbName = GetDatabaseName(astrDatabaseConnection).Select(x => x.databaseName).First();
+                lstDatabaseNames = GetDatabaseName(astrDatabaseConnection);
             }
 
             var data = new List<TreeViewJson>
             {
-                GetProjectName("Project", astrDatabaseConnection?.Split(';')[0].Replace("Data Source =", "").Replace("Data Source=", "") , lstrDefaultDbName, lstDatabase, astrDatabaseConnection)};
+                GetProjectName("Project", astrDatabaseConnection?.Split(';')[0].Replace("Data Source =", "").Replace("Data Source=", "") , lstrDefaultDbName, lstDatabaseNames, astrDatabaseConnection)};
             return data;
         }
 
@@ -2068,7 +2047,7 @@ namespace MSSQL.DIARY.SRV
         /// </summary>
         /// <param name="astrDatabaseConnection"></param>
         /// <returns></returns>
-        public static List<string> GetDatabaseName(string astrDatabaseConnection = null)
+        public static List<DatabaseName> GetDatabaseName(string astrDatabaseConnection = null)
         {
             using var lSqlDatabaseContext = new MsSqlDiaryContext(astrDatabaseConnection);
             return lSqlDatabaseContext.GetDatabaseNames();

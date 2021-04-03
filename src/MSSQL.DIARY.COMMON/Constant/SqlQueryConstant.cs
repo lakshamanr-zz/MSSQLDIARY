@@ -24,7 +24,7 @@
         public static  string UpdateSchemaColumnExtendedProperty = @"EXEC sys.sp_updateextendedproperty @name=N'MS_Description', @value=@Schema_info ,@level0type=N'SCHEMA',@level0name=@SchemaName";
         public static  string CreateSchemaColumnExtendedProperty = @"EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=@Schema_info ,@level0type=N'SCHEMA',@level0name=@SchemaName";
         public static  string GetCurrentDataBaseName = @"SELECT DB_NAME() AS [Current_Database]";
-        public static  string GetDatabaseNames = @"SELECT name FROM master.dbo.sysdatabases where name not in ('master','tempdb','model','msdb')";
+        public static  string GetDatabaseNames = @"SELECT CONVERT(VARCHAR(20),name) as databaseName FROM master.dbo.sysdatabases where name not in ('master','tempdb','model','msdb')";
         public static  string GetServerName = @"SELECT @@SERVERNAME";
         public static  string GetTables = @"[sys].[sp_tables]";
         public static  string GetTableColumns = @"SELECT  c.name AS column_name FROM sys.tables AS t INNER JOIN sys.columns c ON t.OBJECT_ID = c.OBJECT_ID WHERE t.name LIKE '%@tableName%' ";

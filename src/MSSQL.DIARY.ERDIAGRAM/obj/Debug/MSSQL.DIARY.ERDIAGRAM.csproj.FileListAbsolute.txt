@@ -15,3 +15,4 @@ F:\Lakshaman\GitHub\MSSQLDIARY\src\MSSQL.DIARY.ERDIAGRAM\obj\Debug\MSSQL.DIARY.E
 F:\Lakshaman\GitHub\MSSQLDIARY\src\MSSQL.DIARY.ERDIAGRAM\obj\Debug\MSSQL.DIARY.ERDIAGRAM.csproj.CopyComplete
 F:\Lakshaman\GitHub\MSSQLDIARY\src\MSSQL.DIARY.ERDIAGRAM\obj\Debug\GrahicsViz.dll
 F:\Lakshaman\GitHub\MSSQLDIARY\src\MSSQL.DIARY.ERDIAGRAM\obj\Debug\GrahicsViz.pdb
+F:\Lakshaman\GitHub\MSSQLDIARY\src\MSSQL.DIARY.ERDIAGRAM\obj\Debug\MSSQL.DIARY.ERDIAGRAM.csprojAssemblyReference.cache

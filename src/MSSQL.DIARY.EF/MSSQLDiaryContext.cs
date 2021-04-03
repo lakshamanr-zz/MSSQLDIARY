@@ -163,20 +163,38 @@ namespace MSSQL.DIARY.EF
         /// Get database names.
         /// </summary>
         /// <returns></returns>
-        public List<string> GetDatabaseNames()
+        public List<DatabaseName> GetDatabaseNames()
         {
-            var lstDatabaseNames = new List<string>();
+            var lstDatabaseNames = new List<DatabaseName>();
             try
             {
                 using var command = Database.GetDbConnection().CreateCommand();
                 command.CommandText = SqlQueryConstant.GetDatabaseNames;
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstDatabaseNames.Add(reader.GetString(0));
+                DataTable ldtDatabaseNames = new DataTable();
+                ldtDatabaseNames.Load(command.ExecuteReader());
+                Type lTypeDatabaseName = typeof(DatabaseName);
+                DatabaseName lDatabaseName = new DatabaseName();
+                if (ldtDatabaseNames.IsNotNull() && ldtDatabaseNames.Rows.Count > 0)
+                {
+                    foreach (DataRow ldtRow in ldtDatabaseNames.Rows)
+                    {
+                        lDatabaseName = new DatabaseName();
+                        foreach (DataColumn ldtColumn in ldtDatabaseNames.Columns)
+                        {
+                            if (!Convert.IsDBNull(ldtRow[ldtColumn]))
+                            {
+                                var piShared = lTypeDatabaseName.GetProperty(ldtColumn.ColumnName);
+                                piShared.SetValue(lDatabaseName, ldtRow[ldtColumn]);
+                            }
+                        }
+                        lstDatabaseNames.Add(lDatabaseName);
+                    }
+
+                }
+                
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 // ignored
             }
