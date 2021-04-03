@@ -20,10 +20,10 @@ namespace MSSQL.DIARY.UI.APP.Controllers
 
         public DatabaseViewController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IHttpContextAccessor httpContextAccessor) : base(context, userManager, httpContextAccessor)
         {
-            SrvDatabaseViews = new SrvDatabaseViews();
+            SrvDatabaseViews = new SrvMssql();
         }
 
-        private SrvDatabaseViews SrvDatabaseViews { get; }
+        private SrvMssql SrvDatabaseViews { get; }
 
         [HttpGet("[action]")]
         public List<PropertyInfo> GetAllViewsDetails(string istrdbName)

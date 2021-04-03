@@ -11,7 +11,7 @@ using System.Linq;
 
 namespace MSSQL.DIARY.EF
 {
-    public partial class MsSqlDiaryContext : DbContext
+    public class MsSqlDiaryContext : DbContext
     {
         public MsSqlDiaryContext(string astrDatabaseConnection = null)
         {
@@ -1534,7 +1534,7 @@ namespace MSSQL.DIARY.EF
                 else
                 {
                     command.CommandText = SqlQueryConstant.GetTableFkReferencesBySchemaName.Replace("@SchemaName", $"'{astrSchemaName}'");
-                    ;
+                    
                 }
                 Database.OpenConnection();
                 using var reader = command.ExecuteReader();

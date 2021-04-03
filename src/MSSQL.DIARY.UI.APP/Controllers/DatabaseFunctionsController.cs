@@ -19,90 +19,90 @@ namespace MSSQL.DIARY.UI.APP.Controllers
 
         public DatabaseFunctionsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IHttpContextAccessor httpContextAccessor) : base(context, userManager, httpContextAccessor)
         {
-            SrvDatabaseScalarFunction = new SrvDatabaseFunctions("FN");
-            SrvDatabaseTableValueFunction = new SrvDatabaseFunctions("TF");
+            SrvMssqlScalarFunction = new SrvMssql("FN");
+            SrvMssqlTableValueFunction = new SrvMssql("TF");
         }
 
-        public SrvDatabaseFunctions SrvDatabaseTableValueFunction { get; set; }
-        public SrvDatabaseFunctions SrvDatabaseScalarFunction { get; set; }
+        public SrvMssql SrvMssqlTableValueFunction { get; set; }
+        public SrvMssql SrvMssqlScalarFunction { get; set; }
 
         [HttpGet("[action]")]
         public List<FunctionDependencies> GetScalerFunctionDependencies(string istrdbName, string astrFunctionName)
         {
-            return SrvDatabaseScalarFunction.GetFunctionDependencies(istrdbName, astrFunctionName);
+            return SrvMssqlScalarFunction.GetFunctionDependencies(istrdbName, astrFunctionName);
         }
 
         [HttpGet("[action]")]
         public List<FunctionProperties> GetScalerFunctionProperties(string istrdbName, string astrFunctionName)
         {
-            return SrvDatabaseScalarFunction.GetFunctionProperties(istrdbName, astrFunctionName);
+            return SrvMssqlScalarFunction.GetFunctionProperties(istrdbName, astrFunctionName);
         }
 
         [HttpGet("[action]")]
         public List<FunctionParameters> GetScalerFunctionParameters(string istrdbName, string astrFunctionName)
         {
-            return SrvDatabaseScalarFunction.GetFunctionParameters(istrdbName, astrFunctionName);
+            return SrvMssqlScalarFunction.GetFunctionParameters(istrdbName, astrFunctionName);
         }
 
         [HttpGet("[action]")]
         public FunctionCreateScript GetScalerFunctionCreateScript(string istrdbName, string astrFunctionName)
         {
-            return SrvDatabaseScalarFunction.GetFunctionCreateScript(istrdbName, astrFunctionName);
+            return SrvMssqlScalarFunction.GetFunctionCreateScript(istrdbName, astrFunctionName);
         }
 
         [HttpGet("[action]")]
         public List<PropertyInfo> GetAllScalarFunctionWithMsDescriptions(string istrdbName)
         {
-            return SrvDatabaseScalarFunction.GetFunctionsWithDescription(istrdbName);
+            return SrvMssqlScalarFunction.GetFunctionsWithDescription(istrdbName);
         }
 
         [HttpGet("[action]")]
         public PropertyInfo GetScalarFunctionMsDescriptions(string istrdbName, string astrFunctionName)
         {
-            return SrvDatabaseScalarFunction.GetFunctionWithDescription(istrdbName, astrFunctionName);
+            return SrvMssqlScalarFunction.GetFunctionWithDescription(istrdbName, astrFunctionName);
         }
 
         [HttpGet("[action]")]
         public List<FunctionDependencies> GetTableValueFunctionDependencies(string istrdbName, string astrFunctionName)
         {
-            return SrvDatabaseTableValueFunction.GetFunctionDependencies(istrdbName, astrFunctionName);
+            return SrvMssqlTableValueFunction.GetFunctionDependencies(istrdbName, astrFunctionName);
         }
 
         [HttpGet("[action]")]
         public List<FunctionProperties> GetTableValueFunctionProperties(string istrdbName, string astrFunctionName)
         {
-            return SrvDatabaseTableValueFunction.GetFunctionProperties(istrdbName, astrFunctionName);
+            return SrvMssqlTableValueFunction.GetFunctionProperties(istrdbName, astrFunctionName);
         }
 
         [HttpGet("[action]")]
         public List<FunctionParameters> GetTableValueFunctionParameters(string istrdbName, string astrFunctionName)
         {
-            return SrvDatabaseTableValueFunction.GetFunctionParameters(istrdbName, astrFunctionName);
+            return SrvMssqlTableValueFunction.GetFunctionParameters(istrdbName, astrFunctionName);
         }
 
         [HttpGet("[action]")]
         public FunctionCreateScript GetTableValueFunctionCreateScript(string istrdbName, string astrFunctionName)
         {
-            return SrvDatabaseTableValueFunction.GetFunctionCreateScript(istrdbName, astrFunctionName);
+            return SrvMssqlTableValueFunction.GetFunctionCreateScript(istrdbName, astrFunctionName);
         }
 
         [HttpGet("[action]")]
         public List<PropertyInfo> GetAllTableValueFunctionWithMsDescriptions(string istrdbName)
         {
-            return SrvDatabaseTableValueFunction.GetFunctionsWithDescription(istrdbName);
+            return SrvMssqlTableValueFunction.GetFunctionsWithDescription(istrdbName);
         }
 
         [HttpGet("[action]")]
         public PropertyInfo GetTableValueFunctionMsDescriptions(string istrdbName, string astrFunctionName)
         {
-            return SrvDatabaseTableValueFunction.GetFunctionWithDescription(istrdbName, astrFunctionName);
+            return SrvMssqlTableValueFunction.GetFunctionWithDescription(istrdbName, astrFunctionName);
         }
 
         [HttpGet("[action]")]
         public bool CreateOrUpdateScalerFunctionDescription(string istrdbName, string astrDescription_Value,
             string astrFunctionName)
         {
-            SrvDatabaseScalarFunction.CreateOrUpdateFunctionDescription(istrdbName, astrDescription_Value,
+            SrvMssqlScalarFunction.CreateOrUpdateFunctionDescription(istrdbName, astrDescription_Value,
                 astrFunctionName.Split(".")[0], astrFunctionName);
             return true;
         }
@@ -111,7 +111,7 @@ namespace MSSQL.DIARY.UI.APP.Controllers
         public bool CreateOrUpdateTableValueFunctionDescription(string istrdbName, string astrDescription_Value,
             string astrFunctionName)
         {
-            SrvDatabaseTableValueFunction.CreateOrUpdateFunctionDescription(istrdbName, astrDescription_Value,
+            SrvMssqlTableValueFunction.CreateOrUpdateFunctionDescription(istrdbName, astrDescription_Value,
                 astrFunctionName.Split(".")[0], astrFunctionName);
             return true;
         }

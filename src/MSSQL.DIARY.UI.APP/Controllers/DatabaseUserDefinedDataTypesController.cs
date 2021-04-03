@@ -17,10 +17,10 @@ namespace MSSQL.DIARY.UI.APP.Controllers
     {
         public DatabaseUserDefinedDataTypesController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IHttpContextAccessor httpContextAccessor) : base(context, userManager, httpContextAccessor)
         {
-            SrvDatabaseUserDefinedDataTypes = new SrvDatabaseUserDefinedDataTypes();
+            SrvDatabaseUserDefinedDataTypes = new SrvMssql();
         }
 
-        private SrvDatabaseUserDefinedDataTypes SrvDatabaseUserDefinedDataTypes { get; }
+        private SrvMssql SrvDatabaseUserDefinedDataTypes { get; }
 
         [HttpGet("[action]")]
         public List<UserDefinedDataTypeDetails> GetAllUserDefinedDataTypes(string istrdbName)

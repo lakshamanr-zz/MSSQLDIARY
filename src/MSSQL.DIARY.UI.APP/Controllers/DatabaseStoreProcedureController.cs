@@ -23,32 +23,32 @@ namespace MSSQL.DIARY.UI.APP.Controllers
 
         public DatabaseStoreProcedureController()
         {
-            SrvDatabaseStoreProc = new SrvDatabaseStoreProc();
-            srvServerInfo = new SrvDatabaseServer();
+            SrvDatabaseStoreProc = new SrvMssql();
+            SrvServerInfo = new SrvMssql();
             
         }
 
         public DatabaseStoreProcedureController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IHttpContextAccessor httpContextAccessor) : base(context, userManager, httpContextAccessor)
         {
-            SrvDatabaseStoreProc = new SrvDatabaseStoreProc();
-            srvServerInfo = new SrvDatabaseServer();
+            SrvDatabaseStoreProc = new SrvMssql();
+            SrvServerInfo = new SrvMssql();
         }
 
-        private SrvDatabaseStoreProc SrvDatabaseStoreProc { get; }
-        private SrvDatabaseServer srvServerInfo { get; }
+        private SrvMssql SrvDatabaseStoreProc { get; }
+        private SrvMssql SrvServerInfo { get; }
 
         [HttpGet("[action]")]
         public List<SP_PropertyInfo> GetAllStoreprocedureDescription(string istrdbName, bool iblnSearchInSSISPackages)
         {
-            var AllStoreprocedure = SrvDatabaseStoreProc.GetStoreProceduresWithDescription(istrdbName);
-            var serverName = srvServerInfo.GetServerName().FirstOrDefault();
+            var storeprocedure = SrvDatabaseStoreProc.GetStoreProceduresWithDescription(istrdbName);
+            var serverName = SrvServerInfo.GetServerName().FirstOrDefault();
             //var SSRS_package = new List<PackageJsonHandler>();
             //SSISPackageInfoHandlerController.GetAllSSISPackages(_hostingEnv.WebRootPath);
             //SSISPackageInfoHandlerController.SSISPkgeCache.Cache.TryGetValue(serverName, out SSRS_package);
             //if (SSRS_package != null) FillSSISPackageDetails(AllStoreprocedure, SSRS_package);
             if (iblnSearchInSSISPackages)
-                AllStoreprocedure = AllStoreprocedure.Where(x => x.lstSSISpackageReferance.IsNotNull()).ToList();
-            return AllStoreprocedure;
+                storeprocedure = storeprocedure.Where(x => x.lstSSISpackageReferance.IsNotNull()).ToList();
+            return storeprocedure;
         }
 
         //private static void FillSSISPackageDetails(List<SP_PropertyInfo> AllStoreprocedure,
