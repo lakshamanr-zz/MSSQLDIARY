@@ -52,9 +52,11 @@ namespace MSSQL.DIARY.SERVICE.EXCEL
                             {
                                 ldtExcelWorkBook.Rows[ldtExcelWorkBook.Rows.Count - 1][i] = GetValue(doc, cell);
                             }
-                            catch (Exception ex)
-                            { 
+                            catch (Exception)
+                            {
+                                // ignored
                             }
+
                             i++;
                         }
                     }

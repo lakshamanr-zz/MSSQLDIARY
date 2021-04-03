@@ -111,7 +111,6 @@ namespace MSSQL.DIARY.SRV
 
         public static TreeViewJson GetProjectName(string astrProjectName = null, string astrServerName = null, string astrdatabaseName = null, List<string> astrDatabaseNames = null, string astrDatabaseConnection=null)
         {
-            astrServerName = astrServerName;
             IstrDatabaseName = astrdatabaseName;
             IstrProjectName = astrProjectName;
             return AddDbInformations(astrProjectName, astrServerName, astrDatabaseNames, astrDatabaseConnection);

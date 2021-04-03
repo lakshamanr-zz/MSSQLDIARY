@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using MSSQL.DIARY.COMN.Models;
 using MSSQL.DIARY.EF;
-using MSSQL.DIARY.SRV.Interfaces;
 
 namespace MSSQL.DIARY.SRV
 {

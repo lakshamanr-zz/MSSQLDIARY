@@ -41,11 +41,10 @@ namespace MSSQL.DIARY.UI.APP.Controllers
                 {
                     naiveCache.Add(UserId, DatabaseNameConnection);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
- 
+                    // ignored
                 }
-                
             }
             
         }
