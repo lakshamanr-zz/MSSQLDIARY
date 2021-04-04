@@ -24,97 +24,97 @@ namespace MSSQL.DIARY.UI.APP.Controllers
 
         public DatabaseTablesController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IHttpContextAccessor httpContextAccessor) : base(context, userManager, httpContextAccessor)
         {
-            srvDatabaseTable = new SrvDatabaseTable(); 
+            ISrvMssql = new SrvMssql(); 
             this.applicationDbContext = context;
         }
-        private SrvDatabaseTable srvDatabaseTable { get; }
+        private SrvMssql ISrvMssql { get; }
 
         [HttpGet("[action]")]
         public List<TablePropertyInfo> GetAllDatabaseTable(string astrdbName)
         {
-            srvDatabaseTable.istrDBConnection = getActiveDatabaseInfo(astrdbName); 
-           return srvDatabaseTable.GetAllDatabaseTablesDescription(); 
+            ISrvMssql.IstrDatabaseConnection = getActiveDatabaseInfo(astrdbName); 
+           return ISrvMssql.GetTablesDescription(); 
         }
 
         [HttpGet("[action]")]
         public List<TableIndexInfo> LoadTableIndexes(string astrtableName, string astrdbName )
         {
-            srvDatabaseTable.istrDBConnection = getActiveDatabaseInfo(astrdbName);
-            return srvDatabaseTable.LoadTableIndexes(astrtableName);
+            ISrvMssql.IstrDatabaseConnection = getActiveDatabaseInfo(astrdbName);
+            return ISrvMssql.LoadTableIndexes(astrtableName);
         }
 
         [HttpGet("[action]")]
         public TableCreateScript GetTableCreateScript(string astrtableName, string astrdbName )
         {
-            srvDatabaseTable.istrDBConnection = getActiveDatabaseInfo(astrdbName);
-            return srvDatabaseTable.GetTableCreateScript(astrtableName);
+            ISrvMssql.IstrDatabaseConnection = getActiveDatabaseInfo(astrdbName);
+            return ISrvMssql.GetTableCreateScript(astrtableName);
         }
 
         [HttpGet("[action]")]
         public List<Tabledependencies> GetAllTabledependencies(string astrtableName, string astrdbName )
         {
-            srvDatabaseTable.istrDBConnection = getActiveDatabaseInfo(astrdbName);
-            return srvDatabaseTable.GetAllTabledependencies(astrtableName);
+            ISrvMssql.IstrDatabaseConnection = getActiveDatabaseInfo(astrdbName);
+            return ISrvMssql.GetTableDependencies(astrtableName);
         }
 
         [HttpGet("[action]")]
         public List<TableColumns> GetAllTablesColumn(string astrtableName, string astrdbName )
         {
-            srvDatabaseTable.istrDBConnection = getActiveDatabaseInfo(astrdbName);
-            return srvDatabaseTable.GetAllTablesColumn(astrtableName);
+            ISrvMssql.IstrDatabaseConnection = getActiveDatabaseInfo(astrdbName);
+            return ISrvMssql.GetTableColumns(astrtableName);
         }
 
         [HttpGet("[action]")]
         public Ms_Description GetTableDescription(string astrtableName, string astrdbName )
         {
-            srvDatabaseTable.istrDBConnection = getActiveDatabaseInfo(astrdbName);
-            return srvDatabaseTable.GetTableDescription(astrtableName);
+            ISrvMssql.IstrDatabaseConnection = getActiveDatabaseInfo(astrdbName);
+            return ISrvMssql.GetTableDescription(astrtableName);
         }
 
         [HttpGet("[action]")]
         public List<TableFKDependency> GetAllTableForeignKeys(string astrtableName, string astrdbName )
         {
-            srvDatabaseTable.istrDBConnection = getActiveDatabaseInfo(astrdbName);
-            return srvDatabaseTable.GetAllTableForeignKeys(astrtableName);
+            ISrvMssql.IstrDatabaseConnection = getActiveDatabaseInfo(astrdbName);
+            return ISrvMssql.GetTableForeignKeys(astrtableName);
         }
 
         [HttpGet("[action]")]
         public List<TableKeyConstraint> GetTableKeyConstraints(string astrtableName, string astrdbName )
         {
-            srvDatabaseTable.istrDBConnection = getActiveDatabaseInfo(astrdbName);
-            return srvDatabaseTable.GetTableKeyConstraints(astrtableName);
+            ISrvMssql.IstrDatabaseConnection = getActiveDatabaseInfo(astrdbName);
+            return ISrvMssql.GetTableKeyConstraints(astrtableName);
         }
 
         [HttpGet("[action]")]
         public bool CreateOrUpdateColumnDescription(string astrTableName, string astrdbName, string astrDescription_Value,
             string astrColumnName)
         {
-            srvDatabaseTable.istrDBConnection = getActiveDatabaseInfo(astrdbName);
-            return srvDatabaseTable.CreateOrUpdateColumnDescription( astrDescription_Value,
+            ISrvMssql.IstrDatabaseConnection = getActiveDatabaseInfo(astrdbName);
+            return ISrvMssql.CreateOrUpdateColumnDescription( astrDescription_Value,
                 astrTableName.Split(".")[0], astrTableName, astrColumnName);
         }
 
         [HttpGet("[action]")]
         public bool CreateOrUpdateTableDescription(string astrTableName, string astrdbName, string astrDescription_Value)
         {
-            srvDatabaseTable.istrDBConnection = getActiveDatabaseInfo(astrdbName);
-            srvDatabaseTable.CreateOrUpdateTableDescription( astrDescription_Value,astrTableName.Split(".")[0], astrTableName);
+            ISrvMssql.IstrDatabaseConnection = getActiveDatabaseInfo(astrdbName);
+            ISrvMssql.CreateOrUpdateTableDescription( astrDescription_Value,astrTableName.Split(".")[0], astrTableName);
             return true;
         }
 
         [HttpGet("[action]")]
         public object GetDependancyTree(string astrtableName, string astrdbName)
         {
-            srvDatabaseTable.istrDBConnection = getActiveDatabaseInfo(astrdbName);
-            var returnResult= JsonConvert.DeserializeObject( srvDatabaseTable.CreatorOrGetDependancyTree(astrtableName));
+            ISrvMssql.IstrDatabaseConnection = getActiveDatabaseInfo(astrdbName);
+            var returnResult= JsonConvert.DeserializeObject( ISrvMssql.CreatorOrGetDependencyTree(astrtableName));
             return returnResult;
         }
 
         [HttpGet("[action]")]
         public List<TableFragmentationDetails> TableFragmentationDetails(string astrtableName, string astrdbName)
         {
-            srvDatabaseTable.istrDBConnection = getActiveDatabaseInfo(astrdbName);
-            return srvDatabaseTable.TableFragmentationDetails( astrtableName);
+            ISrvMssql.IstrDatabaseConnection = getActiveDatabaseInfo(astrdbName);
+            return ISrvMssql.GetTableFragmentationDetails( astrtableName);
         }
     }
 }

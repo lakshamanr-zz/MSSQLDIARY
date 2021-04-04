@@ -56,6 +56,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="ClientApp\src\Models\DatabaseName.ts" />
     <None Remove="ClientApp\src\models\FileInfomration.ts" />
     <None Remove="ClientApp\src\models\Ms_Description.ts" />
     <None Remove="ClientApp\src\models\SchemaEnums.ts" />
@@ -80,6 +81,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <TypeScriptCompile Include="ClientApp\src\Models\DatabaseName.ts" />
     <TypeScriptCompile Include="ClientApp\src\models\FileInfomration.ts" />
     <TypeScriptCompile Include="ClientApp\src\models\Ms_Description.ts" />
     <TypeScriptCompile Include="ClientApp\src\models\SchemaReferanceInfo.ts" />

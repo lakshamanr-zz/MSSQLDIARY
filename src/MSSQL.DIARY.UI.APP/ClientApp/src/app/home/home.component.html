@@ -20,8 +20,8 @@
               <label >Database Names: </label>
             </div>
             <div class="col-md-3">
-              <select id="Databases" name="istrDataBaseName" (change)="DatabaseChangeEvent($event)">
-                <option *ngFor="let databaseName of istrDataBaseName">{{databaseName}}</option>
+              <select id="Databases" name="lstDataBaseName" (change)="databaseChangeEvent($event)">
+                <option *ngFor="let DatabaseList of lstDataBaseName">{{DatabaseList.databaseName}}</option>
               </select>
             </div>
           </div>

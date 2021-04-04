@@ -24,11 +24,11 @@ namespace MSSQL.DIARY.UI.APP.Controllers
 
         public DatabaseController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IHttpContextAccessor httpContextAccessor) : base(context, userManager, httpContextAccessor)
         {
-            SrvDatabaseInfo = new SrvDatabaseInfo();
+            SrvMssql = new SrvMssql();
             this.applicationDbContext = context;
         }
 
-        private SrvDatabaseInfo SrvDatabaseInfo { get; }
+        private SrvMssql SrvMssql { get; }
 
         [HttpGet("[action]")]
         public string GetDatabaseUserDefinedText()
@@ -39,28 +39,28 @@ namespace MSSQL.DIARY.UI.APP.Controllers
         [HttpGet("[action]")]
         public List<string> GetDatabaseObjectTypes()
         {
-            return SrvDatabaseInfo.GetDatabaseObjectTypes();
+            return SrvMssql.GetDatabaseObjectTypes();
         }
 
         [HttpGet("[action]")]
         public List<PropertyInfo> GetdbPropertValues(string istrdbName)
         {
-            SrvDatabaseInfo.istrDBConnection = getActiveDatabaseInfo(istrdbName);
-            return SrvDatabaseInfo.GetdbPropertValues();
+            SrvMssql.IstrDatabaseConnection = getActiveDatabaseInfo(istrdbName);
+            return SrvMssql.GetDatabaseProperties();
         }
 
         [HttpGet("[action]")]
         public List<PropertyInfo> GetdbOptionValues(string istrdbName)
         {
-            SrvDatabaseInfo.istrDBConnection = getActiveDatabaseInfo(istrdbName);
-            return SrvDatabaseInfo.GetdbOptionValues();
+            SrvMssql.IstrDatabaseConnection = getActiveDatabaseInfo(istrdbName);
+            return SrvMssql.GetDatabaseOptions();
         }
 
         [HttpGet("[action]")]
         public List<FileInfomration> GetdbFilesDetails(string istrdbName)
         {
-            SrvDatabaseInfo.istrDBConnection = getActiveDatabaseInfo(istrdbName); 
-            return SrvDatabaseInfo.GetdbFilesDetails();
+            SrvMssql.IstrDatabaseConnection = getActiveDatabaseInfo(istrdbName); 
+            return SrvMssql.GetDatabaseFiles();
         }
     }
 }

@@ -22,11 +22,11 @@ namespace MSSQL.DIARY.UI.APP.Controllers
 
         public DatabaseServerController(ILogger<DatabaseServerController> logger ,ApplicationDbContext context, UserManager<ApplicationUser> userManager, IHttpContextAccessor httpContextAccessor) : base(context, userManager, httpContextAccessor)
         {
-            SrvServerInfo = new SrvDatabaseServerInfo();
+            SrvServerInfo = new SrvMssql();
             this._logger = logger;
         }
 
-        SrvDatabaseServerInfo SrvServerInfo { get; }
+        SrvMssql SrvServerInfo { get; }
         ILogger<DatabaseServerController> _logger { get; }
 
         [HttpGet("[action]")]
@@ -36,18 +36,19 @@ namespace MSSQL.DIARY.UI.APP.Controllers
         }
 
         [HttpGet("[action]")]
-        public List<string> GetDatabaseNames()
+        public List<DatabaseName> GetDatabaseNames()
         {
-            SrvServerInfo.istrDBConnection = getActiveDatabaseInfo();
+            SrvServerInfo.IstrDatabaseConnection = getActiveDatabaseInfo();
             return SrvServerInfo.GetDatabaseNames();
         }
         [HttpGet("[action]")]
-        public List<string> GetDatabaseNamesByServername(string astrServerName)
+        public List<DatabaseName> GetDatabaseNamesByServerName(string astrServerName)
         {
-            SrvServerInfo.istrDBConnection = GetConnectionString(astrServerName); 
-
-            List<string> lstDatabaseName = new List<string>();
-            lstDatabaseName.Add("Select Database");
+            SrvServerInfo.IstrDatabaseConnection = GetConnectionString(astrServerName);
+            List<DatabaseName> lstDatabaseName = new List<DatabaseName>
+            {
+                new DatabaseName {databaseName = "Select Database"}
+            };
             lstDatabaseName.AddRange(SrvServerInfo.GetDatabaseNames());
             return lstDatabaseName;
         }
@@ -56,15 +57,15 @@ namespace MSSQL.DIARY.UI.APP.Controllers
         [HttpGet("[action]")]
         public List<PropertyInfo> GetServerProperties()
         {
-            SrvServerInfo.istrDBConnection = getActiveDatabaseInfo();
+            SrvServerInfo.IstrDatabaseConnection = getActiveDatabaseInfo();
             return SrvServerInfo.GetServerProperties();
         }
 
         [HttpGet("[action]")]
         public List<PropertyInfo> GetAdvancedServerSettings()
         {
-            SrvServerInfo.istrDBConnection = getActiveDatabaseInfo();
-            return SrvServerInfo.GetAdvancedServerSettingsInfo();
+            SrvServerInfo.IstrDatabaseConnection = getActiveDatabaseInfo();
+            return SrvServerInfo.GetAdvancedServerSettings();
         }
 
         [HttpGet("[action]")]

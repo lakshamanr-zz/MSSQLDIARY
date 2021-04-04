@@ -53,7 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FileDotEngine.cs" />
-    <Compile Include="GraphGenerationWapper.cs" />
+    <Compile Include="GraphGenerationWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

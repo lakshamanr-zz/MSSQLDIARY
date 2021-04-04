@@ -46,10 +46,9 @@ namespace MSSQL.DIARY.SERVICE.EXCEL
                 lstUpdateCoumnDescitionQuery.Clear();
                 lstInsertCoumnDescitionQuery.Clear();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-
-               
+                // ignored
             }
         }
 
@@ -86,7 +85,7 @@ namespace MSSQL.DIARY.SERVICE.EXCEL
                     sqldbConn.Close();
                    
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
 
                 }
@@ -114,9 +113,9 @@ namespace MSSQL.DIARY.SERVICE.EXCEL
                     lstInsertCoumnDescitionQuery.Remove(query);
 
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-
+                    // ignored
                 }
                 finally
                 {

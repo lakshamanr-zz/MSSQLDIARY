@@ -7,30 +7,33 @@ using MSSQL.DIARY.COMN.Models;
 
 namespace MSSQL.DIARY.EF
 {
-    public partial class MssqlDiaryContext : DbContext, IMssqlDiaryContext
+    public partial class MsSqlDiaryContext 
     {
+
+        /// <summary>
+        /// Get Object dependent On
+        /// </summary>
+        /// <param name="astrObjectName"></param>
+        /// <returns></returns>
         public List<ReferencesModel> GetObjectThatDependsOn(string astrObjectName)
         {
-            var listOfObjectDependncy = new List<ReferencesModel>();
+            var lstObjectDependsOn = new List<ReferencesModel>();
             try
             {
-                using (var conn = Database.GetDbConnection())
+                using (var lDbConnection = Database.GetDbConnection())
                 {
                     try
                     {
-                        var commad = conn.CreateCommand();
-                        var newObjectName = astrObjectName.Replace(
-                            astrObjectName.Substring(0, astrObjectName.IndexOf(".", StringComparison.Ordinal)) + ".",
-                            "");
-                        commad.CommandText =
-                            SqlQueryConstant.ObjectThatDependsOn.Replace("@ObjectName", "'" + newObjectName + "'");
-                        commad.CommandTimeout = 10 * 60;
+                        var command = lDbConnection.CreateCommand();
+                        var newObjectName = astrObjectName.Replace(astrObjectName.Substring(0, astrObjectName.IndexOf(".", StringComparison.Ordinal)) + ".", "");
+                        command.CommandText = SqlQueryConstant.ObjectThatDependsOn.Replace("@ObjectName", "'" + newObjectName + "'"); 
                         Database.OpenConnection();
-                        using (var reader = commad.ExecuteReader())
+                        using (var reader = command.ExecuteReader())
                         {
                             if (reader.HasRows)
                                 while (reader.Read())
-                                    listOfObjectDependncy.Add(new ReferencesModel
+                                    lstObjectDependsOn
+.Add(new ReferencesModel
                                     {
                                         ThePath = reader.SafeGetString(0),
                                         TheFullEntityName = reader.SafeGetString(1),
@@ -50,31 +53,33 @@ namespace MSSQL.DIARY.EF
                 // ignored
             }
 
-            return listOfObjectDependncy;
+            return lstObjectDependsOn
+;
         }
 
+        /// <summary>
+        /// Get Object which dependent on
+        /// </summary>
+        /// <param name="astrObjectName"></param>
+        /// <returns></returns>
         public List<ReferencesModel> GetObjectOnWhichDepends(string astrObjectName)
         {
-            var listOfObjectDependncy = new List<ReferencesModel>();
+            var lstObjectOnWhichDepends = new List<ReferencesModel>();
             try
             {
-                using (var conn = Database.GetDbConnection())
+                using (var lDbConnection = Database.GetDbConnection())
                 {
                     try
                     {
-                        var commad = conn.CreateCommand();
-                        var newObjectName = astrObjectName.Replace(
-                            astrObjectName.Substring(0, astrObjectName.IndexOf(".", StringComparison.Ordinal)) + ".",
-                            "");
-                        commad.CommandText =
-                            SqlQueryConstant.ObjectOnWhichDepends.Replace("@ObjectName", "'" + newObjectName + "'");
-                        commad.CommandTimeout = 10 * 60;
+                        var command = lDbConnection.CreateCommand();
+                        var newObjectName = astrObjectName.Replace(astrObjectName.Substring(0, astrObjectName.IndexOf(".", StringComparison.Ordinal)) + ".", "");
+                        command.CommandText = SqlQueryConstant.ObjectOnWhichDepends.Replace("@ObjectName", "'" + newObjectName + "'"); 
                         Database.OpenConnection();
-                        using (var reader = commad.ExecuteReader())
+                        using (var reader = command.ExecuteReader())
                         {
                             if (reader.HasRows)
                                 while (reader.Read())
-                                    listOfObjectDependncy.Add(new ReferencesModel
+                                    lstObjectOnWhichDepends.Add(new ReferencesModel
                                     {
                                         ThePath = reader.SafeGetString(0),
                                         TheFullEntityName = reader.SafeGetString(1),
@@ -94,7 +99,7 @@ namespace MSSQL.DIARY.EF
                 // ignored
             }
 
-            return listOfObjectDependncy;
+            return lstObjectOnWhichDepends;
         }
     }
 }

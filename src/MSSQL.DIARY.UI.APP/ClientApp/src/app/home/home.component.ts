@@ -1,8 +1,9 @@
-import { Component, Inject, Injectable } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { HttpClient } from "@angular/common/http"; 
 import { Observable } from 'rxjs';
 import { AuthorizeService } from '../../api-authorization/authorize.service';
-import { NgxUiLoaderService } from 'ngx-ui-loader'; 
+import { NgxUiLoaderService } from 'ngx-ui-loader';
+import { DatabaseName } from "../../Models/DatabaseName";
 
 @Component({
   selector: 'app-home',
@@ -12,12 +13,12 @@ import { NgxUiLoaderService } from 'ngx-ui-loader';
 export class HomeComponent
 {
 
-  istrServerNameList: string[];
-  istrDataBaseName: string[];
+  public istrServerNameList: string[];
+  public lstDataBaseName: DatabaseName[];
   public loggedin: boolean;
   public isAuthenticated: Observable<boolean>; 
-  selectedDatabaseName: any;
-    selectedServerName: any;
+  public selectedDatabaseName: any;
+  public selectedServerName: any;
   constructor(private ngxService: NgxUiLoaderService, private authorizeService: AuthorizeService, private http: HttpClient, @Inject('BASE_URL') public baseUrl: string)
   {
     this.isAuthenticated = this.authorizeService.isAuthenticated(); 
@@ -30,7 +31,7 @@ export class HomeComponent
     this.selectedServerName = $event.target.value;
     this.LoadDatabaseNames(this.selectedServerName);
   }
-  DatabaseChangeEvent($event)
+  databaseChangeEvent($event)
   {
     this.selectedDatabaseName = $event.target.value;
     this.http.get<any>(this.baseUrl + "DatabaseServer/SetDefaultDatabase", { params: { astrServerName: this.selectedServerName, astrDatabaseName: this.selectedDatabaseName} }).subscribe(result =>
@@ -46,8 +47,8 @@ export class HomeComponent
   }
 
   private LoadDatabaseNames(selectedServerName:any) {
-    this.http.get<string[]>(this.baseUrl + 'DatabaseServer/GetDatabaseNamesByServername', { params: { astrServerName: selectedServerName} }).subscribe(result => {
-      this.istrDataBaseName = result;
+    this.http.get<DatabaseName[]>(this.baseUrl + 'DatabaseServer/GetDatabaseNamesByServername', { params: { astrServerName: selectedServerName} }).subscribe(result => {
+      this.lstDataBaseName = result;
     }, error => console.log(error));
   }
 

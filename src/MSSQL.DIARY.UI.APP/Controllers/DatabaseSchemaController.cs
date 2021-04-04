@@ -19,33 +19,33 @@ namespace MSSQL.DIARY.UI.APP.Controllers
         
         public DatabaseSchemaController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IHttpContextAccessor httpContextAccessor) : base(context, userManager, httpContextAccessor)
         {
-            srvDatabaseSchema = new SrvDatabaseSchema();
+            SrvDatabaseSchema = new SrvMssql();
         }
 
-        private SrvDatabaseSchema srvDatabaseSchema { get; }
+        private SrvMssql SrvDatabaseSchema { get; }
 
         [HttpGet("[action]")]
         public List<PropertyInfo> GetListOfAllSchemaAndMsDescription(string istrdbName)
         {
-            return srvDatabaseSchema.GetListOfAllSchemaAndMsDescription(istrdbName);
+            return SrvDatabaseSchema.GetSchemaWithDescriptions(istrdbName);
         }
 
         [HttpGet("[action]")]
         public List<PropertyInfo> CreateOrUpdateSchemaMsDescription(string istrdbName)
         {
-            return srvDatabaseSchema.GetListOfAllSchemaAndMsDescription(istrdbName);
+            return SrvDatabaseSchema.GetSchemaWithDescriptions(istrdbName);
         }
 
         [HttpGet("[action]")]
         public List<SchemaReferanceInfo> GetSchemaReferanceInfo(string istrdbName, string astrSchema_Name)
         {
-            return srvDatabaseSchema.GetSchemaReferanceInfo(istrdbName, astrSchema_Name);
+            return SrvDatabaseSchema.GetSchemaReferences(istrdbName, astrSchema_Name);
         }
 
         [HttpGet("[action]")]
         public Ms_Description GetSchemaMsDescription(string istrdbName, string astrSchema_Name)
         {
-            return srvDatabaseSchema.GetSchemaMsDescription(istrdbName, astrSchema_Name);
+            return SrvDatabaseSchema.GetSchemaDescription(istrdbName, astrSchema_Name);
         }
     }
 }

@@ -17,41 +17,41 @@ namespace MSSQL.DIARY.UI.APP.Controllers
     {
         public DatabaseUserDefinedDataTypesController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IHttpContextAccessor httpContextAccessor) : base(context, userManager, httpContextAccessor)
         {
-            srvDatabaseUserDefinedDataTypes = new srvDatabaseUserDefinedDataTypes();
+            SrvDatabaseUserDefinedDataTypes = new SrvMssql();
         }
 
-        private srvDatabaseUserDefinedDataTypes srvDatabaseUserDefinedDataTypes { get; }
+        private SrvMssql SrvDatabaseUserDefinedDataTypes { get; }
 
         [HttpGet("[action]")]
         public List<UserDefinedDataTypeDetails> GetAllUserDefinedDataTypes(string istrdbName)
         {
-            return srvDatabaseUserDefinedDataTypes.GetAllUserDefinedDataTypes(istrdbName);
+            return SrvDatabaseUserDefinedDataTypes.GetUserDefinedDataTypes(istrdbName);
         }
 
         [HttpGet("[action]")]
         public UserDefinedDataTypeDetails GetUserDefinedDataTypeDetails(string istrdbName, string istrTypeName)
         {
-            return srvDatabaseUserDefinedDataTypes.GetUserDefinedDataTypeDetails(istrdbName, istrTypeName);
+            return SrvDatabaseUserDefinedDataTypes.GetUserDefinedDataType(istrdbName, istrTypeName);
         }
 
         [HttpGet("[action]")]
         public List<UserDefinedDataTypeReferance> GetUsedDefinedDataTypeReferance(string istrdbName,
             string istrTypeName)
         {
-            return srvDatabaseUserDefinedDataTypes.GetUsedDefinedDataTypeReferance(istrdbName, istrTypeName);
+            return SrvDatabaseUserDefinedDataTypes.GetUsedDefinedDataTypeReference(istrdbName, istrTypeName);
         }
 
         [HttpGet("[action]")]
         public Ms_Description GetUsedDefinedDataTypeExtendedProperties(string istrdbName, string istrTypeName)
         {
-            return srvDatabaseUserDefinedDataTypes.GetUsedDefinedDataTypeExtendedProperties(istrdbName, istrTypeName);
+            return SrvDatabaseUserDefinedDataTypes.GetUsedDefinedDataTypeExtendedProperties(istrdbName, istrTypeName);
         }
 
         [HttpGet("[action]")]
         public void CreateOrUpdateUsedDefinedDataTypeExtendedProperties(string istrdbName, string istrTypeName,
             string istrdescValue)
         {
-            srvDatabaseUserDefinedDataTypes.CreateOrUpdateUsedDefinedDataTypeExtendedProperties(istrdbName,
+            SrvDatabaseUserDefinedDataTypes.CreateOrUpdateUsedDefinedDataTypeExtendedProperties(istrdbName,
                 istrTypeName, istrdescValue);
         }
     }

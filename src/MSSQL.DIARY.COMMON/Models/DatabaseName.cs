@@ -2,6 +2,6 @@
 {
     public class DatabaseName
     {
-        public string istrDatabaseName { get; set; }
+        public string databaseName { get; set; } 
     }
 }

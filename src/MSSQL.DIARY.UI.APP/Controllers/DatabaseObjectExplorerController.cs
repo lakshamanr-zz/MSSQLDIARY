@@ -27,11 +27,11 @@ namespace MSSQL.DIARY.UI.APP.Controllers
             _logger = logger;
             _context = context;
             _userManager = userManager;
-            _srvServerInfo = new SrvDatabaseServerInfo();
+            _srvServerInfo = new SrvMssql();
             _httpContextAccessor = httpContextAccessor;
           
         }
-        private  SrvDatabaseServerInfo _srvServerInfo { get; }
+        private SrvMssql _srvServerInfo { get; }
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _context;
         private readonly ILogger<DatabaseObjectExplorerController> _logger;
@@ -49,23 +49,21 @@ namespace MSSQL.DIARY.UI.APP.Controllers
             if (dbConnection.IsNotNullOrEmpty())
             {
 
-                return srvObjectExplorerDetails.ObjectExplorerDetails.GetOrCreate(dbConnection, GetObjectExplorer);
+                return SrvMssql.ObjectExplorerDetails.GetOrCreate(dbConnection, GetObjectExplorer);
 
             }
             
-            if (srvObjectExplorerDetails.ObjectExplorerDetails.Cache.Count > 0)
+            if (SrvMssql.ObjectExplorerDetails.Cache.Count > 0)
             {
 
-                return srvObjectExplorerDetails.ObjectExplorerDetails.GetOrCreate(dbConnection, GetObjectExplorer);
+                return SrvMssql.ObjectExplorerDetails.GetOrCreate(dbConnection, GetObjectExplorer);
             }
             return string.Empty; 
 
         } 
         private string GetObjectExplorer()
         {
-            return @"{""data"":" +
-                   JsonConvert.SerializeObject(
-                       srvObjectExplorerDetails.GetObjectExplorer(getActiveDatabaseInfo(), getActiveDatabaseName())) + "}";
+            return @"{""data"":" + JsonConvert.SerializeObject(SrvMssql.GetObjectExplorer(getActiveDatabaseInfo(), getActiveDatabaseName())) + "}";
         }
     }
 }

@@ -8,8 +8,21 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="MSSQLDiaryContext.database.cs" />
+    <Compile Remove="MSSQLDiaryContext.database.Functions.cs" />
+    <Compile Remove="MSSQLDiaryContext.database.Schemas.cs" />
+    <Compile Remove="MSSQLDiaryContext.database.Server.cs" />
+    <Compile Remove="MSSQLDiaryContext.database.StoreProcs.cs" />
+    <Compile Remove="MSSQLDiaryContext.database.Tables.cs" />
+    <Compile Remove="MssqlDiaryContext.database.Trigger.cs" />
+    <Compile Remove="MSSQLDiaryContext.database.UserDefinedDataType.cs" />
+    <Compile Remove="MSSQLDiaryContext.database.Views.cs" />
+    <Compile Remove="MSSQLDiaryContext.ObjectDependncy.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="2.2.0" />
