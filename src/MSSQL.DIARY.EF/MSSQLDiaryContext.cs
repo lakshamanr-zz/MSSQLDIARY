@@ -40,9 +40,10 @@ namespace MSSQL.DIARY.EF
                         optionsBuilder.UseSqlServer(IstrDatabaseConnection);
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    // ignored
+                    Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
+                     Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
                 }
             }
         }
@@ -70,9 +71,9 @@ namespace MSSQL.DIARY.EF
                                 istrValue = reader.GetString(i)
                             });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             }
 
             return lstDatabaseProperties;
@@ -101,9 +102,9 @@ namespace MSSQL.DIARY.EF
                                 istrValue = reader.GetString(i)
                             });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             }
 
             return lstDatabaseOptions;
@@ -126,9 +127,9 @@ namespace MSSQL.DIARY.EF
                 ldtDatabaseFiles.Load(command.ExecuteReader());
                 lstDatabaseFiles = GetCollection<FileInfomration>(ldtDatabaseFiles); 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             }
 
             return lstDatabaseFiles;
@@ -152,7 +153,7 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             }
 
             return lstDatabaseNames;
@@ -179,14 +180,14 @@ namespace MSSQL.DIARY.EF
                     ldtFunctionDependencies.Load(command.ExecuteReader());
                     lstInterdependency = GetCollection<FunctionDependencies>(ldtFunctionDependencies); 
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    // ignored
+                     Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             }
 
             return lstInterdependency.Distinct().ToList();
@@ -212,9 +213,9 @@ namespace MSSQL.DIARY.EF
                 ldtFunctionProperties.Load(command.ExecuteReader());
                 lstFunctionProperties = GetCollection<FunctionProperties>(ldtFunctionProperties); 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             }
 
             return lstFunctionProperties;
@@ -238,9 +239,9 @@ namespace MSSQL.DIARY.EF
                 ldtFunctionColumns.Load(command.ExecuteReader());
                 lstFunctionColumns = GetCollection<FunctionParameters>(ldtFunctionColumns); 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             } 
             return lstFunctionColumns;
         }
@@ -263,9 +264,9 @@ namespace MSSQL.DIARY.EF
                 ldtFunctionCreateScript.Load(command.ExecuteReader());
                 lstrFunctionCreateScript = SelectRow<FunctionCreateScript>(ldtFunctionCreateScript);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             }
 
             return lstrFunctionCreateScript;
@@ -288,9 +289,9 @@ namespace MSSQL.DIARY.EF
                 ldtFunctionDescriptions.Load(command.ExecuteReader());
                 lstFunctionDescriptions = GetCollection<PropertyInfo>(ldtFunctionDescriptions); 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             }
 
             return lstFunctionDescriptions;
@@ -360,9 +361,9 @@ namespace MSSQL.DIARY.EF
                 ldtScalarFunctions.Load(command.ExecuteReader());
                 lstScalarFunctions = GetCollection<ScalarFunctions>(ldtScalarFunctions); 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             }
 
 
@@ -385,9 +386,9 @@ namespace MSSQL.DIARY.EF
                 ldtTableValueFunction.Load(command.ExecuteReader());
                 lstTableValueFunctions = GetCollection<TableValueFunction>(ldtTableValueFunction);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             }
 
 
@@ -411,9 +412,9 @@ namespace MSSQL.DIARY.EF
                 lstAggregateFunctions = GetCollection<AggregateFunctions>(ldtAggregateFunctions);
                 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             }
             return lstAggregateFunctions;
         }
@@ -435,9 +436,9 @@ namespace MSSQL.DIARY.EF
                 lstSchemaWithDescriptions = GetCollection<PropertyInfo>(ldtSchemaWithDescriptions);
                 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             }
 
             return lstSchemaWithDescriptions;
@@ -454,7 +455,7 @@ namespace MSSQL.DIARY.EF
             {
                 UpdateSchemaDescription(astrDescriptionValue, astrSchemaName);
             }
-            catch (Exception)
+            catch (Exception )
             {
                 CreateSchemaDescription(astrDescriptionValue, astrSchemaName);
             }
@@ -503,9 +504,9 @@ namespace MSSQL.DIARY.EF
                 ldtSchemaReferences.Load(command.ExecuteReader());
                 lstSchemaReferences = GetCollection<SchemaReferanceInfo>(ldtSchemaReferences);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             }
 
             return lstSchemaReferences;
@@ -528,9 +529,9 @@ namespace MSSQL.DIARY.EF
                 ldtSchemaDescription.Load(command.ExecuteReader());
                 lMsDescription = SelectRow<Ms_Description>(ldtSchemaDescription);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             }
 
             return lMsDescription;
@@ -553,7 +554,7 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             }
 
             return lServerName;
@@ -582,9 +583,9 @@ namespace MSSQL.DIARY.EF
                 }
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             }
 
             return lstServerProperties;
@@ -606,9 +607,9 @@ namespace MSSQL.DIARY.EF
                 ldtAdvServerSetting.Load(command.ExecuteReader());
                 lstAdvancedServerSettings = GetCollection<PropertyInfo>(ldtAdvServerSetting);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             }
             return lstAdvancedServerSettings;
         }
@@ -633,7 +634,7 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             }
             return lstStoreProceduresWithDescription;
         }
@@ -655,9 +656,9 @@ namespace MSSQL.DIARY.EF
                 lMsDescription = SelectRow<Ms_Description>(ldtStoreProcedureCreateScript);
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             }
 
             return lMsDescription;
@@ -680,9 +681,9 @@ namespace MSSQL.DIARY.EF
                 ldtStoreProcedureDependencies.Load(command.ExecuteReader());
                 lstStoreProcedureDependencies = GetCollection<SP_Depencancy>(ldtStoreProcedureDependencies); 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             }
 
             return lstStoreProcedureDependencies;
@@ -704,9 +705,9 @@ namespace MSSQL.DIARY.EF
                 ldtStoreProceduresParameters.Load(command.ExecuteReader());
                 lstStoreProceduresParametersWithDescriptions = GetCollection<SP_Parameters>(ldtStoreProceduresParameters); 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             }
             return lstStoreProceduresParametersWithDescriptions;
         }
@@ -729,9 +730,9 @@ namespace MSSQL.DIARY.EF
                 ldtExecutionPlanDetails.Load(command.ExecuteReader());
                 lstExecutionPlanDetails = GetCollection<ExecutionPlanInfo>(ldtExecutionPlanDetails); 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             }
             return lstExecutionPlanDetails;
         }
@@ -749,7 +750,7 @@ namespace MSSQL.DIARY.EF
             {
                 UpdateStoreProcedureDescription(astrDescriptionValue, astrSchemaName, astrStoreProcedureName, astrParameterName);
             }
-            catch (Exception)
+            catch (Exception  )
             {
                 CreateStoreProcedureDescription(astrDescriptionValue, astrSchemaName, astrStoreProcedureName, astrParameterName);
             }
@@ -788,9 +789,9 @@ namespace MSSQL.DIARY.EF
             {
                 command.ExecuteNonQuery();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             }
         }
 
@@ -801,7 +802,7 @@ namespace MSSQL.DIARY.EF
         /// <returns></returns>
         public Ms_Description GetStoreProcedureDescription(string astrStoreProcedureName)
         { 
-            var lMs_Description = new Ms_Description();
+            var lMs_Description = new Ms_Description { desciption = "" };
             try
             {
                 using var command = Database.GetDbConnection().CreateCommand();
@@ -811,9 +812,9 @@ namespace MSSQL.DIARY.EF
                 ldtMsDescriptions.Load(command.ExecuteReader());
                 lMs_Description = SelectRow<Ms_Description>(ldtMsDescriptions);
             }
-            catch (Exception)
+            catch (Exception  )
             {
-                return new Ms_Description { desciption = "" };
+                 
             }
 
             return lMs_Description;
@@ -889,9 +890,9 @@ namespace MSSQL.DIARY.EF
                 ldtTableIndex.Load(command.ExecuteReader());
                 lstTableIndexes = GetCollection<TableIndexInfo>(ldtTableIndex);  
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             }
 
             return lstTableIndexes;
@@ -914,9 +915,9 @@ namespace MSSQL.DIARY.EF
                 ldtDataTable.Load(command.ExecuteReader());
                 lTableCreateScript = SelectRow<TableCreateScript>(ldtDataTable); 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             }
 
             return lTableCreateScript;
@@ -940,9 +941,9 @@ namespace MSSQL.DIARY.EF
                 ldtTableDependencies.Load(command.ExecuteReader());
                 lstTableDependencies = GetCollection<Tabledependencies>(ldtTableDependencies);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             }
             return lstTableDependencies.DistinctBy(x => x.name).ToList();
         }
@@ -964,9 +965,9 @@ namespace MSSQL.DIARY.EF
                 ldtTableColumns.Load(command.ExecuteReader());
                 lstTablesColumn = GetCollection<TableColumns>(ldtTableColumns); 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             }
 
             return lstTablesColumn;
@@ -989,9 +990,9 @@ namespace MSSQL.DIARY.EF
                 ldtTableFkColumn.Load(command.ExecuteReader());
                 lstTableFkColumns = GetCollection<TableFKDependency>(ldtTableFkColumn); 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             }
 
             return lstTableFkColumns;
@@ -1015,9 +1016,9 @@ namespace MSSQL.DIARY.EF
                 ldtKeyConstraints.Load(command.ExecuteReader());
                 lstTableKeyConstraints = GetCollection<TableKeyConstraint>(ldtKeyConstraints); 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             } 
             return lstTableKeyConstraints;
         }
@@ -1050,7 +1051,7 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             }
 
             return lstTablesWithDescriptions;
@@ -1059,7 +1060,7 @@ namespace MSSQL.DIARY.EF
         //Get table descriptions
         public Ms_Description GetTableDescription(string astrTableName)
         {
-            var lMs_Description = new Ms_Description();
+            var lMs_Description = new Ms_Description { desciption = "" };
             try
             {
                 using var command = Database.GetDbConnection().CreateCommand();
@@ -1069,9 +1070,9 @@ namespace MSSQL.DIARY.EF
                 ldtMsDescriptions.Load(command.ExecuteReader());
                 lMs_Description = SelectRow<Ms_Description>(ldtMsDescriptions); 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return new Ms_Description { desciption = "" };
+                Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             }
 
             return lMs_Description;
@@ -1126,9 +1127,9 @@ namespace MSSQL.DIARY.EF
             {
                 command.ExecuteNonQuery();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             }
         }
 
@@ -1146,7 +1147,7 @@ namespace MSSQL.DIARY.EF
             {
                 UpdateColumnDescription(astrDescriptionValue, astrSchemaName, astrTableName, astrColumnValue);
             }
-            catch (Exception)
+            catch (Exception  )
             {
                 CreateColumnDescription(astrDescriptionValue, astrSchemaName, astrTableName, astrColumnValue);
             }
@@ -1185,9 +1186,9 @@ namespace MSSQL.DIARY.EF
             {
                 command.ExecuteNonQuery();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             }
         }
 
@@ -1207,9 +1208,9 @@ namespace MSSQL.DIARY.EF
                 ldtTableFragmentationDetails.Load(command.ExecuteReader());
                 lstTableFragmentation = GetCollection<TableFragmentationDetails>(ldtTableFragmentationDetails); 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             }
 
             return lstTableFragmentation;//.Where(x => Convert.ToInt32(x.PercentFragmented) > 0).ToList();
@@ -1233,9 +1234,9 @@ namespace MSSQL.DIARY.EF
                 ldtTableColumns.Load(command.ExecuteReader());
                 lstTableColumns = GetCollection<TableColumns>(ldtTableColumns);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             }
 
             return lstTableColumns;
@@ -1259,9 +1260,9 @@ namespace MSSQL.DIARY.EF
                 lstTableFkDependencies = GetCollection<TableFKDependency>(ldtTableFkDependencies); 
                
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             }
             return lstTableFkDependencies;
         }
@@ -1282,9 +1283,9 @@ namespace MSSQL.DIARY.EF
                 ldtTriggers.Load(command.ExecuteReader());
                 lstTriggers = GetCollection<PropertyInfo>(ldtTriggers); 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             }
 
             return lstTriggers;
@@ -1309,9 +1310,9 @@ namespace MSSQL.DIARY.EF
                 lstTriggerInfo = GetCollection<TriggerInfo>(ldtTriggerInfo);
                
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             }
 
             return lstTriggerInfo;
@@ -1328,7 +1329,7 @@ namespace MSSQL.DIARY.EF
             {
                 UpdateTriggerDescription(astrDescriptionValue, astrTriggerName);
             }
-            catch (Exception)
+            catch (Exception  )
             {
                 CreateTriggerDescription(astrDescriptionValue, astrTriggerName);
             }
@@ -1361,9 +1362,9 @@ namespace MSSQL.DIARY.EF
             {
                 command.ExecuteNonQuery();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             }
         }
         /// <summary>
@@ -1384,9 +1385,10 @@ namespace MSSQL.DIARY.EF
                 lstUserDefinedDataTypeDetails = GetCollection<UserDefinedDataTypeDetails>(ldtUserDefinedDataTypeRef);
                
             }
-            catch
+    
+            catch(Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             }
 
             return lstUserDefinedDataTypeDetails;
@@ -1410,9 +1412,9 @@ namespace MSSQL.DIARY.EF
                 ldtUserDefinedDataTypeDetails.Load(command.ExecuteReader());
                 lUserDefinedDataTypeDetails = SelectRow<UserDefinedDataTypeDetails>(ldtUserDefinedDataTypeDetails);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             }
 
             return lUserDefinedDataTypeDetails;
@@ -1436,9 +1438,9 @@ namespace MSSQL.DIARY.EF
                 ldtUserDefinedDataTypeRef.Load(command.ExecuteReader());
                 lstUserDefinedDataTypeReference = GetCollection<UserDefinedDataTypeReferance>(ldtUserDefinedDataTypeRef);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             }
             return lstUserDefinedDataTypeReference;
         }
@@ -1461,9 +1463,9 @@ namespace MSSQL.DIARY.EF
                 ldtUserDefinedDataTypeDescription.Load(command.ExecuteReader());
                 lUserDefinedDataTypeDescription = SelectRow<Ms_Description>(ldtUserDefinedDataTypeDescription);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             }
 
             return lUserDefinedDataTypeDescription;
@@ -1484,9 +1486,9 @@ namespace MSSQL.DIARY.EF
                 Database.OpenConnection();
                 command.ExecuteNonQuery();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             }
         }
         /// <summary>
@@ -1504,9 +1506,9 @@ namespace MSSQL.DIARY.EF
                 Database.OpenConnection();
                 command.ExecuteNonQuery();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             }
         }
 
@@ -1521,7 +1523,7 @@ namespace MSSQL.DIARY.EF
             {
                 UpdateUsedDefinedDataTypeDescription(astrTypeName, astrDescriptionValue);
             }
-            catch (Exception)
+            catch (Exception  )
             {
                 CreateUsedDefinedDataTypeDescription(astrTypeName, astrDescriptionValue);
             }
@@ -1544,9 +1546,9 @@ namespace MSSQL.DIARY.EF
                 ldtViewsWithDescription.Load(command.ExecuteReader());
                 lstViewsWithDescription = GetCollection<PropertyInfo>(ldtViewsWithDescription);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             }
 
             return lstViewsWithDescription;
@@ -1570,9 +1572,9 @@ namespace MSSQL.DIARY.EF
                 ldtViewDependencies.Load(command.ExecuteReader());
                 lstViewDependencies = GetCollection<ViewDependancy>(ldtViewDependencies);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             }
 
             return lstViewDependencies;
@@ -1596,9 +1598,9 @@ namespace MSSQL.DIARY.EF
                 ldtViewProperties.Load(command.ExecuteReader());
                 lstViewProperties = GetCollection<View_Properties>(ldtViewProperties);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             }
 
             return lstViewProperties;
@@ -1621,9 +1623,9 @@ namespace MSSQL.DIARY.EF
                 ldtViewColumns.Load(command.ExecuteReader());
                 lstGetViewColumns = GetCollection<ViewColumns>(ldtViewColumns);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             }
 
             return lstGetViewColumns;
@@ -1647,9 +1649,9 @@ namespace MSSQL.DIARY.EF
                 ldtViewCreateScript.Load(command.ExecuteReader());
                 lViewCreateScript = SelectRow<ViewCreateScript>(ldtViewCreateScript);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
             }
 
             return lViewCreateScript;
@@ -1676,7 +1678,7 @@ namespace MSSQL.DIARY.EF
                 }
                 catch (Exception ex)
                 {
-                    // ignored
+                     Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
                 } 
             return lstObjectDependsOn
 ;
@@ -1703,9 +1705,9 @@ namespace MSSQL.DIARY.EF
                     lstObjectOnWhichDepends = GetCollection<ReferencesModel>(ldtObjectOnWhichDepends);
                      
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    // ignored
+                     Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
                 } 
 
             return lstObjectOnWhichDepends;
