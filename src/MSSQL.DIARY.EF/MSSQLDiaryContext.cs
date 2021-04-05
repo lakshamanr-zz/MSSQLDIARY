@@ -1054,6 +1054,33 @@ namespace MSSQL.DIARY.EF
             return strSpDescription;
         }
 
+
+        public static T SelectRow<T>(DataTable aDataTable) where T : new()
+        {
+            var lGetType = typeof(T); 
+            var lInstanceOfType = new T();
+            if (aDataTable.IsNotNull() && aDataTable.Rows.Count > 0)
+            { 
+                foreach (DataRow ldtDataRow in aDataTable.Rows)
+                {
+                   
+                    foreach (DataColumn ldtDataColumn in aDataTable.Columns)
+                    {
+                        if (!Convert.IsDBNull(ldtDataRow[ldtDataColumn]))
+                        {
+                            var Pishare = lGetType.GetProperty(ldtDataColumn.ColumnName);
+                            if (Pishare.IsNotNull())
+                                Pishare.SetValue(lInstanceOfType, ldtDataRow[ldtDataColumn]);
+                        }
+                    } 
+                    //execute first row and come out of loop.
+                    break;
+                }
+            }
+
+            return lInstanceOfType;
+        }
+
         public static List<T> GetCollection<T>(DataTable aDataTable) where T : new()
         {
             var lGetType = typeof(T);
@@ -1112,23 +1139,22 @@ namespace MSSQL.DIARY.EF
         /// <returns></returns>
         public TableCreateScript GetTableCreateScript(string astrTableName)
         {
-            var lstrTableCreateScript = string.Empty;
+            var lTableCreateScript = new TableCreateScript();
             try
             {
                 using var command = Database.GetDbConnection().CreateCommand();
                 command.CommandText = SqlQueryConstant.GetTableCreateScript.Replace("@table_name", "'" + astrTableName + "'");
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstrTableCreateScript = reader.GetString(0);
+                DataTable ldtDataTable = new DataTable();
+                ldtDataTable.Load(command.ExecuteReader());
+                lTableCreateScript = SelectRow<TableCreateScript>(ldtDataTable); 
             }
             catch (Exception)
             {
                 // ignored
             }
 
-            return new TableCreateScript { createscript = lstrTableCreateScript };
+            return lTableCreateScript;
         }
 
         /// <summary>
@@ -1145,17 +1171,9 @@ namespace MSSQL.DIARY.EF
                 using var command = Database.GetDbConnection().CreateCommand();
                 command.CommandText = SqlQueryConstant.GetTableDependencies.Replace("@tblName", "'" + astrTableName + "'");
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstTableDependencies.Add
-                        (
-                            new Tabledependencies
-                            {
-                                name = reader.SafeGetString(0),
-                                object_type = reader.SafeGetString(1)
-                            }
-                        );
+                DataTable ldtTableDependencies = new DataTable();
+                ldtTableDependencies.Load(command.ExecuteReader());
+                lstTableDependencies = GetCollection<Tabledependencies>(ldtTableDependencies);
             }
             catch (Exception)
             {
@@ -1202,21 +1220,9 @@ namespace MSSQL.DIARY.EF
                 using var command = Database.GetDbConnection().CreateCommand();
                 command.CommandText = SqlQueryConstant.GetTableForeignKeys.Replace("@tblName", "'" + astrTableName + "'");
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstTableFkColumns.Add
-                        (
-                            new TableFKDependency
-                            {
-                                values = reader.SafeGetString(0),
-                                Fk_name = reader.SafeGetString(1),
-                                current_table_name = reader.SafeGetString(3),
-                                current_table_fk_columnName = reader.SafeGetString(4),
-                                fk_refe_table_name = reader.SafeGetString(5),
-                                fk_ref_table_column_name = reader.SafeGetString(6)
-                            }
-                        );
+                DataTable ldtTableFkColumn = new DataTable();
+                ldtTableFkColumn.Load(command.ExecuteReader());
+                lstTableFkColumns = GetCollection<TableFKDependency>(ldtTableFkColumn); 
             }
             catch (Exception)
             {
