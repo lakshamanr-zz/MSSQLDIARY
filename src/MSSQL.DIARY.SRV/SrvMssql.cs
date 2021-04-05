@@ -1541,9 +1541,9 @@ namespace MSSQL.DIARY.SRV
                 tablesList.Add(
                     new TreeViewJson
                     {
-                        text = tables.istrName,
+                        text = tables.istrFullName,
                         icon = "fa fa-table fa-fw",
-                        mdaIcon = tables.istrName,
+                        mdaIcon = tables.istrFullName,
                         expand = false,
                         link = $"/{IstrProjectName}/{IstrServerName}/User Database/{IstrDatabaseName}/Tables/{tables}",
                         selected = true,

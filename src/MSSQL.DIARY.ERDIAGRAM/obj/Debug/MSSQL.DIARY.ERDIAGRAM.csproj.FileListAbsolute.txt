@@ -7,3 +7,11 @@ C:\MSSQL\MSSQL.DIARY3.1\src\MSSQL.DIARY.ERDIAGRAM\obj\Debug\MSSQL.DIARY.ERDIAGRA
 C:\MSSQL\MSSQL.DIARY3.1\src\MSSQL.DIARY.ERDIAGRAM\obj\Debug\GrahicsViz.dll
 C:\MSSQL\MSSQL.DIARY3.1\src\MSSQL.DIARY.ERDIAGRAM\obj\Debug\GrahicsViz.pdb
 C:\MSSQL\MSSQL.DIARY3.1\src\MSSQL.DIARY.ERDIAGRAM\obj\Debug\MSSQL.DIARY.ERDIAGRAM.csprojAssemblyReference.cache
+F:\Lakshaman\GitHub\MSSQLDIARY\src\MSSQL.DIARY.ERDIAGRAM\bin\Debug\GrahicsViz.dll.config
+F:\Lakshaman\GitHub\MSSQLDIARY\src\MSSQL.DIARY.ERDIAGRAM\bin\Debug\GrahicsViz.dll
+F:\Lakshaman\GitHub\MSSQLDIARY\src\MSSQL.DIARY.ERDIAGRAM\bin\Debug\GrahicsViz.pdb
+F:\Lakshaman\GitHub\MSSQLDIARY\src\MSSQL.DIARY.ERDIAGRAM\bin\Debug\GraphVizWrapper.dll
+F:\Lakshaman\GitHub\MSSQLDIARY\src\MSSQL.DIARY.ERDIAGRAM\obj\Debug\MSSQL.DIARY.ERDIAGRAM.csproj.CoreCompileInputs.cache
+F:\Lakshaman\GitHub\MSSQLDIARY\src\MSSQL.DIARY.ERDIAGRAM\obj\Debug\MSSQL.DIARY.ERDIAGRAM.csproj.CopyComplete
+F:\Lakshaman\GitHub\MSSQLDIARY\src\MSSQL.DIARY.ERDIAGRAM\obj\Debug\GrahicsViz.dll
+F:\Lakshaman\GitHub\MSSQLDIARY\src\MSSQL.DIARY.ERDIAGRAM\obj\Debug\GrahicsViz.pdb

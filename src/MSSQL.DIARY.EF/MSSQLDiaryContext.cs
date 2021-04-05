@@ -12,7 +12,7 @@ using DataColumn = System.Data.DataColumn;
 
 namespace MSSQL.DIARY.EF
 {
-    public partial class MsSqlDiaryContext : DbContext
+    public class MsSqlDiaryContext : DbContext
     {
         public MsSqlDiaryContext(string astrDatabaseConnection = null)
         {
@@ -42,8 +42,7 @@ namespace MSSQL.DIARY.EF
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
-                     Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
+                    Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} "); 
                 }
             }
         }
@@ -73,7 +72,7 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
             }
 
             return lstDatabaseProperties;
@@ -104,7 +103,7 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
             }
 
             return lstDatabaseOptions;
@@ -129,7 +128,7 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
             }
 
             return lstDatabaseFiles;
@@ -153,7 +152,7 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
             }
 
             return lstDatabaseNames;
@@ -170,8 +169,7 @@ namespace MSSQL.DIARY.EF
             try
             {
                 using var lDbConnection = Database.GetDbConnection();
-                try
-                {
+               
                     var command = lDbConnection.CreateCommand();
                     var newFunctionName = astrFunctionName.Replace(astrFunctionName.Substring(0, astrFunctionName.IndexOf(".", StringComparison.Ordinal)) + ".", "");
                     command.CommandText = SqlQueryConstant.GetFunctionDependencies.Replace("@function_Type", "'" + astrFunctionType + "'").Replace("@function_name", "'" + newFunctionName + "'");
@@ -179,17 +177,12 @@ namespace MSSQL.DIARY.EF
                     DataTable ldtFunctionDependencies = new DataTable();
                     ldtFunctionDependencies.Load(command.ExecuteReader());
                     lstInterdependency = GetCollection<FunctionDependencies>(ldtFunctionDependencies); 
-                }
-                catch (Exception ex)
-                {
-                     Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
-                }
+                
             }
             catch (Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
-            }
-
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
+            } 
             return lstInterdependency.Distinct().ToList();
         }
 
@@ -215,9 +208,8 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
-            }
-
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
+            } 
             return lstFunctionProperties;
         }
         /// <summary>
@@ -241,7 +233,7 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
             } 
             return lstFunctionColumns;
         }
@@ -266,9 +258,8 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
-            }
-
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
+            } 
             return lstrFunctionCreateScript;
         }
 
@@ -291,9 +282,8 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
-            }
-
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
+            } 
             return lstFunctionDescriptions;
         }
 
@@ -363,10 +353,8 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
-            }
-
-
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
+            } 
             return lstScalarFunctions;
         }
 
@@ -388,10 +376,8 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
-            }
-
-
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
+            } 
             return lstTableValueFunctions;
         }
 
@@ -414,7 +400,7 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
             }
             return lstAggregateFunctions;
         }
@@ -438,9 +424,8 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
-            }
-
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
+            } 
             return lstSchemaWithDescriptions;
         }
 
@@ -506,9 +491,8 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
-            }
-
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
+            } 
             return lstSchemaReferences;
         }
 
@@ -531,9 +515,8 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
-            }
-
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
+            } 
             return lMsDescription;
         }
          /// <summary>
@@ -554,9 +537,8 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
-            }
-
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
+            } 
             return lServerName;
         }
 
@@ -585,9 +567,8 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
-            }
-
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
+            } 
             return lstServerProperties;
         }
 
@@ -609,7 +590,7 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
             }
             return lstAdvancedServerSettings;
         }
@@ -634,7 +615,7 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
             }
             return lstStoreProceduresWithDescription;
         }
@@ -658,7 +639,7 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
             }
 
             return lMsDescription;
@@ -683,7 +664,7 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
             }
 
             return lstStoreProcedureDependencies;
@@ -707,7 +688,7 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
             }
             return lstStoreProceduresParametersWithDescriptions;
         }
@@ -732,7 +713,7 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
             }
             return lstExecutionPlanDetails;
         }
@@ -791,7 +772,7 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
             }
         }
 
@@ -802,7 +783,7 @@ namespace MSSQL.DIARY.EF
         /// <returns></returns>
         public Ms_Description GetStoreProcedureDescription(string astrStoreProcedureName)
         { 
-            var lMs_Description = new Ms_Description { desciption = "" };
+            var lMsDescription = new Ms_Description { desciption = "" };
             try
             {
                 using var command = Database.GetDbConnection().CreateCommand();
@@ -810,14 +791,15 @@ namespace MSSQL.DIARY.EF
                 Database.OpenConnection();
                 DataTable ldtMsDescriptions = new DataTable();
                 ldtMsDescriptions.Load(command.ExecuteReader());
-                lMs_Description = SelectRow<Ms_Description>(ldtMsDescriptions);
+                lMsDescription = SelectRow<Ms_Description>(ldtMsDescriptions);
             }
-            catch (Exception  )
+            catch (Exception  ex)
             {
-                 
+                Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
+
             }
 
-            return lMs_Description;
+            return lMsDescription;
         }
 
 
@@ -892,9 +874,8 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
-            }
-
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
+            } 
             return lstTableIndexes;
         }
 
@@ -917,9 +898,8 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
-            }
-
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
+            } 
             return lTableCreateScript;
         }
 
@@ -943,7 +923,7 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
             }
             return lstTableDependencies.DistinctBy(x => x.name).ToList();
         }
@@ -967,9 +947,8 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
-            }
-
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
+            } 
             return lstTablesColumn;
         }
 
@@ -992,7 +971,7 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
             }
 
             return lstTableFkColumns;
@@ -1018,7 +997,7 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
             } 
             return lstTableKeyConstraints;
         }
@@ -1051,9 +1030,8 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
-            }
-
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
+            } 
             return lstTablesWithDescriptions;
         }
 
@@ -1072,9 +1050,8 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
-            }
-
+                Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
+            } 
             return lMs_Description;
         }
 
@@ -1129,7 +1106,7 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
             }
         }
 
@@ -1188,7 +1165,7 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
             }
         }
 
@@ -1210,7 +1187,7 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
             }
 
             return lstTableFragmentation;//.Where(x => Convert.ToInt32(x.PercentFragmented) > 0).ToList();
@@ -1236,9 +1213,8 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
-            }
-
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
+            } 
             return lstTableColumns;
         }
         /// <summary>
@@ -1262,7 +1238,7 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
             }
             return lstTableFkDependencies;
         }
@@ -1285,7 +1261,7 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
             }
 
             return lstTriggers;
@@ -1312,7 +1288,7 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
             }
 
             return lstTriggerInfo;
@@ -1364,7 +1340,7 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
             }
         }
         /// <summary>
@@ -1388,7 +1364,7 @@ namespace MSSQL.DIARY.EF
     
             catch(Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
             }
 
             return lstUserDefinedDataTypeDetails;
@@ -1414,7 +1390,7 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
             }
 
             return lUserDefinedDataTypeDetails;
@@ -1440,7 +1416,7 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
             }
             return lstUserDefinedDataTypeReference;
         }
@@ -1465,7 +1441,7 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
             }
 
             return lUserDefinedDataTypeDescription;
@@ -1488,7 +1464,7 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
             }
         }
         /// <summary>
@@ -1508,7 +1484,7 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
             }
         }
 
@@ -1548,7 +1524,7 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
             }
 
             return lstViewsWithDescription;
@@ -1574,7 +1550,7 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
             }
 
             return lstViewDependencies;
@@ -1600,7 +1576,7 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
             }
 
             return lstViewProperties;
@@ -1625,7 +1601,7 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
             }
 
             return lstGetViewColumns;
@@ -1651,7 +1627,7 @@ namespace MSSQL.DIARY.EF
             }
             catch (Exception ex)
             {
-                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
+                 Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
             }
 
             return lViewCreateScript;
@@ -1678,7 +1654,7 @@ namespace MSSQL.DIARY.EF
                 }
                 catch (Exception ex)
                 {
-                     Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
+                     Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
                 } 
             return lstObjectDependsOn
 ;
@@ -1707,7 +1683,7 @@ namespace MSSQL.DIARY.EF
                 }
                 catch (Exception ex)
                 {
-                     Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception occurred : {ex.StackTrace} ");
+                     Console.WriteLine($"\\n Exception occurred : {ex.Message} "); Console.WriteLine($"\\n Exception StackTrace : {ex.StackTrace} ");
                 } 
 
             return lstObjectOnWhichDepends;
