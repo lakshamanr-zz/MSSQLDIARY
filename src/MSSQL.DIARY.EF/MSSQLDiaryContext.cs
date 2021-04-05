@@ -124,24 +124,7 @@ namespace MSSQL.DIARY.EF
                 Database.OpenConnection();
                 DataTable ldtDatabaseFiles = new DataTable();
                 ldtDatabaseFiles.Load(command.ExecuteReader());
-                Type lTypeFileInformation = typeof(FileInfomration);
-                FileInfomration lFileInfomration = new FileInfomration();
-                if (ldtDatabaseFiles.IsNotNull()&& ldtDatabaseFiles.Rows.Count>0)
-                {
-                    foreach (DataRow ldtRow in ldtDatabaseFiles.Rows)
-                    {
-                        foreach (DataColumn ldtColumn in ldtDatabaseFiles.Columns)
-                        {
-                            if (!Convert.IsDBNull(ldtRow[ldtColumn]))
-                            {
-                                var piShared = lTypeFileInformation.GetProperty(ldtColumn.ColumnName);
-                                piShared.SetValue(lFileInfomration, ldtRow[ldtColumn]);
-                            } 
-                        }
-                        lstDatabaseFiles.Add(lFileInfomration);
-                    }
-                    
-                } 
+                lstDatabaseFiles = GetCollection<FileInfomration>(ldtDatabaseFiles); 
             }
             catch (Exception)
             {
@@ -165,26 +148,7 @@ namespace MSSQL.DIARY.EF
                 Database.OpenConnection();
                 DataTable ldtDatabaseNames = new DataTable();
                 ldtDatabaseNames.Load(command.ExecuteReader());
-                Type lTypeDatabaseName = typeof(DatabaseName);
-                DatabaseName lDatabaseName = new DatabaseName();
-                if (ldtDatabaseNames.IsNotNull() && ldtDatabaseNames.Rows.Count > 0)
-                {
-                    foreach (DataRow ldtRow in ldtDatabaseNames.Rows)
-                    {
-                        lDatabaseName = new DatabaseName();
-                        foreach (DataColumn ldtColumn in ldtDatabaseNames.Columns)
-                        {
-                            if (!Convert.IsDBNull(ldtRow[ldtColumn]))
-                            {
-                                var piShared = lTypeDatabaseName.GetProperty(ldtColumn.ColumnName);
-                                piShared.SetValue(lDatabaseName, ldtRow[ldtColumn]);
-                            }
-                        }
-                        lstDatabaseNames.Add(lDatabaseName);
-                    }
-
-                }
-                
+                lstDatabaseNames = GetCollection<DatabaseName>(ldtDatabaseNames);  
             }
             catch (Exception ex)
             {
@@ -213,24 +177,7 @@ namespace MSSQL.DIARY.EF
                     Database.OpenConnection();
                     DataTable ldtFunctionDependencies = new DataTable();
                     ldtFunctionDependencies.Load(command.ExecuteReader());
-                    FunctionDependencies lFunctionDependencies = new FunctionDependencies();
-                    if (ldtFunctionDependencies.IsNotNull() && ldtFunctionDependencies.Rows.Count > 0)
-                    {
-                        foreach (DataRow ldtRow in ldtFunctionDependencies.Rows)
-                        {
-                            foreach (DataColumn ldtColumn in ldtFunctionDependencies.Columns)
-                            {
-                                if (!Convert.IsDBNull(ldtRow[ldtColumn]))
-                                {
-                                    var piShared = ldtFunctionDependencies.GetProperty(ldtColumn.ColumnName);
-                                    piShared.SetValue(lFunctionDependencies, ldtRow[ldtColumn]);
-                                }
-                            }
-                            lstInterdependency.Add(lFunctionDependencies);
-                        }
-
-                    }
-                    
+                    lstInterdependency = GetCollection<FunctionDependencies>(ldtFunctionDependencies); 
                 }
                 catch (Exception)
                 {
@@ -763,25 +710,7 @@ namespace MSSQL.DIARY.EF
                 Database.OpenConnection();
                 DataTable ldtAdvServerSetting = new DataTable();
                 ldtAdvServerSetting.Load(command.ExecuteReader());
-                Type lTypePropertyInfo = typeof(PropertyInfo);
-                PropertyInfo lPropertyInfo = new PropertyInfo();
-                if (ldtAdvServerSetting.IsNotNull() && ldtAdvServerSetting.Rows.Count > 0)
-                {
-                    foreach (DataRow ldtRow in ldtAdvServerSetting.Rows)
-                    {
-                        lPropertyInfo = new PropertyInfo();
-                        foreach (DataColumn ldtColumn in ldtAdvServerSetting.Columns)
-                        {
-                            if (!Convert.IsDBNull(ldtRow[ldtColumn]))
-                            {
-                                var piShared = lTypePropertyInfo.GetProperty(ldtColumn.ColumnName);
-                                piShared.SetValue(lPropertyInfo, ldtRow[ldtColumn]);
-                            }
-                        }
-                        lstAdvancedServerSettings.Add(lPropertyInfo);
-                    }
-
-                } 
+                lstAdvancedServerSettings = GetCollection<PropertyInfo>(ldtAdvServerSetting);
             }
             catch (Exception)
             {
@@ -806,24 +735,7 @@ namespace MSSQL.DIARY.EF
                 Database.OpenConnection(); 
                 DataTable ldtStoreProcedures = new DataTable();
                 ldtStoreProcedures.Load(command.ExecuteReader());
-                Type lTypePropertyInfo = typeof(PropertyInfo);
-                PropertyInfo lPropertyInfo;
-                if (ldtStoreProcedures.IsNotNull() && ldtStoreProcedures.Rows.Count > 0)
-                {
-                    foreach (DataRow ldtRow in ldtStoreProcedures.Rows)
-                    {
-                        lPropertyInfo = new PropertyInfo();
-                        foreach (DataColumn ldtColumn in ldtStoreProcedures.Columns)
-                        {
-                            if (!Convert.IsDBNull(ldtRow[ldtColumn]))
-                            {
-                                var piShared = lTypePropertyInfo.GetProperty(ldtColumn.ColumnName);
-                                piShared.SetValue(lPropertyInfo, ldtRow[ldtColumn]);
-                            }
-                        }
-                        lstStoreProceduresWithDescription.Add(lPropertyInfo);
-                    } 
-                } 
+                lstStoreProceduresWithDescription = GetCollection<PropertyInfo>(ldtStoreProcedures);
             }
             catch (Exception ex)
             {
@@ -845,25 +757,8 @@ namespace MSSQL.DIARY.EF
                 command.CommandText = SqlQueryConstant.GetStoreProcedureCreateScript.Replace("@StoreprocName", "'" + astrStoreProcedureName + "'");
                 Database.OpenConnection();
                 DataTable ldtStoreProcedureCreateScript = new DataTable();
-                ldtStoreProcedureCreateScript.Load(command.ExecuteReader()); 
-                Type lTypePropertyInfo = typeof(PropertyInfo);
-                PropertyInfo lPropertyInfo;
-                if (ldtStoreProcedureCreateScript.IsNotNull() && ldtStoreProcedureCreateScript.Rows.Count > 0)
-                {
-                    foreach (DataRow ldtRow in ldtStoreProcedureCreateScript.Rows)
-                    {
-                        lPropertyInfo = new PropertyInfo();
-                        foreach (DataColumn ldtColumn in ldtStoreProcedureCreateScript.Columns)
-                        {
-                            if (!Convert.IsDBNull(ldtRow[ldtColumn]))
-                            {
-                                var piShared = lTypePropertyInfo.GetProperty(ldtColumn.ColumnName);
-                                piShared.SetValue(lPropertyInfo, ldtRow[ldtColumn]);
-                            }
-                        }
-                        lstrStoreProcedureCreateScript.Add(lPropertyInfo);
-                    }
-                }
+                ldtStoreProcedureCreateScript.Load(command.ExecuteReader());
+                lstrStoreProcedureCreateScript = GetCollection<PropertyInfo>(ldtStoreProcedureCreateScript);
 
             }
             catch (Exception)
