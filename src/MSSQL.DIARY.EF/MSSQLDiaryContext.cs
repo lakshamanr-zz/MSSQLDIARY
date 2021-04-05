@@ -208,16 +208,9 @@ namespace MSSQL.DIARY.EF
                 var newFunctionName = astrFunctionName.Replace(astrFunctionName.Substring(0, astrFunctionName.IndexOf(".", StringComparison.Ordinal)) + ".", "");
                 command.CommandText = SqlQueryConstant.GetFunctionProperties.Replace("@function_Type", "'" + astrFunctionType + "'").Replace("@function_name", "'" + newFunctionName + "'");
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstFunctionProperties.Add(new FunctionProperties
-                        {
-                            uses_ansi_nulls = reader.SafeGetString(0),
-                            uses_quoted_identifier = reader.SafeGetString(1),
-                            create_date = reader.SafeGetString(2),
-                            modify_date = reader.SafeGetString(3)
-                        });
+                DataTable ldtFunctionProperties = new DataTable();
+                ldtFunctionProperties.Load(command.ExecuteReader());
+                lstFunctionProperties = GetCollection<FunctionProperties>(ldtFunctionProperties); 
             }
             catch (Exception)
             {
@@ -241,24 +234,14 @@ namespace MSSQL.DIARY.EF
                 var command = lDbConnection.CreateCommand();
                 command.CommandText = SqlQueryConstant.GetFunctionParameters.Replace("@function_Type", "'" + astrFunctionType + "'").Replace("@function_name", "'" + astrFunctionName + "'");
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstFunctionColumns.Add(new FunctionParameters
-                        {
-                            name = reader.SafeGetString(0),
-                            type = reader.SafeGetString(1),
-                            updated = reader.SafeGetString(2),
-                            selected = reader.SafeGetString(3),
-                            column_name = reader.SafeGetString(7)
-                        });
+                DataTable ldtFunctionColumns = new DataTable();
+                ldtFunctionColumns.Load(command.ExecuteReader());
+                lstFunctionColumns = GetCollection<FunctionParameters>(ldtFunctionColumns); 
             }
             catch (Exception)
             {
                 // ignored
-            }
-
-            lstFunctionColumns.ForEach(x => { x.name = x.name == string.Empty ? "@Return Parameter " : x.name; });
+            } 
             return lstFunctionColumns;
         }
 
@@ -276,13 +259,9 @@ namespace MSSQL.DIARY.EF
                 using var lDbConnection = Database.GetDbConnection();
                 var command = lDbConnection.CreateCommand();
                 command.CommandText = SqlQueryConstant.GetFunctionCreateScript.Replace("@function_Type", "'" + astrFunctionType + "'").Replace("@function_name", "'" + astrFunctionName + "'");
-                Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                    {
-                        lstrFunctionCreateScript.createFunctionscript = reader.SafeGetString(0);
-                    }
+                DataTable ldtFunctionCreateScript = new DataTable();
+                ldtFunctionCreateScript.Load(command.ExecuteReader());
+                lstrFunctionCreateScript = SelectRow<FunctionCreateScript>(ldtFunctionCreateScript);
             }
             catch (Exception)
             {
@@ -1382,6 +1361,7 @@ namespace MSSQL.DIARY.EF
         public List<string> GetTableColumns(string astrTableName)
         {
             var lstTableColumns = new List<string>();
+            //column_name
             try
             {
                 using var command = Database.GetDbConnection().CreateCommand();
@@ -1411,24 +1391,12 @@ namespace MSSQL.DIARY.EF
             {
                 using var lDbConnection = Database.GetDbConnection();
                 var command = lDbConnection.CreateCommand();
-                if (astrSchemaName.IsNullOrEmpty())
-                {
-                    command.CommandText = SqlQueryConstant.GetTableFkReferences;
-                }
-                else
-                {
-                    command.CommandText = SqlQueryConstant.GetTableFkReferencesBySchemaName.Replace("@SchemaName", $"'{astrSchemaName}'");
-                    
-                }
-                Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstTableFkDependencies.Add(new TableFKDependency
-                        {
-                            Fk_name = reader.GetString(0),
-                            fk_refe_table_name = reader.GetString(1)
-                        });
+                command.CommandText = astrSchemaName.IsNullOrEmpty() ? SqlQueryConstant.GetTableFkReferences : SqlQueryConstant.GetTableFkReferencesBySchemaName.Replace("@SchemaName", $"'{astrSchemaName}'");
+                Database.OpenConnection(); 
+                DataTable ldtTableFkDependencies = new DataTable();
+                ldtTableFkDependencies.Load(command.ExecuteReader());
+                lstTableFkDependencies = GetCollection<TableFKDependency>(ldtTableFkDependencies); 
+               
             }
             catch (Exception)
             {
@@ -1442,28 +1410,23 @@ namespace MSSQL.DIARY.EF
         /// <returns></returns>
         public List<PropertyInfo> GetTriggers()
         {
-            var propertyInfos = new List<PropertyInfo>();
+            var lstTriggers = new List<PropertyInfo>();
             try
             {
                 using var lDbConnection = Database.GetDbConnection();
                 var command = lDbConnection.CreateCommand();
                 command.CommandText = SqlQueryConstant.GetTriggers;
-                Database.OpenConnection(); 
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        propertyInfos.Add(new PropertyInfo
-                        {
-                            istrName = reader.SafeGetString(0),
-                            istrValue = reader.SafeGetString(1)
-                        });
+                Database.OpenConnection();   
+                DataTable ldtTriggers = new DataTable();
+                ldtTriggers.Load(command.ExecuteReader());
+                lstTriggers = GetCollection<PropertyInfo>(ldtTriggers); 
             }
             catch (Exception)
             {
                 // ignored
             }
 
-            return propertyInfos;
+            return lstTriggers;
         }
 
         /// <summary>
@@ -1473,32 +1436,24 @@ namespace MSSQL.DIARY.EF
         /// <returns></returns>
         public List<TriggerInfo> GetTrigger(string astrTriggerName)
         {
-            var triggerInfo = new List<TriggerInfo>();
+            var lstTriggerInfo = new List<TriggerInfo>();
             try
             {
                 using var lDbConnection = Database.GetDbConnection();
                 var command = lDbConnection.CreateCommand();
                 command.CommandText = SqlQueryConstant.GetTrigger.Replace("@TiggersName", "'" + astrTriggerName + "'");
                 Database.OpenConnection();
-
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        triggerInfo.Add(new TriggerInfo
-                        {
-                            TiggersName = reader.SafeGetString(0),
-                            TiggersDesc = reader.SafeGetString(1),
-                            TiggersCreateScript = reader.SafeGetString(2),
-                            TiggersCreatedDate = reader.GetDateTime(3).ToString(CultureInfo.InvariantCulture),
-                            TiggersModifyDate = reader.GetDateTime(4).ToString(CultureInfo.InvariantCulture)
-                        });
+                DataTable ldtTriggerInfo = new DataTable();
+                ldtTriggerInfo.Load(command.ExecuteReader());
+                lstTriggerInfo = GetCollection<TriggerInfo>(ldtTriggerInfo);
+               
             }
             catch (Exception)
             {
                 // ignored
             }
 
-            return triggerInfo;
+            return lstTriggerInfo;
         }
 
         /// <summary>
@@ -1563,17 +1518,10 @@ namespace MSSQL.DIARY.EF
                 var command = lDbConnection.CreateCommand();
                 command.CommandText = SqlQueryConstant.GetUserDefinedDataTypes;
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstUserDefinedDataTypeDetails.Add(new UserDefinedDataTypeDetails
-                        {
-                            name = reader.SafeGetString(0),
-                            iblnallownull = reader.GetBoolean(1),
-                            basetypename = reader.SafeGetString(2),
-                            length = reader.GetInt16(3),
-                            createscript = reader.SafeGetString(4)
-                        });
+                DataTable ldtUserDefinedDataTypeRef = new DataTable();
+                ldtUserDefinedDataTypeRef.Load(command.ExecuteReader());
+                lstUserDefinedDataTypeDetails = GetCollection<UserDefinedDataTypeDetails>(ldtUserDefinedDataTypeRef);
+               
             }
             catch
             {
@@ -1597,17 +1545,9 @@ namespace MSSQL.DIARY.EF
                 var command = lDbConnection.CreateCommand();
                 command.CommandText = SqlQueryConstant.GetUserDefinedDataTypeDetails.Replace("@TypeName", "'" + astrTypeName + "'");
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lUserDefinedDataTypeDetails = new UserDefinedDataTypeDetails
-                        {
-                            name = reader.SafeGetString(0),
-                            iblnallownull = reader.GetBoolean(1),
-                            basetypename = reader.SafeGetString(2),
-                            length = reader.GetInt16(3),
-                            createscript = reader.SafeGetString(4)
-                        };
+                DataTable ldtUserDefinedDataTypeDetails = new DataTable();
+                ldtUserDefinedDataTypeDetails.Load(command.ExecuteReader());
+                lUserDefinedDataTypeDetails = SelectRow<UserDefinedDataTypeDetails>(ldtUserDefinedDataTypeDetails);
             }
             catch (Exception)
             {
@@ -1631,14 +1571,9 @@ namespace MSSQL.DIARY.EF
                 var command = lDbConnection.CreateCommand();
                 command.CommandText = SqlQueryConstant.GetUsedDefinedDataTypeReference.Replace("@TypeName", "'" + astrTypeName + "'");
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstUserDefinedDataTypeReference.Add(new UserDefinedDataTypeReferance
-                        {
-                            objectname = reader.SafeGetString(0),
-                            typeofobject = reader.SafeGetString(1)
-                        });
+                DataTable ldtUserDefinedDataTypeRef = new DataTable();
+                ldtUserDefinedDataTypeRef.Load(command.ExecuteReader());
+                lstUserDefinedDataTypeReference = GetCollection<UserDefinedDataTypeReferance>(ldtUserDefinedDataTypeRef);
             }
             catch (Exception)
             {
@@ -1661,13 +1596,9 @@ namespace MSSQL.DIARY.EF
                 var command = lDbConnection.CreateCommand();
                 command.CommandText = SqlQueryConstant.GetUsedDefinedDataTypeExtendedProperties.Replace("@SchemaName", "'" + astrTypeName.Split('.')[0] + "'").Replace("@TypeName", "'" + astrTypeName.Split('.')[1] + "'");
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lUserDefinedDataTypeDescription = new Ms_Description
-                        {
-                            desciption = reader.SafeGetString(0)
-                        };
+                DataTable ldtUserDefinedDataTypeDescription = new DataTable();
+                ldtUserDefinedDataTypeDescription.Load(command.ExecuteReader());
+                lUserDefinedDataTypeDescription = SelectRow<Ms_Description>(ldtUserDefinedDataTypeDescription);
             }
             catch (Exception)
             {
@@ -1741,28 +1672,23 @@ namespace MSSQL.DIARY.EF
 
         public List<PropertyInfo> GetViewsWithDescription()
         {
-            var dbProperties = new List<PropertyInfo>();
+            var lstViewsWithDescription = new List<PropertyInfo>();
             try
             {
                 using var lDbConnection = Database.GetDbConnection();
                 var command = lDbConnection.CreateCommand();
                 command.CommandText = SqlQueryConstant.GetViewsWithDescription; 
-                Database.OpenConnection(); 
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        dbProperties.Add(new PropertyInfo
-                        {
-                            istrName = reader.SafeGetString(0),
-                            istrValue = reader.SafeGetString(1)
-                        });
+                Database.OpenConnection();
+                DataTable ldtViewsWithDescription = new DataTable();
+                ldtViewsWithDescription.Load(command.ExecuteReader());
+                lstViewsWithDescription = GetCollection<PropertyInfo>(ldtViewsWithDescription);
             }
             catch (Exception)
             {
                 // ignored
             }
 
-            return dbProperties;
+            return lstViewsWithDescription;
         }
 
         /// <summary>
@@ -1779,13 +1705,9 @@ namespace MSSQL.DIARY.EF
                 var command = lDbConnection.CreateCommand();
                 command.CommandText = SqlQueryConstant.GetViewsDependancies.Replace("@viewname", "'" + astrViewName + "'");
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstViewDependencies.Add(new ViewDependancy
-                        {
-                            name = reader.SafeGetString(0)
-                        });
+                DataTable ldtViewDependencies = new DataTable();
+                ldtViewDependencies.Load(command.ExecuteReader());
+                lstViewDependencies = GetCollection<ViewDependancy>(ldtViewDependencies);
             }
             catch (Exception)
             {
@@ -1809,16 +1731,9 @@ namespace MSSQL.DIARY.EF
                 var command = lDbConnection.CreateCommand();
                 command.CommandText = SqlQueryConstant.GetViewProperties.Replace("@viewname", "'" + astrViewName + "'");
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstViewProperties.Add(new View_Properties
-                        {
-                            uses_ansi_nulls = reader.SafeGetString(0),
-                            uses_quoted_identifier = reader.SafeGetString(1),
-                            create_date = reader.SafeGetString(2),
-                            modify_date = reader.SafeGetString(3)
-                        });
+                DataTable ldtViewProperties = new DataTable();
+                ldtViewProperties.Load(command.ExecuteReader());
+                lstViewProperties = GetCollection<View_Properties>(ldtViewProperties);
             }
             catch (Exception)
             {
@@ -1841,17 +1756,9 @@ namespace MSSQL.DIARY.EF
                 var command = lDbConnection.CreateCommand();
                 command.CommandText = SqlQueryConstant.GetViewColumns.Replace("@viewname", "'" + astrViewName + "'");
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstGetViewColumns.Add(new ViewColumns
-                        {
-                            name = reader.SafeGetString(0),
-                            type = reader.SafeGetString(1),
-                            updated = reader.SafeGetString(2),
-                            selected = reader.SafeGetString(3),
-                            column_name = reader.SafeGetString(4)
-                        });
+                DataTable ldtViewColumns = new DataTable();
+                ldtViewColumns.Load(command.ExecuteReader());
+                lstGetViewColumns = GetCollection<ViewColumns>(ldtViewColumns);
             }
             catch (Exception)
             {
@@ -1875,10 +1782,9 @@ namespace MSSQL.DIARY.EF
                 var command = lDbConnection.CreateCommand();
                 command.CommandText = SqlQueryConstant.GetViewCreateScript.Replace("@viewname", "'" + astrViewName + "'");
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lViewCreateScript.createViewScript = reader.SafeGetString(0);
+                DataTable ldtViewCreateScript = new DataTable();
+                ldtViewCreateScript.Load(command.ExecuteReader());
+                lViewCreateScript = SelectRow<ViewCreateScript>(ldtViewCreateScript);
             }
             catch (Exception)
             {
