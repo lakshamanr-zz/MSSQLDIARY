@@ -1439,25 +1439,16 @@ namespace MSSQL.DIARY.EF
                 using var command = Database.GetDbConnection().CreateCommand();
                 command.CommandText = SqlQueryConstant.TableFragmentation;
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstTableFragmentation.Add
-                        (
-                            new TableFragmentationDetails
-                            {
-                                TableName = reader.SafeGetString(0),
-                                IndexName = reader.SafeGetString(1),
-                                PercentFragmented = reader.GetInt32(2).ToString()
-                            }
-                        );
+                DataTable ldtTableFragmentationDetails = new DataTable();
+                ldtTableFragmentationDetails.Load(command.ExecuteReader());
+                lstTableFragmentation = GetCollection<TableFragmentationDetails>(ldtTableFragmentationDetails); 
             }
             catch (Exception)
             {
                 // ignored
             }
 
-            return lstTableFragmentation.Where(x => Convert.ToInt32(x.PercentFragmented) > 0).ToList();
+            return lstTableFragmentation;//.Where(x => Convert.ToInt32(x.PercentFragmented) > 0).ToList();
         }
 
         /// <summary>
