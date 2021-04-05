@@ -309,7 +309,7 @@ namespace MSSQL.DIARY.SRV
                 lstTableDetails=lSqlDatabaseContext.GetTablesDescription();
                 lDatabaseName = lSqlDatabaseContext.GetCurrentDatabaseName();
             }
-            var lServerName = GetServerName().FirstOrDefault();
+            var lServerName = GetServerName(IstrDatabaseConnection).FirstOrDefault();
 
             lstTableDetails.ForEach(x =>
             { 
@@ -938,10 +938,10 @@ namespace MSSQL.DIARY.SRV
         /// Get server names
         /// </summary>
         /// <returns></returns>
-        public List<string> GetServerName()
+        public List<string> GetServerName(string astrDatabaseConnection=null)
         {
             var lstServers = new List<string>();
-            using var lSqlDatabaseContext = new MsSqlDiaryContext();
+            using var lSqlDatabaseContext = new MsSqlDiaryContext(astrDatabaseConnection);
             lstServers.Add(lSqlDatabaseContext.GetServerName().SERVERNAME);
             return lstServers;
         }

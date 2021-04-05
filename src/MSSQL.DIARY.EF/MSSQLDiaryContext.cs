@@ -42,7 +42,7 @@ namespace MSSQL.DIARY.EF
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"\n Exception occurred : {ex.Message} "); Console.WriteLine($"\n Exception StackTrace : {ex.StackTrace} "); 
+                    Console.WriteLine($" \n Exception occurred : {ex.Message} "); Console.WriteLine($" \n Exception StackTrace : {ex.StackTrace} "); 
                 }
             }
         }
