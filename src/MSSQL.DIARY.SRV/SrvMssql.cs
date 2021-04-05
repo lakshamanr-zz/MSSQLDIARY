@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace MSSQL.DIARY.SRV
 {
@@ -301,10 +302,28 @@ namespace MSSQL.DIARY.SRV
         private List<TablePropertyInfo> GetTablesDescriptionFromCache()
         {
             List<TablePropertyInfo> lstTableDetails;
+
+            string lDatabaseName;
             using (var lSqlDatabaseContext = new MsSqlDiaryContext(IstrDatabaseConnection))
             {
                 lstTableDetails=lSqlDatabaseContext.GetTablesDescription();
-            }  
+                lDatabaseName = lSqlDatabaseContext.GetCurrentDatabaseName();
+            }
+            var lServerName = GetServerName().FirstOrDefault();
+
+            lstTableDetails.ForEach(x =>
+            { 
+                if (string.IsNullOrEmpty(x.istrValue))
+                {
+                    x.istrValue = "description of the " + x.istrFullName + " is missing.";
+                }
+                else if (x.istrName.Contains("$") && x.istrName.Contains("\\") && x.istrName.Contains("-"))
+                {
+                    x.istrName = string.Empty;
+                }
+                x.istrNevigation = lDatabaseName + "/" + x.istrFullName + "/" + lServerName;
+            });
+
             var lstTableColumns = GetTableColumns();
             lstTableDetails.ForEach(tablePropertyInfo =>
             {
@@ -366,7 +385,15 @@ namespace MSSQL.DIARY.SRV
         public List<TableColumns> GetTableColumns(string astrTableName=null)
         { 
             using var lSqlDatabaseContext = new MsSqlDiaryContext(IstrDatabaseConnection);
-            return lSqlDatabaseContext.GetTablesColumn(astrTableName);  
+            var lTableColums= lSqlDatabaseContext.GetTablesColumn(astrTableName);
+            var count = 1;
+            lTableColums.ForEach(lTableColumns =>
+            {
+
+                lTableColumns.id = count;
+                count++;
+            });
+            return lTableColums;
         }
 
         /// <summary>

@@ -1054,34 +1054,48 @@ namespace MSSQL.DIARY.EF
             return strSpDescription;
         }
 
+        public static List<T> GetCollection<T>(DataTable aDataTable) where T : new()
+        {
+            var lGetType = typeof(T);
+            List<T> lstTList = new List<T>();
+
+            if (aDataTable.IsNotNull() && aDataTable.Rows.Count > 0)
+            { 
+
+                foreach (DataRow ldtDataRow in aDataTable.Rows)
+                {
+                    var lInstanceOfType = new T();
+                    foreach (DataColumn ldtDataColumn in aDataTable.Columns)
+                    {
+                        if (!Convert.IsDBNull(ldtDataRow[ldtDataColumn]))
+                        {
+                            var Pishare = lGetType.GetProperty(ldtDataColumn.ColumnName);
+                            if (Pishare.IsNotNull())
+                                Pishare.SetValue(lInstanceOfType, ldtDataRow[ldtDataColumn]);
+                        }
+                    }
+                    lstTList.Add(lInstanceOfType);
+                }
+            }
+
+            return lstTList;
+        }
         /// <summary>
         /// Get list of Index on the table
         /// </summary>
         /// <param name="astrTableName"></param>
         /// <returns></returns>
-        public List<TableIndexInfo> GetTableIndexes(string astrTableName)
+        public List<TableIndexInfo> GetTableIndexes(string astrTableName=null)
         {
             var lstTableIndexes = new List<TableIndexInfo>();
             try
             {
-                using var command = Database.GetDbConnection().CreateCommand();
-                command.CommandText = SqlQueryConstant.GetTableIndex.Replace("@tblName", "'" + astrTableName + "'");
+                using var command = Database.GetDbConnection().CreateCommand(); 
+                command.CommandText = astrTableName.IsNullOrEmpty()? SqlQueryConstant.GetTablesIndex: SqlQueryConstant.GetTableIndex.Replace("@tblName", "'" + astrTableName + "'");
+                DataTable ldtTableIndex = new DataTable();
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstTableIndexes.Add
-                        (
-                            new TableIndexInfo
-                            {
-                                index_name = reader.SafeGetString(0),
-                                columns = reader.SafeGetString(1),
-                                index_type = reader.SafeGetString(2),
-                                unique = reader.SafeGetString(3),
-                                tableView = reader.SafeGetString(4),
-                                object_Type = reader.SafeGetString(5)
-                            }
-                        );
+                ldtTableIndex.Load(command.ExecuteReader());
+                lstTableIndexes = GetCollection<TableIndexInfo>(ldtTableIndex);  
             }
             catch (Exception)
             {
@@ -1164,30 +1178,8 @@ namespace MSSQL.DIARY.EF
                 command.CommandText = astrTableName.IsNullOrWhiteSpace() ? SqlQueryConstant.GetTablesColumn : SqlQueryConstant.GetTablesColumnWithTableName.Replace("@tblName", "'" + astrTableName + "'"); 
                 Database.OpenConnection();
                 DataTable ldtTableColumns = new DataTable(); 
-                ldtTableColumns.Load(command.ExecuteReader()); 
-                if (ldtTableColumns.IsNotNull()&& ldtTableColumns.Rows.Count>0)
-                { 
-                    Type lTypeTableColumns = typeof(TableColumns);
-                    var count = 1;
-                    foreach (DataRow ldtDataRow in ldtTableColumns.Rows)
-                    {
-                        TableColumns lTableColumns = new TableColumns();
-
-                        foreach (DataColumn ldtDataColumn in ldtTableColumns.Columns)
-                        {
-                            if (!Convert.IsDBNull(ldtDataRow[ldtDataColumn]))
-                            {
-                                var Pishare = lTypeTableColumns.GetProperty(ldtDataColumn.ColumnName);
-                                if(Pishare.IsNotNull())
-                                    Pishare.SetValue(lTableColumns, ldtDataRow[ldtDataColumn]);
-                            }
-                        }
-
-                        lTableColumns.id = count;
-                        count++;
-                        lstTablesColumn.Add(lTableColumns);
-                    }
-                } 
+                ldtTableColumns.Load(command.ExecuteReader());
+                lstTablesColumn = GetCollection<TableColumns>(ldtTableColumns); 
             }
             catch (Exception)
             {
@@ -1271,6 +1263,11 @@ namespace MSSQL.DIARY.EF
             return lstTableKeyConstraints;
         }
 
+        public string GetCurrentDatabaseName()
+        {
+            return Database.GetDbConnection().Database;
+            
+        }
         /// <summary>
         /// Get tables with descriptions
         /// </summary>
@@ -1278,43 +1275,14 @@ namespace MSSQL.DIARY.EF
         public List<TablePropertyInfo> GetTablesDescription()
         {
             var lstTablesWithDescriptions = new List<TablePropertyInfo>();
-            var lServerName = GetServerName();
             try
-            {
-
-                var lDatabaseName = Database.GetDbConnection().Database;
+            { 
                 using var command = Database.GetDbConnection().CreateCommand();
                 command.CommandText = SqlQueryConstant.GetTablesWithDescription;
                 DataTable ldtTableWithDescriptions = new DataTable();
                 Database.OpenConnection();
                 ldtTableWithDescriptions.Load(command.ExecuteReader());
-                Type lTypeTablePropertyInfo = typeof(TablePropertyInfo);
-                if (ldtTableWithDescriptions.IsNotNull() && ldtTableWithDescriptions.Rows.Count > 0)
-                {
-                    foreach (DataRow ldtDataRow in ldtTableWithDescriptions.Rows)
-                    {
-                        var lTablePropertyInfo = new TablePropertyInfo();
-                        foreach (DataColumn ldtDataColumn in ldtTableWithDescriptions.Columns)
-                        {
-                            if (!Convert.IsDBNull((ldtDataRow[ldtDataColumn])))
-                            {
-                                var piShared = lTypeTablePropertyInfo.GetProperty(ldtDataColumn.ColumnName);
-                                piShared.SetValue(lTablePropertyInfo, ldtDataRow[ldtDataColumn]);
-                            }
-                        } 
-                        if (lTablePropertyInfo.istrName.Contains("$") &&   lTablePropertyInfo.istrName.Contains("\\") && lTablePropertyInfo.istrName.Contains("-"))
-                        { 
-                            continue;
-                        } 
-                        if (string.IsNullOrEmpty(lTablePropertyInfo.istrValue))
-                        {
-                            lTablePropertyInfo.istrValue = "description of the " + lTablePropertyInfo.istrFullName + " is missing.";
-                        } 
-                        lTablePropertyInfo.istrNevigation = lDatabaseName + "/" + lTablePropertyInfo.istrFullName + "/" + lServerName;
-                        lstTablesWithDescriptions.Add(lTablePropertyInfo);
-
-                    }
-                }
+                lstTablesWithDescriptions = GetCollection<TablePropertyInfo>(ldtTableWithDescriptions);
             }
             catch (Exception ex)
             {
