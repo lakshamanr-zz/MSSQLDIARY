@@ -1,9 +1,0 @@
-F:\Lakshaman\GitHub\MSSQLDIARY\src\MSSQL.DIARY.COMMON\bin\Debug\netcoreapp3.1\MSSQL.DIARY.COMN.deps.json
-F:\Lakshaman\GitHub\MSSQLDIARY\src\MSSQL.DIARY.COMMON\bin\Debug\netcoreapp3.1\MSSQL.DIARY.COMN.dll
-F:\Lakshaman\GitHub\MSSQLDIARY\src\MSSQL.DIARY.COMMON\bin\Debug\netcoreapp3.1\MSSQL.DIARY.COMN.pdb
-F:\Lakshaman\GitHub\MSSQLDIARY\src\MSSQL.DIARY.COMMON\obj\Debug\netcoreapp3.1\MSSQL.DIARY.COMN.AssemblyInfoInputs.cache
-F:\Lakshaman\GitHub\MSSQLDIARY\src\MSSQL.DIARY.COMMON\obj\Debug\netcoreapp3.1\MSSQL.DIARY.COMN.AssemblyInfo.cs
-F:\Lakshaman\GitHub\MSSQLDIARY\src\MSSQL.DIARY.COMMON\obj\Debug\netcoreapp3.1\MSSQL.DIARY.COMN.csproj.CoreCompileInputs.cache
-F:\Lakshaman\GitHub\MSSQLDIARY\src\MSSQL.DIARY.COMMON\obj\Debug\netcoreapp3.1\MSSQL.DIARY.COMN.dll
-F:\Lakshaman\GitHub\MSSQLDIARY\src\MSSQL.DIARY.COMMON\obj\Debug\netcoreapp3.1\MSSQL.DIARY.COMN.pdb
-F:\Lakshaman\GitHub\MSSQLDIARY\src\MSSQL.DIARY.COMMON\obj\Debug\netcoreapp3.1\MSSQL.DIARY.COMN.csprojAssemblyReference.cache

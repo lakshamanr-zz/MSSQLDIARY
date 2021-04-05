@@ -284,16 +284,9 @@ namespace MSSQL.DIARY.EF
                 using var command = Database.GetDbConnection().CreateCommand();
                 command.CommandText = SqlQueryConstant.GetFunctionsWithDescription.Replace("@function_Type", "'" + astrFunctionType + "'");
                 Database.OpenConnection();
-                using (var reader = command.ExecuteReader())
-                {
-                    if (reader.HasRows)
-                        while (reader.Read())
-                            lstFunctionDescriptions.Add(new PropertyInfo
-                            {
-                                istrName = reader.SafeGetString(0),
-                                istrValue = reader.GetString(1)
-                            });
-                }
+                DataTable ldtFunctionDescriptions = new DataTable();
+                ldtFunctionDescriptions.Load(command.ExecuteReader());
+                lstFunctionDescriptions = GetCollection<PropertyInfo>(ldtFunctionDescriptions); 
             }
             catch (Exception)
             {
@@ -355,20 +348,17 @@ namespace MSSQL.DIARY.EF
         /// Get scalar functions
         /// </summary>
         /// <returns></returns>
-        public List<string> GetScalarFunctions()
+        public List<ScalarFunctions> GetScalarFunctions()
         {
-            var lstScalarFunctions = new List<string>();
+            var lstScalarFunctions = new List<ScalarFunctions>();
             try
             {
                 using var command = Database.GetDbConnection().CreateCommand();
                 command.CommandText = SqlQueryConstant.GetScalarFunctions;
                 Database.OpenConnection();
-                using (var reader = command.ExecuteReader())
-                {
-                    if (reader.HasRows)
-                        while (reader.Read())
-                            lstScalarFunctions.Add(reader.GetString(0));
-                }
+                DataTable ldtScalarFunctions = new DataTable();
+                ldtScalarFunctions.Load(command.ExecuteReader());
+                lstScalarFunctions = GetCollection<ScalarFunctions>(ldtScalarFunctions); 
             }
             catch (Exception)
             {
@@ -383,18 +373,17 @@ namespace MSSQL.DIARY.EF
         /// Get Table value functions
         /// </summary>
         /// <returns></returns>
-        public List<string> GetTableValueFunctions()
+        public List<TableValueFunction> GetTableValueFunctions()
         {
-            var lstTableValueFunctions = new List<string>();
+            var lstTableValueFunctions = new List<TableValueFunction>();
             try
             {
                 using var command = Database.GetDbConnection().CreateCommand();
                 command.CommandText = SqlQueryConstant.GetTableValueFunctions;
-                Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstTableValueFunctions.Add(reader.GetString(0));
+                Database.OpenConnection(); 
+                DataTable ldtTableValueFunction = new DataTable();
+                ldtTableValueFunction.Load(command.ExecuteReader());
+                lstTableValueFunctions = GetCollection<TableValueFunction>(ldtTableValueFunction);
             }
             catch (Exception)
             {
@@ -409,18 +398,18 @@ namespace MSSQL.DIARY.EF
         /// Get aggregation functions
         /// </summary>
         /// <returns></returns>
-        public List<string> GetAggregateFunctions()
+        public List<AggregateFunctions> GetAggregateFunctions()
         {
-            var lstAggregateFunctions = new List<string>();
+            var lstAggregateFunctions = new List<AggregateFunctions>();
             try
-            {
+            { 
                 using var command = Database.GetDbConnection().CreateCommand();
                 command.CommandText = SqlQueryConstant.GetAggregateFunctions;
-                Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstAggregateFunctions.Add(reader.GetString(0));
+                Database.OpenConnection();  
+                DataTable ldtAggregateFunctions = new DataTable();
+                ldtAggregateFunctions.Load(command.ExecuteReader());
+                lstAggregateFunctions = GetCollection<AggregateFunctions>(ldtAggregateFunctions);
+                
             }
             catch (Exception)
             {
@@ -435,28 +424,23 @@ namespace MSSQL.DIARY.EF
         /// <returns></returns>
         public List<PropertyInfo> GetSchemaWithDescriptions()
         {
-            var lstPropInfo = new List<PropertyInfo>();
+            var lstSchemaWithDescriptions = new List<PropertyInfo>();
             try
             {
                 using var command = Database.GetDbConnection().CreateCommand();
                 command.CommandText = SqlQueryConstant.GetSchemaWithDescriptions;
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstPropInfo.Add(new PropertyInfo
-                            {
-                                istrName = reader.GetString(0),
-                                istrValue = reader.GetString(1)
-                            }
-                        );
+                DataTable ldtSchemaWithDescriptions = new DataTable();
+                ldtSchemaWithDescriptions.Load(command.ExecuteReader());
+                lstSchemaWithDescriptions = GetCollection<PropertyInfo>(ldtSchemaWithDescriptions);
+                
             }
             catch (Exception)
             {
                 // ignored
             }
 
-            return lstPropInfo;
+            return lstSchemaWithDescriptions;
         }
 
         /// <summary>
@@ -515,14 +499,9 @@ namespace MSSQL.DIARY.EF
                 using var command = Database.GetDbConnection().CreateCommand();
                 command.CommandText = SqlQueryConstant.GetSchemaReferences.Replace("@schema_id", "'" + astrSchemaName + "'");
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstSchemaReferences.Add(new SchemaReferanceInfo
-                            {
-                                istrName = reader.GetString(0)
-                            }
-                        );
+                DataTable ldtSchemaReferences = new DataTable();
+                ldtSchemaReferences.Load(command.ExecuteReader());
+                lstSchemaReferences = GetCollection<SchemaReferanceInfo>(ldtSchemaReferences);
             }
             catch (Exception)
             {
@@ -539,108 +518,48 @@ namespace MSSQL.DIARY.EF
         /// <returns></returns>
         public Ms_Description GetSchemaDescription(string astrSchemaName)
         {
-            var schemaDescription = new Ms_Description();
+            var lMsDescription = new Ms_Description();
             try
             {
                 using var command = Database.GetDbConnection().CreateCommand();
                 command.CommandText = SqlQueryConstant.GetSchemaMsDescription.Replace("@schemaName", "'" + astrSchemaName + "'");
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        schemaDescription.desciption = reader.GetString(0);
+                DataTable ldtSchemaDescription = new DataTable();
+                ldtSchemaDescription.Load(command.ExecuteReader());
+                lMsDescription = SelectRow<Ms_Description>(ldtSchemaDescription);
             }
             catch (Exception)
             {
                 // ignored
             }
 
-            return schemaDescription;
+            return lMsDescription;
         }
-
-        //public SchemaCreateScript GetSchemaCreateSript()
-        //{
-        //    var sch_cs = new SchemaCreateScript();
-        //    try
-        //    {
-        //        using (var command = Database.GetDbConnection().CreateCommand())
-        //        {
-        //            command.CommandText = SqlQueryConstant.GetServerName;
-        //            Database.OpenConnection();
-        //            using (var reader = command.ExecuteReader())
-        //            {
-        //                if (reader.HasRows)
-        //                    while (reader.Read())
-        //                    {
-
-        //                        sch_cs.istrCreateScript = reader.GetString(0);
-        //                    }
-        //            }
-        //        }
-        //    }
-        //    catch (Exception)
-        //    {
-
-        //    }
-        //    return sch_cs;
-        //}
-
-        /// <summary>
+         /// <summary>
         /// Get server name.
         /// </summary>
         /// <returns></returns>
-        public string GetServerName()
-        {
-            var lstrServerName = "";
+        public ServerName GetServerName()
+         {
+             ServerName lServerName = new ServerName();
             try
             {
                 using var command = Database.GetDbConnection().CreateCommand();
                 command.CommandText = SqlQueryConstant.GetServerName;
                 Database.OpenConnection();
-                using (var reader = command.ExecuteReader())
-                {
-                    if (reader.HasRows)
-                        while (reader.Read())
-                            lstrServerName = reader.GetString(0);
-                }
+                DataTable ldtServerName = new DataTable();
+                ldtServerName.Load(command.ExecuteReader());
+                lServerName = SelectRow<ServerName>(ldtServerName); 
             }
             catch (Exception ex)
             {
                 // ignored
             }
 
-            return lstrServerName;
+            return lServerName;
         }
 
-        /// <summary>
-        /// Get xml schemas
-        /// </summary>
-        /// <returns></returns>
-
-        public List<string> GetXmlSchemas()
-        {
-            var lstXmlSchemas = new List<string>();
-            try
-            {
-                using var command = Database.GetDbConnection().CreateCommand();
-                command.CommandText = SqlQueryConstant.GetXmlSchemas;
-                Database.OpenConnection();
-                using (var reader = command.ExecuteReader())
-                {
-                    if (reader.HasRows)
-                        while (reader.Read())
-                            lstXmlSchemas.Add(reader.GetString(0));
-                }
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
-
-
-            return lstXmlSchemas;
-        }
-
+       
         /// <summary>
         /// Get server Properties
         /// </summary>
@@ -656,14 +575,10 @@ namespace MSSQL.DIARY.EF
                     using var command = Database.GetDbConnection().CreateCommand();
                     command.CommandText = SqlQueryConstant.GetServerProperties[count];
                     Database.OpenConnection();
-                    using var reader = command.ExecuteReader();
-                    if (reader.HasRows)
-                        while (reader.Read())
-                            lstServerProperties.Add(new PropertyInfo
-                            {
-                                istrName = Enumerable.Range(0, reader.FieldCount).Select(reader.GetName).FirstOrDefault(),
-                                istrValue = reader.GetString(0).Replace("\0", "")
-                            });
+                    DataTable ldtServerProperties = new DataTable();
+                    ldtServerProperties.Load(command.ExecuteReader());
+                    lstServerProperties= (List<PropertyInfo>)lstServerProperties.Concat(GetCollection<PropertyInfo>(ldtServerProperties)) ;
+                     
                 }
 
             }
@@ -729,7 +644,7 @@ namespace MSSQL.DIARY.EF
         /// <returns></returns>
         public Ms_Description GetStoreProcedureCreateScript(string astrStoreProcedureName)
         {
-            var lstrStoreProcedureCreateScript = new List<PropertyInfo>();
+            var lMsDescription = new Ms_Description();
             try
             {
                 using var command = Database.GetDbConnection().CreateCommand();
@@ -737,7 +652,7 @@ namespace MSSQL.DIARY.EF
                 Database.OpenConnection();
                 DataTable ldtStoreProcedureCreateScript = new DataTable();
                 ldtStoreProcedureCreateScript.Load(command.ExecuteReader());
-                lstrStoreProcedureCreateScript = GetCollection<PropertyInfo>(ldtStoreProcedureCreateScript);
+                lMsDescription = SelectRow<Ms_Description>(ldtStoreProcedureCreateScript);
 
             }
             catch (Exception)
@@ -745,7 +660,7 @@ namespace MSSQL.DIARY.EF
                 // ignored
             }
 
-            return new Ms_Description { desciption = lstrStoreProcedureCreateScript.FirstOrDefault()?.istrValue };
+            return lMsDescription;
         }
 
         /// <summary>
@@ -761,15 +676,9 @@ namespace MSSQL.DIARY.EF
                 using var command = Database.GetDbConnection().CreateCommand();
                 command.CommandText = SqlQueryConstant.GetStoreProcDependencies.Replace("@StoreprocName", "'" + astrStoreProcedureName + "'");
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstStoreProcedureDependencies.Add(new SP_Depencancy
-                        {
-                            referencing_object_name = reader.SafeGetString(0),
-                            referencing_object_type = reader.SafeGetString(1),
-                            referenced_object_name = reader.SafeGetString(2)
-                        });
+                DataTable ldtStoreProcedureDependencies = new DataTable();
+                ldtStoreProcedureDependencies.Load(command.ExecuteReader());
+                lstStoreProcedureDependencies = GetCollection<SP_Depencancy>(ldtStoreProcedureDependencies); 
             }
             catch (Exception)
             {
@@ -790,20 +699,10 @@ namespace MSSQL.DIARY.EF
             {
                 using var command = Database.GetDbConnection().CreateCommand();
                 command.CommandText = SqlQueryConstant.GetStoreProceduresParametersWithDescriptions.Replace("@StoreprocName", "'" + astrStoreProcedureName + "'");
-                Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstStoreProceduresParametersWithDescriptions.Add(new SP_Parameters
-                        {
-                            Parameter_name = reader.SafeGetString(0),
-                            Type = reader.SafeGetString(1),
-                            Length = reader.SafeGetString(2),
-                            Prec = reader.SafeGetString(3),
-                            Scale = reader.SafeGetString(4),
-                            Param_order = reader.SafeGetString(5),
-                            Extended_property = reader.SafeGetString(7)
-                        });
+                Database.OpenConnection(); 
+                DataTable ldtStoreProceduresParameters = new DataTable();
+                ldtStoreProceduresParameters.Load(command.ExecuteReader());
+                lstStoreProceduresParametersWithDescriptions = GetCollection<SP_Parameters>(ldtStoreProceduresParameters); 
             }
             catch (Exception)
             {
@@ -826,17 +725,9 @@ namespace MSSQL.DIARY.EF
                 var lStoreProcedureName = astrStoreProcedureName.Replace(astrStoreProcedureName.Substring(0, astrStoreProcedureName.IndexOf(".", StringComparison.Ordinal)) + ".", "");
                 command.CommandText = SqlQueryConstant.GetExecutionPlanOfStoreProc.Replace("@StoreprocName", "'" + lStoreProcedureName + "'");
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstExecutionPlanDetails.Add(new ExecutionPlanInfo
-                        {
-                            QueryPlanXML = reader.SafeGetString(0),
-                            UseAccounts = reader.SafeGetString(1),
-                            CacheObjectType = reader.SafeGetString(2),
-                            Size_In_Byte = reader.SafeGetString(3),
-                            SqlText = reader.SafeGetString(4)
-                        });
+                DataTable ldtExecutionPlanDetails = new DataTable();
+                ldtExecutionPlanDetails.Load(command.ExecuteReader());
+                lstExecutionPlanDetails = GetCollection<ExecutionPlanInfo>(ldtExecutionPlanDetails); 
             }
             catch (Exception)
             {
@@ -908,24 +799,24 @@ namespace MSSQL.DIARY.EF
         /// </summary>
         /// <param name="astrStoreProcedureName"></param>
         /// <returns></returns>
-        public string GetStoreProcedureDescription(string astrStoreProcedureName)
-        {
-            var strSpDescription = "";
+        public Ms_Description GetStoreProcedureDescription(string astrStoreProcedureName)
+        { 
+            var lMs_Description = new Ms_Description();
             try
             {
                 using var command = Database.GetDbConnection().CreateCommand();
                 command.CommandText = SqlQueryConstant.GetStoreProcMsDescription.Replace("@StoreprocName", "'" + astrStoreProcedureName + "'");
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        strSpDescription = reader.SafeGetString(1);
+                DataTable ldtMsDescriptions = new DataTable();
+                ldtMsDescriptions.Load(command.ExecuteReader());
+                lMs_Description = SelectRow<Ms_Description>(ldtMsDescriptions);
             }
             catch (Exception)
             {
-                // ignored
+                return new Ms_Description { desciption = "" };
             }
-            return strSpDescription;
+
+            return lMs_Description;
         }
 
 
@@ -1168,23 +1059,22 @@ namespace MSSQL.DIARY.EF
         //Get table descriptions
         public Ms_Description GetTableDescription(string astrTableName)
         {
-            var lstrTableDescription = string.Empty;
+            var lMs_Description = new Ms_Description();
             try
             {
                 using var command = Database.GetDbConnection().CreateCommand();
                 command.CommandText = SqlQueryConstant.GetTableDescription.Replace("@tblName", "'" + astrTableName + "'");
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (!reader.HasRows) return new Ms_Description { desciption = lstrTableDescription };
-                while (reader.Read())
-                    lstrTableDescription = reader.SafeGetString(1);
-
-                return new Ms_Description { desciption = lstrTableDescription };
+                DataTable ldtMsDescriptions = new DataTable();
+                ldtMsDescriptions.Load(command.ExecuteReader());
+                lMs_Description = SelectRow<Ms_Description>(ldtMsDescriptions); 
             }
             catch (Exception)
             {
                 return new Ms_Description { desciption = "" };
             }
+
+            return lMs_Description;
         }
 
         /// <summary>
@@ -1323,54 +1213,25 @@ namespace MSSQL.DIARY.EF
             }
 
             return lstTableFragmentation;//.Where(x => Convert.ToInt32(x.PercentFragmented) > 0).ToList();
-        }
-
-        /// <summary>
-        /// Get table details
-        /// </summary>
-        /// <returns></returns>
-        public List<string> GetTables()
-        {
-            var lstTables = new List<string>();
-            try
-            {
-                using var command = Database.GetDbConnection().CreateCommand();
-                command.CommandText = SqlQueryConstant.GetTables;
-                command.CommandType = CommandType.StoredProcedure;
-                Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        if (!reader.GetString(1).Equals("sys") && reader.GetString(3).Equals("TABLE"))
-                            //lstTables.Add( reader.GetString(2));
-                            lstTables.Add(reader.GetString(1) + "." + reader.GetString(2));
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
-
-            return lstTables;
-        }
+        } 
 
         /// <summary>
         /// Get table columns
         /// </summary>
         /// <param name="astrTableName"></param>
         /// <returns></returns>
-        public List<string> GetTableColumns(string astrTableName)
+        public List<TableColumns> GetTableColumns(string astrTableName)
         {
-            var lstTableColumns = new List<string>();
+            var lstTableColumns = new List<TableColumns>();
             //column_name
             try
             {
                 using var command = Database.GetDbConnection().CreateCommand();
                 command.CommandText = SqlQueryConstant.GetTableColumns.Replace("@tableName", astrTableName);
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstTableColumns.Add(reader.GetString(0));
+                DataTable ldtTableColumns = new DataTable();
+                ldtTableColumns.Load(command.ExecuteReader());
+                lstTableColumns = GetCollection<TableColumns>(ldtTableColumns);
             }
             catch (Exception)
             {

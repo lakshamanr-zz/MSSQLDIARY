@@ -94,8 +94,7 @@ namespace MSSQL.DIARY.UI.APP.Controllers
         [HttpGet("[action]")]
         public Ms_Description GetStoreProcMsDescription(string istrdbName, string StoreprocName)
         {
-            return new Ms_Description
-                {desciption = SrvDatabaseStoreProc.GetStoreProcedureDescription(istrdbName, StoreprocName)};
+            return  SrvDatabaseStoreProc.GetStoreProcedureDescription(istrdbName, StoreprocName);
         }
 
         [HttpGet("[action]")]

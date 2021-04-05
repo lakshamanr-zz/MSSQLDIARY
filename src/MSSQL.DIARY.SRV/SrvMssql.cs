@@ -942,7 +942,7 @@ namespace MSSQL.DIARY.SRV
         {
             var lstServers = new List<string>();
             using var lSqlDatabaseContext = new MsSqlDiaryContext();
-            lstServers.Add(lSqlDatabaseContext.GetServerName());
+            lstServers.Add(lSqlDatabaseContext.GetServerName().SERVERNAME);
             return lstServers;
         }
         /// <summary>
@@ -1150,7 +1150,7 @@ namespace MSSQL.DIARY.SRV
         /// <param name="astrDatabaseName"></param>
         /// <param name="astrStoreProcedureName"></param>
         /// <returns></returns>
-        public string GetStoreProcedureDescription(string astrDatabaseName, string astrStoreProcedureName)
+        public Ms_Description GetStoreProcedureDescription(string astrDatabaseName, string astrStoreProcedureName)
         {
             using var lSqlDatabaseContext = new MsSqlDiaryContext(astrDatabaseName);
             return lSqlDatabaseContext.GetStoreProcedureDescription(astrStoreProcedureName);
@@ -1541,9 +1541,9 @@ namespace MSSQL.DIARY.SRV
                 tablesList.Add(
                     new TreeViewJson
                     {
-                        text = tables,
+                        text = tables.istrName,
                         icon = "fa fa-table fa-fw",
-                        mdaIcon = tables,
+                        mdaIcon = tables.istrName,
                         expand = false,
                         link = $"/{IstrProjectName}/{IstrServerName}/User Database/{IstrDatabaseName}/Tables/{tables}",
                         selected = true,
@@ -1570,9 +1570,9 @@ namespace MSSQL.DIARY.SRV
                     tablesColumns.Add(
                         new TreeViewJson
                         {
-                            text = columns,
+                            text = columns.columnname,
                             icon = "fa fa fa-columns",
-                            mdaIcon = columns,
+                            mdaIcon = columns.columnname,
                             expand = false,
                             link = $"/{IstrProjectName}/{IstrServerName}/User Database/{IstrDatabaseName}/Tables/{columns}",
                             selected = true,
@@ -2042,7 +2042,7 @@ namespace MSSQL.DIARY.SRV
         /// <param name="astrDatabaseName"></param>
         /// <param name="astrDatabaseConnection"></param>
         /// <returns></returns>
-        public static List<string> GetTables(string astrDatabaseName, string astrDatabaseConnection)
+        public static List<TablePropertyInfo> GetTables(string astrDatabaseName, string astrDatabaseConnection)
         {
             return GetTableList(astrDatabaseName, astrDatabaseConnection);
         }
@@ -2052,10 +2052,10 @@ namespace MSSQL.DIARY.SRV
         /// <param name="astrDatabaseNames"></param>
         /// <param name="astrDatabaseConnection"></param>
         /// <returns></returns>
-        public static List<string> GetTableList(string astrDatabaseNames = null, string astrDatabaseConnection = null)
+        public static List<TablePropertyInfo> GetTableList(string astrDatabaseNames = null, string astrDatabaseConnection = null)
         {
             using var lSqlDatabaseContext = new MsSqlDiaryContext(astrDatabaseConnection);
-            return lSqlDatabaseContext.GetTables();
+            return lSqlDatabaseContext.GetTablesDescription();
         }
         /// <summary>
         /// 
@@ -2064,7 +2064,7 @@ namespace MSSQL.DIARY.SRV
         /// <param name="astrDatabaseNames"></param>
         /// <param name="astrDatabaseConnection"></param>
         /// <returns></returns>
-        public static List<string> GetTablesColumns(string astrTableName, string astrDatabaseNames = null, string astrDatabaseConnection = null)
+        public static List<TableColumns> GetTablesColumns(string astrTableName, string astrDatabaseNames = null, string astrDatabaseConnection = null)
         {
             return GetTablesColumnsList(astrTableName, astrDatabaseNames, astrDatabaseConnection);
         }
@@ -2075,7 +2075,7 @@ namespace MSSQL.DIARY.SRV
         /// <param name="astrDatabaseNames"></param>
         /// <param name="astrDatabaseConnection"></param>
         /// <returns></returns>
-        public static List<string> GetTablesColumnsList(string astrTableName, string astrDatabaseNames = null, string astrDatabaseConnection = null)
+        public static List<TableColumns> GetTablesColumnsList(string astrTableName, string astrDatabaseNames = null, string astrDatabaseConnection = null)
         {
             using var lSqlDatabaseContext = new MsSqlDiaryContext(astrDatabaseConnection);
             return lSqlDatabaseContext.GetTableColumns(astrTableName);
@@ -2134,7 +2134,7 @@ namespace MSSQL.DIARY.SRV
         public static List<string> GetScalarFunctionsList(string astrDatabaseNames = null, string astrDatabaseConnection = null)
         {
             using var lSqlDatabaseContext = new MsSqlDiaryContext(astrDatabaseConnection);
-            return lSqlDatabaseContext.GetScalarFunctions().Where(x => x != null).ToList();
+            return lSqlDatabaseContext.GetScalarFunctions().Where(x => x != null).Select(x=>x.SQL_SCALAR_FUNCTION).ToList();
         }
         /// <summary>
         /// 
@@ -2155,7 +2155,7 @@ namespace MSSQL.DIARY.SRV
         public static List<string> GetTableValueFunctionsList(string astrDatabaseNames, string astrDatabaseConnection)
         {
             using var lSqlDatabaseContext = new MsSqlDiaryContext(astrDatabaseConnection);
-            return lSqlDatabaseContext.GetTableValueFunctions().Where(x => x != null).ToList();
+            return lSqlDatabaseContext.GetTableValueFunctions().Where(x => x != null).Select(x=>x.SQL_TABLE_VALUED_FUNCTION).ToList();
         }
         /// <summary>
         /// 
@@ -2176,7 +2176,7 @@ namespace MSSQL.DIARY.SRV
         public static List<string> GetAggregateFunctionsList(string astrDatabaseNames, string astrDatabaseConnection )
         {
             using var lSqlDatabaseContext = new MsSqlDiaryContext(astrDatabaseConnection);
-            return lSqlDatabaseContext.GetAggregateFunctions().Where(x => x != null).ToList();
+            return lSqlDatabaseContext.GetAggregateFunctions().Where(x => x != null).Select(x=>x.SQL_AGGREGATE_FUNCTION).ToList();
         }
         /// <summary>
         /// 
