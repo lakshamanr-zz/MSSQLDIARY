@@ -1244,30 +1244,23 @@ namespace MSSQL.DIARY.EF
             try
             {
                 using var command = Database.GetDbConnection().CreateCommand();
-                command.CommandText = SqlQueryConstant.GetAllKeyConstraints.Replace("@tblName", "'" + astrTableName + "'");
-                Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstTableKeyConstraints.Add
-                        (
-                            new TableKeyConstraint
-                            {
-                                table_view = reader.SafeGetString(0),
-                                object_type = reader.SafeGetString(1),
-                                Constraint_type = reader.SafeGetString(2),
-                                Constraint_name = reader.SafeGetString(3),
-                                Constraint_details = reader.SafeGetString(4)
-                            }
-                        );
+                command.CommandText = SqlQueryConstant.GetTableKeyConstraints.Replace("@tblName", "'" + astrTableName + "'");
+                Database.OpenConnection(); 
+                DataTable ldtKeyConstraints = new DataTable();
+                ldtKeyConstraints.Load(command.ExecuteReader());
+                lstTableKeyConstraints = GetCollection<TableKeyConstraint>(ldtKeyConstraints); 
             }
             catch (Exception)
             {
                 // ignored
-            }
-
+            } 
             return lstTableKeyConstraints;
         }
+
+        /// <summary>
+        /// Get Current Database Name
+        /// </summary>
+        /// <returns></returns>
 
         public string GetCurrentDatabaseName()
         {
@@ -2016,38 +2009,22 @@ namespace MSSQL.DIARY.EF
         /// <returns></returns>
         public List<ReferencesModel> GetObjectThatDependsOn(string astrObjectName)
         {
-            var lstObjectDependsOn = new List<ReferencesModel>();
-            try
-            {
-                using var lDbConnection = Database.GetDbConnection();
+            var lstObjectDependsOn = new List<ReferencesModel>(); 
                 try
                 {
+                    using var lDbConnection = Database.GetDbConnection();
                     var command = lDbConnection.CreateCommand();
                     var newObjectName = astrObjectName.Replace(astrObjectName.Substring(0, astrObjectName.IndexOf(".", StringComparison.Ordinal)) + ".", "");
                     command.CommandText = SqlQueryConstant.ObjectThatDependsOn.Replace("@ObjectName", "'" + newObjectName + "'");
                     Database.OpenConnection();
-                    using var reader = command.ExecuteReader();
-                    if (reader.HasRows)
-                        while (reader.Read())
-                            lstObjectDependsOn
-                                .Add(new ReferencesModel
-                                {
-                                    ThePath = reader.SafeGetString(0),
-                                    TheFullEntityName = reader.SafeGetString(1),
-                                    TheType = reader.SafeGetString(2),
-                                    iteration = reader.GetInt32(3)
-                                });
+                    DataTable ldtObjectDependsOn = new DataTable();
+                    ldtObjectDependsOn.Load(command.ExecuteReader());
+                    lstObjectDependsOn = GetCollection<ReferencesModel>(ldtObjectDependsOn); 
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     // ignored
-                }
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
-
+                } 
             return lstObjectDependsOn
 ;
         }
@@ -2060,35 +2037,23 @@ namespace MSSQL.DIARY.EF
         public List<ReferencesModel> GetObjectOnWhichDepends(string astrObjectName)
         {
             var lstObjectOnWhichDepends = new List<ReferencesModel>();
-            try
-            {
-                using var lDbConnection = Database.GetDbConnection();
+              
                 try
                 {
-                    var command = lDbConnection.CreateCommand();
+                    using var lDbConnection = Database.GetDbConnection();
+                          var command = lDbConnection.CreateCommand();
                     var newObjectName = astrObjectName.Replace(astrObjectName.Substring(0, astrObjectName.IndexOf(".", StringComparison.Ordinal)) + ".", "");
                     command.CommandText = SqlQueryConstant.ObjectOnWhichDepends.Replace("@ObjectName", "'" + newObjectName + "'");
-                    Database.OpenConnection();
-                    using var reader = command.ExecuteReader();
-                    if (reader.HasRows)
-                        while (reader.Read())
-                            lstObjectOnWhichDepends.Add(new ReferencesModel
-                            {
-                                ThePath = reader.SafeGetString(0),
-                                TheFullEntityName = reader.SafeGetString(1),
-                                TheType = reader.SafeGetString(2),
-                                iteration = reader.GetInt32(3)
-                            });
+                    Database.OpenConnection(); 
+                    DataTable ldtObjectOnWhichDepends = new DataTable();
+                    ldtObjectOnWhichDepends.Load(command.ExecuteReader());
+                    lstObjectOnWhichDepends = GetCollection<ReferencesModel>(ldtObjectOnWhichDepends);
+                     
                 }
                 catch (Exception)
                 {
                     // ignored
-                }
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
+                } 
 
             return lstObjectOnWhichDepends;
         }
