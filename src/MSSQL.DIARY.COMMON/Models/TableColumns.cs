@@ -6,6 +6,7 @@ namespace MSSQL.DIARY.COMN.Models
     {
         public int id { get; set; }
         public string tablename { get; set; }
+        public string tableWithSchemaname { get; set; }
         public string columnname { get; set; }
         public string key { get; set; }
         public string identity { get; set; }

@@ -300,40 +300,16 @@ namespace MSSQL.DIARY.SRV
         /// <returns></returns>
         private List<TablePropertyInfo> GetTablesDescriptionFromCache()
         {
-            var lstTableDetails = new List<TablePropertyInfo>();
+            List<TablePropertyInfo> lstTableDetails;
             using (var lSqlDatabaseContext = new MsSqlDiaryContext(IstrDatabaseConnection))
             {
-                lSqlDatabaseContext.GetTablesDescription().GroupBy(x => x.istrName).ToList().ForEach(lstTableProperties =>
-                {
-                    var lTableProperty = new TablePropertyInfo();
-                    foreach (var lTableProperties in lstTableProperties)
-                    {
-                        lTableProperty.istrFullName = lTableProperties.istrFullName;
-                        lTableProperty.istrName = lTableProperties.istrName;
-                        lTableProperty.istrSchemaName = lTableProperties.istrSchemaName;
-                        lTableProperty.istrNevigation = lTableProperties.istrNevigation;
-                        if (lTableProperties.istrValue.Length > 0)
-                        {
-                            lTableProperty.istrValue += lTableProperties.istrValue;
-                        }
-                        else
-                        {
-                            if (!string.IsNullOrEmpty(lTableProperty.istrValue))
-                                lTableProperty.istrValue += ";";
-                            else
-                                lTableProperty.istrValue += "description of the " + lTableProperties.istrFullName + " is missing.";
-                        }
-                        lTableProperty.tableColumns = lTableProperties.tableColumns;
-                    }
-
-                    if (!(lTableProperty.istrName.Contains("$") || lTableProperty.istrFullName.Contains("\\") || lTableProperty.istrFullName.Contains("-")))
-                        lstTableDetails.Add(lTableProperty);
-                });
-            }
-
+                lstTableDetails=lSqlDatabaseContext.GetTablesDescription();
+            }  
+            var lstTableColumns = GetTableColumns();
             lstTableDetails.ForEach(tablePropertyInfo =>
             {
-                tablePropertyInfo.tableColumns = GetTableColumns(tablePropertyInfo.istrFullName).DistinctBy(x1 => x1.columnname).ToList();
+                tablePropertyInfo.tableColumns = lstTableColumns
+                    .Where(x => x.tableWithSchemaname.Equals(tablePropertyInfo.istrFullName)).ToList();
             });
             return lstTableDetails;
         }
@@ -387,34 +363,10 @@ namespace MSSQL.DIARY.SRV
         /// <param name="astrTableName"></param>
         /// <returns></returns>
 
-        public List<TableColumns> GetTableColumns(string astrTableName)
-        {
+        public List<TableColumns> GetTableColumns(string astrTableName=null)
+        { 
             using var lSqlDatabaseContext = new MsSqlDiaryContext(IstrDatabaseConnection);
-            var lstTableColumns = new List<TableColumns>();
-            foreach (var lTableColumnKeyValuePairs in lSqlDatabaseContext.GetTablesColumn(astrTableName).GroupBy(x => x.columnname))
-            {
-                var lTableColumn = new TableColumns { columnname = lTableColumnKeyValuePairs.Key };
-                foreach (var lTableColumnValue in lTableColumnKeyValuePairs)
-                {
-                    lTableColumn.tablename = lTableColumnValue.tablename;
-                    lTableColumn.key = lTableColumnValue.key;
-                    lTableColumn.identity = lTableColumnValue.identity;
-                    lTableColumn.max_length = lTableColumnValue.max_length;
-                    lTableColumn.allow_null = lTableColumnValue.allow_null;
-                    lTableColumn.defaultValue = lTableColumnValue.defaultValue;
-                    lTableColumn.data_type = lTableColumnValue.data_type;
-                    lTableColumn.description += lTableColumnValue.description;
-                    lTableColumn.HideEdit = false;
-                }
-                lstTableColumns.Add(lTableColumn);
-            }
-            var count = 1;
-            lstTableColumns.ForEach(tableColumn =>
-            {
-                tableColumn.id = count;
-                count++;
-            });
-            return lstTableColumns;
+            return lSqlDatabaseContext.GetTablesColumn(astrTableName);  
         }
 
         /// <summary>

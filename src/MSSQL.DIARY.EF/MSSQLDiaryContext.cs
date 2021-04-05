@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.Linq;
+using DataColumn = System.Data.DataColumn;
 
 namespace MSSQL.DIARY.EF
 {
@@ -21,16 +22,7 @@ namespace MSSQL.DIARY.EF
         public MsSqlDiaryContext(DbContextOptions<MsSqlDiaryContext> options) : base(options)
         {
         }
-        public string IstrDatabaseConnection { get; set; }
-
-        public string GetDatabaseName
-        {
-            get
-            {
-                using var con = Database.GetDbConnection();
-                return con.Database;
-            }
-        }
+        public string IstrDatabaseConnection { get; set; } 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -686,7 +678,7 @@ namespace MSSQL.DIARY.EF
                             lstrServerName = reader.GetString(0);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 // ignored
             }
@@ -1163,32 +1155,39 @@ namespace MSSQL.DIARY.EF
         /// </summary>
         /// <param name="astrTableName"></param>
         /// <returns></returns>
-        public List<TableColumns> GetTablesColumn(string astrTableName)
+        public List<TableColumns> GetTablesColumn(string astrTableName=null)
         {
             var lstTablesColumn = new List<TableColumns>();
             try
             {
                 using var command = Database.GetDbConnection().CreateCommand();
-                command.CommandText = SqlQueryConstant.GetTablesColumn.Replace("@tblName", "'" + astrTableName + "'");
+                command.CommandText = astrTableName.IsNullOrWhiteSpace() ? SqlQueryConstant.GetTablesColumn : SqlQueryConstant.GetTablesColumnWithTableName.Replace("@tblName", "'" + astrTableName + "'"); 
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstTablesColumn.Add
-                        (
-                            new TableColumns
+                DataTable ldtTableColumns = new DataTable(); 
+                ldtTableColumns.Load(command.ExecuteReader()); 
+                if (ldtTableColumns.IsNotNull()&& ldtTableColumns.Rows.Count>0)
+                { 
+                    Type lTypeTableColumns = typeof(TableColumns);
+                    var count = 1;
+                    foreach (DataRow ldtDataRow in ldtTableColumns.Rows)
+                    {
+                        TableColumns lTableColumns = new TableColumns();
+
+                        foreach (DataColumn ldtDataColumn in ldtTableColumns.Columns)
+                        {
+                            if (!Convert.IsDBNull(ldtDataRow[ldtDataColumn]))
                             {
-                                tablename = reader.SafeGetString(0),
-                                columnname = reader.SafeGetString(1),
-                                key = reader.SafeGetString(2),
-                                identity = reader.SafeGetString(3),
-                                data_type = reader.SafeGetString(4),
-                                max_length = reader.SafeGetString(5),
-                                allow_null = reader.SafeGetString(6),
-                                defaultValue = reader.SafeGetString(7),
-                                description = reader.SafeGetString(8)
+                                var Pishare = lTypeTableColumns.GetProperty(ldtDataColumn.ColumnName);
+                                if(Pishare.IsNotNull())
+                                    Pishare.SetValue(lTableColumns, ldtDataRow[ldtDataColumn]);
                             }
-                        );
+                        }
+
+                        lTableColumns.id = count;
+                        count++;
+                        lstTablesColumn.Add(lTableColumns);
+                    }
+                } 
             }
             catch (Exception)
             {
@@ -1278,76 +1277,51 @@ namespace MSSQL.DIARY.EF
         /// <returns></returns>
         public List<TablePropertyInfo> GetTablesDescription()
         {
-            var lstTables = new List<TablePropertyInfo>();
-            var lstExtensionProperties = new List<string>();
-
+            var lstTablesWithDescriptions = new List<TablePropertyInfo>();
+            var lServerName = GetServerName();
             try
             {
-                try
-                {
-                    using var command = Database.GetDbConnection().CreateCommand();
-                    command.CommandText = SqlQueryConstant.GetListOfExtendedPropertiesList;
-                    Database.OpenConnection();
-                    using var reader = command.ExecuteReader();
-                    if (reader.HasRows)
-                        while (reader.Read())
-                            lstExtensionProperties.Add(reader.SafeGetString(0));
-                }
-                catch (Exception)
-                {
-                    // ignored
-                }
 
-                lstExtensionProperties.ForEach(x =>
+                var lDatabaseName = Database.GetDbConnection().Database;
+                using var command = Database.GetDbConnection().CreateCommand();
+                command.CommandText = SqlQueryConstant.GetTablesWithDescription;
+                DataTable ldtTableWithDescriptions = new DataTable();
+                Database.OpenConnection();
+                ldtTableWithDescriptions.Load(command.ExecuteReader());
+                Type lTypeTablePropertyInfo = typeof(TablePropertyInfo);
+                if (ldtTableWithDescriptions.IsNotNull() && ldtTableWithDescriptions.Rows.Count > 0)
                 {
-                    using var command = Database.GetDbConnection().CreateCommand();
-                    command.CommandText = SqlQueryConstant.GetTablesWithDescription.Replace("@ExtendedProp", "'" + x + "'");
-                    Database.OpenConnection();
-                    using var reader = command.ExecuteReader();
-                    if (reader.HasRows)
-                        while (reader.Read())
-                            lstTables.Add(new TablePropertyInfo
+                    foreach (DataRow ldtDataRow in ldtTableWithDescriptions.Rows)
+                    {
+                        var lTablePropertyInfo = new TablePropertyInfo();
+                        foreach (DataColumn ldtDataColumn in ldtTableWithDescriptions.Columns)
+                        {
+                            if (!Convert.IsDBNull((ldtDataRow[ldtDataColumn])))
                             {
-                                istrName = reader.SafeGetString(0),
-                                istrFullName = reader.SafeGetString(1),
-                                istrValue = reader.SafeGetString(2),
-                                istrSchemaName = reader.SafeGetString(3)
-                                //tableColumns = GetAllTablesColumn(reader.SafeGetString(0))
-                            });
-                });
+                                var piShared = lTypeTablePropertyInfo.GetProperty(ldtDataColumn.ColumnName);
+                                piShared.SetValue(lTablePropertyInfo, ldtDataRow[ldtDataColumn]);
+                            }
+                        } 
+                        if (lTablePropertyInfo.istrName.Contains("$") &&   lTablePropertyInfo.istrName.Contains("\\") && lTablePropertyInfo.istrName.Contains("-"))
+                        { 
+                            continue;
+                        } 
+                        if (string.IsNullOrEmpty(lTablePropertyInfo.istrValue))
+                        {
+                            lTablePropertyInfo.istrValue = "description of the " + lTablePropertyInfo.istrFullName + " is missing.";
+                        } 
+                        lTablePropertyInfo.istrNevigation = lDatabaseName + "/" + lTablePropertyInfo.istrFullName + "/" + lServerName;
+                        lstTablesWithDescriptions.Add(lTablePropertyInfo);
 
-                try
-                {
-                    using var command = Database.GetDbConnection().CreateCommand();
-                    command.CommandText = SqlQueryConstant.GetTablesWithOutDescription;
-                    Database.OpenConnection();
-                    using var reader = command.ExecuteReader();
-                    if (reader.HasRows)
-                        while (reader.Read())
-                            lstTables.Add(new TablePropertyInfo
-                            {
-                                istrName = reader.SafeGetString(0),
-                                istrFullName = reader.SafeGetString(1),
-                                istrValue = reader.SafeGetString(2),
-                                istrSchemaName = reader.SafeGetString(3)
-                            });
+                    }
                 }
-                catch (Exception)
-                {
-                    // ignored
-                }
-
-                lstTables.ForEach(tablePropertyInfo =>
-                {
-                    tablePropertyInfo.istrNevigation = GetDatabaseName + "/" + tablePropertyInfo.istrFullName + "/" + GetServerName();
-                });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 // ignored
             }
 
-            return lstTables;
+            return lstTablesWithDescriptions;
         }
 
         //Get table descriptions

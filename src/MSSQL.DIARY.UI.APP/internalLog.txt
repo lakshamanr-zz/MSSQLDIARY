@@ -1003,3 +1003,60 @@
 2021-04-03 20:50:29.5100 Info Adding target FileTarget(Name=alldata)
 2021-04-03 20:50:29.5311 Info Adding target FileTarget(Name=otherFile-web)
 2021-04-03 20:50:29.5628 Info Validating config: TargetNames=alldata, otherFile-web, ConfigItems=44, FilePath=F:\Lakshaman\GitHub\MSSQLDIARY\src\MSSQL.DIARY.UI.APP\bin\Debug\netcoreapp3.1\nlog.config
+2021-04-05 08:42:09.1422 Info Message Template Auto Format enabled
+2021-04-05 08:42:09.1569 Info Loading assembly: NLog.Web.AspNetCore
+2021-04-05 08:42:09.2124 Info Adding target FileTarget(Name=alldata)
+2021-04-05 08:42:09.2252 Info Adding target FileTarget(Name=otherFile-web)
+2021-04-05 08:42:09.2643 Info Validating config: TargetNames=alldata, otherFile-web, ConfigItems=44, FilePath=F:\Lakshaman\GitHub\MSSQLDIARY\src\MSSQL.DIARY.UI.APP\bin\Debug\netcoreapp3.1\nlog.config
+2021-04-05 08:44:57.8566 Info Message Template Auto Format enabled
+2021-04-05 08:44:57.8737 Info Loading assembly: NLog.Web.AspNetCore
+2021-04-05 08:44:57.9778 Info Adding target FileTarget(Name=alldata)
+2021-04-05 08:44:57.9778 Info Adding target FileTarget(Name=otherFile-web)
+2021-04-05 08:44:58.0352 Info Validating config: TargetNames=alldata, otherFile-web, ConfigItems=44, FilePath=F:\Lakshaman\GitHub\MSSQLDIARY\src\MSSQL.DIARY.UI.APP\bin\Debug\netcoreapp3.1\nlog.config
+2021-04-05 09:05:01.8245 Info Message Template Auto Format enabled
+2021-04-05 09:05:01.8381 Info Loading assembly: NLog.Web.AspNetCore
+2021-04-05 09:05:01.8890 Info Adding target FileTarget(Name=alldata)
+2021-04-05 09:05:01.8962 Info Adding target FileTarget(Name=otherFile-web)
+2021-04-05 09:05:01.9316 Info Validating config: TargetNames=alldata, otherFile-web, ConfigItems=44, FilePath=F:\Lakshaman\GitHub\MSSQLDIARY\src\MSSQL.DIARY.UI.APP\bin\Debug\netcoreapp3.1\nlog.config
+2021-04-05 09:05:26.5724 Info Message Template Auto Format enabled
+2021-04-05 09:05:26.5833 Info Loading assembly: NLog.Web.AspNetCore
+2021-04-05 09:05:26.6313 Info Adding target FileTarget(Name=alldata)
+2021-04-05 09:05:26.6313 Info Adding target FileTarget(Name=otherFile-web)
+2021-04-05 09:05:26.6839 Info Validating config: TargetNames=alldata, otherFile-web, ConfigItems=44, FilePath=F:\Lakshaman\GitHub\MSSQLDIARY\src\MSSQL.DIARY.UI.APP\bin\Debug\netcoreapp3.1\nlog.config
+2021-04-05 09:11:17.1673 Info Message Template Auto Format enabled
+2021-04-05 09:11:17.1913 Info Loading assembly: NLog.Web.AspNetCore
+2021-04-05 09:11:17.2484 Info Adding target FileTarget(Name=alldata)
+2021-04-05 09:11:17.2572 Info Adding target FileTarget(Name=otherFile-web)
+2021-04-05 09:11:17.2943 Info Validating config: TargetNames=alldata, otherFile-web, ConfigItems=44, FilePath=F:\Lakshaman\GitHub\MSSQLDIARY\src\MSSQL.DIARY.UI.APP\bin\Debug\netcoreapp3.1\nlog.config
+2021-04-05 09:22:49.3240 Info Message Template Auto Format enabled
+2021-04-05 09:22:49.3368 Info Loading assembly: NLog.Web.AspNetCore
+2021-04-05 09:22:49.3845 Info Adding target FileTarget(Name=alldata)
+2021-04-05 09:22:49.3845 Info Adding target FileTarget(Name=otherFile-web)
+2021-04-05 09:22:49.4276 Info Validating config: TargetNames=alldata, otherFile-web, ConfigItems=44, FilePath=F:\Lakshaman\GitHub\MSSQLDIARY\src\MSSQL.DIARY.UI.APP\bin\Debug\netcoreapp3.1\nlog.config
+2021-04-05 09:48:45.4021 Info Message Template Auto Format enabled
+2021-04-05 09:48:45.4254 Info Loading assembly: NLog.Web.AspNetCore
+2021-04-05 09:48:45.5607 Info Adding target FileTarget(Name=alldata)
+2021-04-05 09:48:45.5725 Info Adding target FileTarget(Name=otherFile-web)
+2021-04-05 09:48:45.6676 Info Validating config: TargetNames=alldata, otherFile-web, ConfigItems=44, FilePath=F:\Lakshaman\GitHub\MSSQLDIARY\src\MSSQL.DIARY.UI.APP\bin\Debug\netcoreapp3.1\nlog.config
+2021-04-05 09:56:18.4302 Info Message Template Auto Format enabled
+2021-04-05 09:56:18.4471 Info Loading assembly: NLog.Web.AspNetCore
+2021-04-05 09:56:18.4998 Info Adding target FileTarget(Name=alldata)
+2021-04-05 09:56:18.5075 Info Adding target FileTarget(Name=otherFile-web)
+2021-04-05 09:56:18.5478 Info Validating config: TargetNames=alldata, otherFile-web, ConfigItems=44, FilePath=F:\Lakshaman\GitHub\MSSQLDIARY\src\MSSQL.DIARY.UI.APP\bin\Debug\netcoreapp3.1\nlog.config
+2021-04-05 09:59:52.9745 Info Message Template Auto Format enabled
+2021-04-05 09:59:52.9877 Info Loading assembly: NLog.Web.AspNetCore
+2021-04-05 09:59:53.0361 Info Adding target FileTarget(Name=alldata)
+2021-04-05 09:59:53.0443 Info Adding target FileTarget(Name=otherFile-web)
+2021-04-05 09:59:53.0771 Info Validating config: TargetNames=alldata, otherFile-web, ConfigItems=44, FilePath=F:\Lakshaman\GitHub\MSSQLDIARY\src\MSSQL.DIARY.UI.APP\bin\Debug\netcoreapp3.1\nlog.config
+2021-04-05 10:09:43.6783 Info Message Template Auto Format enabled
+2021-04-05 10:09:43.7091 Info Loading assembly: NLog.Web.AspNetCore
+2021-04-05 10:09:43.8711 Info Adding target FileTarget(Name=alldata)
+2021-04-05 10:09:43.8965 Info Adding target FileTarget(Name=otherFile-web)
+2021-04-05 10:09:43.9369 Info Validating config: TargetNames=alldata, otherFile-web, ConfigItems=44, FilePath=F:\Lakshaman\GitHub\MSSQLDIARY\src\MSSQL.DIARY.UI.APP\bin\Debug\netcoreapp3.1\nlog.config
+2021-04-05 10:58:17.3323 Info Message Template Auto Format enabled
+2021-04-05 10:58:17.3794 Info Loading assembly: NLog.Web.AspNetCore
+2021-04-05 10:58:17.5709 Info Adding target FileTarget(Name=alldata)
+2021-04-05 10:58:17.5851 Info Adding target FileTarget(Name=otherFile-web)
+2021-04-05 10:58:17.6560 Info Validating config: TargetNames=alldata, otherFile-web, ConfigItems=44, FilePath=F:\Lakshaman\GitHub\MSSQLDIARY\src\MSSQL.DIARY.UI.APP\bin\Debug\netcoreapp3.1\nlog.config
+2021-04-05 11:34:25.9595 Info AppDomain Shutting down. Logger closing...
+2021-04-05 11:34:25.9938 Info Logger has been shut down.
