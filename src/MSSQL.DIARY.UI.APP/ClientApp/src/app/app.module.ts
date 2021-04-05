@@ -9,7 +9,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { AmexioEnterpriseModule, AmexioWidgetModule, AmexioDataModule, AmexioChartsModule, AmexioLayoutModule } from 'amexio-ng-extensions';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 import { NgxUiLoaderModule } from 'ngx-ui-loader';
-
+import { PrismModule } from '@ngx-prism/core'; // <----- Here
 import { ProgressBarModule } from "angular-progress-bar" ; 
 import { AccordionModule       } from 'primeng/accordion';
 import { TableModule           } from 'primeng/table';
@@ -226,6 +226,7 @@ const appRoutes: Routes = [
     AmexioEnterpriseModule,
     AmexioLayoutModule,
     FontAwesomeModule,
+    PrismModule ,
     NgxUiLoaderModule,
     BreadcrumbModule,
     ProgressBarModule,

@@ -11,13 +11,25 @@ import { Ms_Description } from 'src/models/Ms_Description';
 import { TableFKDependency } from 'src/models/TableFKDependency';
 import { TableKeyConstraint } from 'src/models/TableKeyConstraint';
 import { TableFragmentationDetails } from 'src/models/TableFragmentationDetails';
-import { TablePropertyInfo } from 'src/models/TablePropertyInfo';
-import { TreeNode, MenuItem } from 'primeng/api';
+import { MenuItem } from 'primeng/api';
+import 'prismjs';
+import 'prismjs/plugins/toolbar/prism-toolbar'; 
+import 'prismjs/plugins/copy-to-clipboard/prism-copy-to-clipboard';
+import 'prismjs/components/prism-css';
+import 'prismjs/components/prism-javascript';
+import 'prismjs/components/prism-java';
+import 'prismjs/components/prism-markup';
+import 'prismjs/components/prism-typescript';
+import 'prismjs/components/prism-sass';
+import 'prismjs/components/prism-scss';
+declare var Prism: any;
+
 @Component({
   selector: 'app-database-table',
   templateUrl: './database-table.component.html',
   styleUrls: ['./database-table.component.css']
 })
+
 export class DatabaseTableComponent implements OnInit {
   iblnShowEditBox: boolean;
   constructor(private route: Router,public activeRoute: ActivatedRoute, public databaseTableService: DatabaseTableService, public _http: HttpClient, @Inject('BASE_URL') public baseUrl: string) {
@@ -25,36 +37,47 @@ export class DatabaseTableComponent implements OnInit {
   }
   public items: MenuItem[];
   public home: MenuItem; 
-
-  databaseName: string; 
-  databaseTableName: string;
-  tableDescription: string;
-  tableDescription_old: string;
-  databaseTableIndexs: Observable<TableIndexInfo[]>;
-  databaseTableCreateScript: Observable<TableCreateScript>;
-  databaseTableDependencies: Observable<Tabledependencies[]>;
-  databaseTableColumns: TableColumns[];
-  databaseTableDescription: Ms_Description;
-  databaseTableFKDependencies: Observable<TableFKDependency[]>;
-  databaseTableKeyConstraints: Observable<TableKeyConstraint[]>;
-  databaseTableDependencyTree: any;
-  databaseTableFragmentationDetails: Observable<TableFragmentationDetails[]>;
-
+  public language = 'plsql';
+  public databaseName: string; 
+  public databaseTableName: string;
+  public tableDescription: string;
+  public tableDescriptionOld: string;
+  public databaseTableIndexs: Observable<TableIndexInfo[]>;
+  public databaseTableCreateScript: TableCreateScript;
+  public databaseTableDependencies: Observable<Tabledependencies[]>;
+  public databaseTableColumns: TableColumns[];
+  public databaseTableDescription: Ms_Description;
+  public databaseTableFkDependencies: Observable<TableFKDependency[]>;
+  public databaseTableKeyConstraints: Observable<TableKeyConstraint[]>;
+  public databaseTableDependencyTree: any;
+  public databaseTableFragmentationDetails: Observable<TableFragmentationDetails[]>;
+ 
 
   ngOnInit() {
 
     this.databaseName = this.activeRoute.snapshot.params.databaseDetails.split('/')[0]; 
     this.databaseTableName = this.activeRoute.snapshot.params.databaseDetails.split('/')[1];
+
     this.databaseTableDependencies = this.databaseTableService.LoadTableDependencies(this.databaseTableName, this.databaseName);
     this.databaseTableIndexs = this.databaseTableService.LoadTableIndexes(this.databaseTableName, this.databaseName);
-    this.databaseTableCreateScript = this.databaseTableService.LoadTableCreateScript(this.databaseTableName, this.databaseName);
-    this.databaseTableFKDependencies = this.databaseTableService.LoadTableFKeys(this.databaseTableName, this.databaseName);
+   // this.databaseTableCreateScript = this.databaseTableService.LoadTableCreateScript(this.databaseTableName, this.databaseName);
+    console.table(this.databaseTableCreateScript);
+    this.databaseTableFkDependencies = this.databaseTableService.LoadTableFKeys(this.databaseTableName, this.databaseName);
     this.databaseTableKeyConstraints = this.databaseTableService.LoadTableKeyConstraints(this.databaseTableName, this.databaseName);
     this.databaseTableFragmentationDetails = this.databaseTableService.LoadTableFragmentationDetails(this.databaseTableName, this.databaseName);
     this.LoadTableDependencyTree();
     this.LoadTableDescription();
     this.LoadTableColumnsDetails();
     this.BreadCrumb();
+
+    this._http.get<TableCreateScript>(this.baseUrl + "DatabaseTables/GetTableCreateScript", { params: { astrtableName: this.databaseTableName, astrdbName: this.databaseName } }).toPromise()
+      .then(res => {
+        this.databaseTableCreateScript = res;
+      });
+
+    //public LoadTableCreateScript(astrtableName: string, astrdbName: string): Observable<TableCreateScript> {
+    //  return this._http.get<TableCreateScript>(this.baseUrl + "DatabaseTables/GetTableCreateScript", { params: { astrtableName: astrtableName, astrdbName: astrdbName } }).pipe(map(u => u));
+  //}
   } 
   EditTableMsDesciption($event): any
   {
@@ -67,7 +90,7 @@ export class DatabaseTableComponent implements OnInit {
   }
   CancelTableMsDesciption($event): any
   {
-    this.tableDescription = this.tableDescription_old;
+    this.tableDescription = this.tableDescriptionOld;
     this.iblnShowEditBox = false; 
   }
   EditGridRow(InputRowId: any)
@@ -101,7 +124,7 @@ export class DatabaseTableComponent implements OnInit {
       .then(res => {
         this.databaseTableDescription = res;
         this.tableDescription = this.databaseTableDescription.desciption;
-        this.tableDescription_old = this.tableDescription;
+        this.tableDescriptionOld = this.tableDescription;
       });
   }
   private LoadTableColumnsDetails()

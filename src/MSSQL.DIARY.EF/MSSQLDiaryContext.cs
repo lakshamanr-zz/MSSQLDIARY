@@ -1,14 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MoreLinq.Extensions;
 using MSSQL.DIARY.COMN.Constant;
-using MSSQL.DIARY.COMN.Helper;
 using MSSQL.DIARY.COMN.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Globalization;
 using System.Linq;
-using DataColumn = System.Data.DataColumn;
 
 namespace MSSQL.DIARY.EF
 {
@@ -1038,7 +1035,7 @@ namespace MSSQL.DIARY.EF
         //Get table descriptions
         public Ms_Description GetTableDescription(string astrTableName)
         {
-            var lMs_Description = new Ms_Description { desciption = "" };
+            var lMsDescription = new Ms_Description { desciption = "" };
             try
             {
                 using var command = Database.GetDbConnection().CreateCommand();
@@ -1046,13 +1043,13 @@ namespace MSSQL.DIARY.EF
                 Database.OpenConnection();
                 DataTable ldtMsDescriptions = new DataTable();
                 ldtMsDescriptions.Load(command.ExecuteReader());
-                lMs_Description = SelectRow<Ms_Description>(ldtMsDescriptions); 
+                lMsDescription = SelectRow<Ms_Description>(ldtMsDescriptions); 
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"\n Exception occurred : {ex.Message} "); Console.WriteLine($"\n Exception StackTrace : {ex.StackTrace} ");
             } 
-            return lMs_Description;
+            return lMsDescription;
         }
 
         /// <summary>

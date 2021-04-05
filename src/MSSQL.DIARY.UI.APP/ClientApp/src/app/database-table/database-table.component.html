@@ -33,13 +33,13 @@
         <a (click)="SaveTableMsDesciption($event)"><i class="fa fa-2x fa-save"></i></a>
       </div>
     </div>
-  </amexio-accordion-tab> 
+  </amexio-accordion-tab>
   <amexio-accordion-tab amexioColorPalette [color-palette]="''" header="Object Dependency Tree" [gradient]="true" [active]="true">
     <p-tree [value]="databaseTableDependencyTree"
             layout="horizontal"
             selectionMode="single">
     </p-tree>
-  </amexio-accordion-tab>  
+  </amexio-accordion-tab>
   <amexio-accordion-tab amexioColorPalette [color-palette]="''" header="Table Index Fragmentation" [gradient]="true" [active]="true">
 
     <div class="table">
@@ -56,7 +56,7 @@
       </div>
     </div>
 
-  </amexio-accordion-tab> 
+  </amexio-accordion-tab>
   <amexio-accordion-tab amexioColorPalette [color-palette]="''" header="Table Indexes" [gradient]="true" [active]="true">
     <div class="table" *ngIf="databaseTableIndexs | async else loadingTabledeIndex ">
       <div class="row header">
@@ -92,7 +92,7 @@
     <ng-template #loadingTabledeIndex>
       Please wait database Tables Index is loading...
     </ng-template>
-  </amexio-accordion-tab> 
+  </amexio-accordion-tab>
   <amexio-accordion-tab amexioColorPalette [color-palette]="''" [gradient]="true" header="Table Columns " [active]="true">
 
     <div class="table">
@@ -146,7 +146,7 @@
 
   </amexio-accordion-tab>
   <amexio-accordion-tab amexioColorPalette [color-palette]="''" [gradient]="true" header="Table Foreign Keys " [active]="true">
-    <div class="table" *ngIf="databaseTableFKDependencies | async else loadingTableFKDependencies ">
+    <div class="table" *ngIf="databaseTableFkDependencies | async else loadingTableFKDependencies ">
       <div class="row header">
         <div class="cell">Values </div>
         <div class="cell">Current Table Name </div>
@@ -155,7 +155,7 @@
         <div class="cell">Fk Refe Table Name </div>
         <div class="cell">Fk Refe Table Column </div>
       </div>
-      <div *ngFor="let Property of databaseTableFKDependencies |async" class="row">
+      <div *ngFor="let Property of databaseTableFkDependencies |async" class="row">
         <div class="cell">{{Property.values}} </div>
         <div class="cell">{{Property.current_table_name}}</div>
         <div class="cell">{{Property.current_table_fk_columnName}} </div>
@@ -192,7 +192,7 @@
     <ng-template #loadingTableKeys>
       Please wait database Table key Constraints is loading...
     </ng-template>
-  </amexio-accordion-tab> 
+  </amexio-accordion-tab>
   <amexio-accordion-tab amexioColorPalette [color-palette]="''" [gradient]="true" header="Referred by" [active]="true">
     <div class="table" *ngIf="databaseTableDependencies | async else loadingTablerefe ">
       <div class="row header">
@@ -214,6 +214,11 @@
       Please wait database Tables reference is loading...
     </ng-template>
 
-  </amexio-accordion-tab>
+</amexio-accordion-tab>
+<amexio-accordion-tab amexioColorPalette [color-palette]="''" header="SQL Script " [gradient]="true" [active]="true">
+   <ngx-prism [language]="language">
+      {{databaseTableCreateScript.createscript   }}
+    </ngx-prism> 
+</amexio-accordion-tab>
 
 </amexio-accordion>

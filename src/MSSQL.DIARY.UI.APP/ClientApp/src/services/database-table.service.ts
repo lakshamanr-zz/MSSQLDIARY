@@ -28,9 +28,7 @@ export class DatabaseTableService {
   {
     return this._http.get<TableIndexInfo[]>(this.baseUrl + "DatabaseTables/LoadTableIndexes", { params: { astrtableName: astrtableName, astrdbName: astrdbName } }).pipe(map(u => u));
   }
-  public LoadTableCreateScript(astrtableName: string, astrdbName: string): Observable<TableCreateScript> {
-    return this._http.get<TableCreateScript>(this.baseUrl + "DatabaseTables/GetTableCreateScript", { params: { astrtableName: astrtableName, astrdbName: astrdbName } }).pipe(map(u => u));
-  }
+
   public GetAllTabledependencies(astrtableName: string, astrdbName: string): Observable<Tabledependencies[]> {
     return this._http.get<Tabledependencies[]>(this.baseUrl + "DatabaseTables/GetAllTabledependencies", { params: { astrtableName: astrtableName, astrdbName: astrdbName } }).pipe(map(u => u));
   }
