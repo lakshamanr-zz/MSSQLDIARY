@@ -15,7 +15,7 @@ namespace MSSQL.DIARY.EF
     {
         public MsSqlDiaryContext(string astrDatabaseConnection = null)
         {
-            IstrDatabaseConnection = astrDatabaseConnection;
+            IstrDatabaseConnection = astrDatabaseConnection; 
         }
 
         public MsSqlDiaryContext(DbContextOptions<MsSqlDiaryContext> options) : base(options)
@@ -81,7 +81,7 @@ namespace MSSQL.DIARY.EF
 
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
             return lstDatabaseProperties;
@@ -120,7 +120,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
             return lstDatabaseOptions;
@@ -153,7 +153,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
             return lstDatabaseFiles;
@@ -185,7 +185,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
             return lstDatabaseNames;
@@ -222,7 +222,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
             return lstInterdependency.Distinct().ToList();
@@ -258,7 +258,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
             return lstFunctionProperties;
@@ -292,7 +292,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
             return lstFunctionColumns;
@@ -326,7 +326,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
             return lstrFunctionCreateScript;
@@ -359,7 +359,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
             return lstFunctionDescriptions;
@@ -402,7 +402,7 @@ namespace MSSQL.DIARY.EF
             command.ExecuteNonQuery();
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
         }
@@ -427,7 +427,7 @@ namespace MSSQL.DIARY.EF
             command.ExecuteNonQuery();
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
         }
@@ -458,7 +458,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
             return lstScalarFunctions;
@@ -490,7 +490,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
             return lstTableValueFunctions;
@@ -552,7 +552,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
             return lstSchemaWithDescriptions;
@@ -593,7 +593,7 @@ namespace MSSQL.DIARY.EF
             command.ExecuteNonQuery();
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
         }
@@ -615,7 +615,7 @@ namespace MSSQL.DIARY.EF
             command.ExecuteNonQuery();
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
         }
@@ -648,7 +648,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
             return lstSchemaReferences;
@@ -681,7 +681,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
             return lMsDescription;
@@ -713,7 +713,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
             return lServerName;
@@ -752,7 +752,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
             return lstServerProperties;
@@ -785,7 +785,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
             return lstAdvancedServerSettings;
@@ -820,7 +820,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
             return lstStoreProceduresWithDescription;
@@ -853,7 +853,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
             return lMsDescription;
@@ -887,7 +887,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
             return lstStoreProcedureDependencies;
@@ -920,7 +920,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
             return lstStoreProceduresParametersWithDescriptions;
@@ -955,7 +955,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
             return lstExecutionPlanDetails;
@@ -1001,7 +1001,7 @@ namespace MSSQL.DIARY.EF
             command.ExecuteNonQuery();
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
         }
@@ -1033,7 +1033,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
         }
@@ -1067,7 +1067,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
             return lMsDescription;
@@ -1103,7 +1103,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
             return lInstanceOfType;
@@ -1140,7 +1140,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
             return lstTList;
@@ -1173,7 +1173,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
             return lstTableIndexes;
@@ -1206,7 +1206,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
             return lTableCreateScript;
@@ -1241,7 +1241,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
             return lstTableDependencies.DistinctBy(x => x.name).ToList();
@@ -1275,7 +1275,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
             return lstTablesColumn;
@@ -1309,7 +1309,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
             return lstTableFkColumns;
@@ -1344,7 +1344,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
             return lstTableKeyConstraints;
@@ -1387,7 +1387,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
             return lstTablesWithDescriptions;
@@ -1417,7 +1417,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
             return lMsDescription;
@@ -1461,7 +1461,7 @@ namespace MSSQL.DIARY.EF
             command.ExecuteNonQuery();
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
         }
@@ -1493,7 +1493,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
         }
@@ -1539,7 +1539,7 @@ namespace MSSQL.DIARY.EF
             command.ExecuteNonQuery();
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
         }
@@ -1572,7 +1572,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
         }
@@ -1604,7 +1604,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
             return lstTableFragmentation;//.Where(x => Convert.ToInt32(x.PercentFragmented) > 0).ToList();
@@ -1639,7 +1639,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
             return lstTableColumns;
@@ -1674,7 +1674,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
             return lstTableFkDependencies;
@@ -1707,7 +1707,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
             return lstTriggers;
@@ -1742,7 +1742,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
             return lstTriggerInfo;
@@ -1784,7 +1784,7 @@ namespace MSSQL.DIARY.EF
             command.ExecuteNonQuery();
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
         }
@@ -1813,7 +1813,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
         }
@@ -1846,7 +1846,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
 
@@ -1882,7 +1882,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
             return lUserDefinedDataTypeDetails;
@@ -1917,7 +1917,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
             return lstUserDefinedDataTypeReference;
@@ -1952,7 +1952,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
             return lUserDefinedDataTypeDescription;
@@ -1984,7 +1984,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
         }
@@ -2013,7 +2013,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
         }
@@ -2063,7 +2063,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
 
@@ -2100,7 +2100,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
 
@@ -2136,7 +2136,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
             return lstViewProperties;
@@ -2170,7 +2170,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
             return lstGetViewColumns;
@@ -2205,7 +2205,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
             return lViewCreateScript;
@@ -2241,7 +2241,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
             return lstObjectDependsOn
@@ -2280,7 +2280,7 @@ namespace MSSQL.DIARY.EF
             }
             watch.Stop();
 #if DEBUG
-            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
 #endif
 
             return lstObjectOnWhichDepends;

@@ -1245,3 +1245,15 @@
 2021-04-06 09:00:42.1159 Info Adding target FileTarget(Name=alldata)
 2021-04-06 09:00:42.1159 Info Adding target FileTarget(Name=otherFile-web)
 2021-04-06 09:00:42.1894 Info Validating config: TargetNames=alldata, otherFile-web, ConfigItems=44, FilePath=F:\Lakshaman\GitHub\MSSQLDIARY\src\MSSQL.DIARY.UI.APP\bin\Debug\netcoreapp3.1\nlog.config
+2021-04-06 09:25:09.3754 Info Message Template Auto Format enabled
+2021-04-06 09:25:09.4342 Info Loading assembly: NLog.Web.AspNetCore
+2021-04-06 09:25:09.5661 Info Adding target FileTarget(Name=alldata)
+2021-04-06 09:25:09.6008 Info Adding target FileTarget(Name=otherFile-web)
+2021-04-06 09:25:09.7052 Info Validating config: TargetNames=alldata, otherFile-web, ConfigItems=44, FilePath=F:\Lakshaman\GitHub\MSSQLDIARY\src\MSSQL.DIARY.UI.APP\bin\Debug\netcoreapp3.1\nlog.config
+2021-04-06 09:30:40.2114 Info Message Template Auto Format enabled
+2021-04-06 09:30:40.3653 Info Loading assembly: NLog.Web.AspNetCore
+2021-04-06 09:30:40.5382 Info Adding target FileTarget(Name=alldata)
+2021-04-06 09:30:40.5925 Info Adding target FileTarget(Name=otherFile-web)
+2021-04-06 09:30:40.7106 Info Validating config: TargetNames=alldata, otherFile-web, ConfigItems=44, FilePath=F:\Lakshaman\GitHub\MSSQLDIARY\src\MSSQL.DIARY.UI.APP\bin\Debug\netcoreapp3.1\nlog.config
+2021-04-06 09:33:52.7599 Info AppDomain Shutting down. Logger closing...
+2021-04-06 09:33:52.7851 Info Logger has been shut down.
