@@ -302,8 +302,8 @@ namespace MSSQL.DIARY.SRV
         private List<TablePropertyInfo> GetTablesDescriptionFromCache()
         {
             List<TablePropertyInfo> lstTableDetails;
-
             string lDatabaseName;
+         
             using (var lSqlDatabaseContext = new MsSqlDiaryContext(IstrDatabaseConnection))
             {
                 lstTableDetails=lSqlDatabaseContext.GetTablesDescription();
