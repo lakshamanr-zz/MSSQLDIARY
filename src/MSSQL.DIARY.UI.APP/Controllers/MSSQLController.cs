@@ -34,8 +34,8 @@ namespace MSSQL.DIARY.UI.APP.Controllers
         {
             _logger = logger;
 
-            IsrvTableValueFunction = new SrvMssql("TV");
-            IsrvScalarFunction = new SrvMssql("FC");
+            IsrvTableValueFunction = new SrvMssql("TF");
+            IsrvScalarFunction = new SrvMssql("FN");
             IsrvMssql = new SrvMssql();
         }
 

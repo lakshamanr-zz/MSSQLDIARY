@@ -8,8 +8,6 @@ using System.Linq;
 
 namespace MSSQL.DIARY.UI.APP.Controllers
 {
-
-
     public class BaseController : ControllerBase
     {
         static readonly Dictionary<string, string> NaiveCache = new  Dictionary<string, string>();
