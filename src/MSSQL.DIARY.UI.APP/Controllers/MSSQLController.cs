@@ -33,7 +33,6 @@ namespace MSSQL.DIARY.UI.APP.Controllers
         public MSSQLController(ILogger<MSSQLController> logger ,ApplicationDbContext context, UserManager<ApplicationUser> userManager, IHttpContextAccessor httpContextAccessor) : base(context, userManager, httpContextAccessor)
         {
             _logger = logger;
-
             IsrvTableValueFunction = new SrvMssql("TF");
             IsrvScalarFunction = new SrvMssql("FN");
             IsrvMssql = new SrvMssql();
@@ -43,58 +42,58 @@ namespace MSSQL.DIARY.UI.APP.Controllers
 
         [HttpGet("[action]")]
         public List<TablePropertyInfo> GetTablesDescription(string astrDatabaseName)
-        {
+        { 
             IsrvMssql.IstrDatabaseConnection = GetActiveDatabaseInfo(astrDatabaseName);
             return IsrvMssql.GetTablesDescription();
         }
 
         [HttpGet("[action]")]
-        public List<TableIndexInfo> LoadTableIndexes(string astrtableName, string astrDatabaseName)
+        public List<TableIndexInfo> LoadTableIndexes(string astrTableName, string astrDatabaseName)
         {
             IsrvMssql.IstrDatabaseConnection = GetActiveDatabaseInfo(astrDatabaseName);
-            return IsrvMssql.LoadTableIndexes(astrtableName);
+            return IsrvMssql.LoadTableIndexes(astrTableName);
         }
 
         [HttpGet("[action]")]
-        public TableCreateScript GetTableCreateScript(string astrtableName, string astrDatabaseName)
+        public TableCreateScript GetTableCreateScript(string astrTableName, string astrDatabaseName)
         {
             IsrvMssql.IstrDatabaseConnection = GetActiveDatabaseInfo(astrDatabaseName);
-            return IsrvMssql.GetTableCreateScript(astrtableName);
+            return IsrvMssql.GetTableCreateScript(astrTableName);
         }
 
         [HttpGet("[action]")]
-        public List<Tabledependencies> GetTableDependencies(string astrtableName, string astrDatabaseName)
+        public List<Tabledependencies> GetTableDependencies(string astrTableName, string astrDatabaseName)
         {
             IsrvMssql.IstrDatabaseConnection = GetActiveDatabaseInfo(astrDatabaseName);
-            return IsrvMssql.GetTableDependencies(astrtableName);
+            return IsrvMssql.GetTableDependencies(astrTableName);
         }
 
         [HttpGet("[action]")]
-        public List<TableColumns> GetTableColumns(string astrtableName, string astrDatabaseName)
+        public List<TableColumns> GetTableColumns(string astrTableName, string astrDatabaseName)
         {
             IsrvMssql.IstrDatabaseConnection = GetActiveDatabaseInfo(astrDatabaseName);
-            return IsrvMssql.GetTableColumns(astrtableName);
+            return IsrvMssql.GetTableColumns(astrTableName);
         }
 
         [HttpGet("[action]")]
-        public Ms_Description GetTableDescription(string astrtableName, string astrDatabaseName)
+        public Ms_Description GetTableDescription(string astrTableName, string astrDatabaseName)
         {
             IsrvMssql.IstrDatabaseConnection = GetActiveDatabaseInfo(astrDatabaseName);
-            return IsrvMssql.GetTableDescription(astrtableName);
+            return IsrvMssql.GetTableDescription(astrTableName);
         }
 
         [HttpGet("[action]")]
-        public List<TableFKDependency> GetTableForeignKeys(string astrtableName, string astrDatabaseName)
+        public List<TableFKDependency> GetTableForeignKeys(string astrTableName, string astrDatabaseName)
         {
             IsrvMssql.IstrDatabaseConnection = GetActiveDatabaseInfo(astrDatabaseName);
-            return IsrvMssql.GetTableForeignKeys(astrtableName);
+            return IsrvMssql.GetTableForeignKeys(astrTableName);
         }
 
         [HttpGet("[action]")]
-        public List<TableKeyConstraint> GetTableKeyConstraints(string astrtableName, string astrDatabaseName)
+        public List<TableKeyConstraint> GetTableKeyConstraints(string astrTableName, string astrDatabaseName)
         {
             IsrvMssql.IstrDatabaseConnection = GetActiveDatabaseInfo(astrDatabaseName);
-            return IsrvMssql.GetTableKeyConstraints(astrtableName);
+            return IsrvMssql.GetTableKeyConstraints(astrTableName);
         }
 
         [HttpGet("[action]")]
@@ -115,18 +114,18 @@ namespace MSSQL.DIARY.UI.APP.Controllers
         }
 
         [HttpGet("[action]")]
-        public object GetDependencyTree(string astrtableName, string astrDatabaseName)
+        public object GetDependencyTree(string astrTableName, string astrDatabaseName)
         {
             IsrvMssql.IstrDatabaseConnection = GetActiveDatabaseInfo(astrDatabaseName);
-            var returnResult = JsonConvert.DeserializeObject(IsrvMssql.CreatorOrGetDependencyTree(astrtableName));
-            return returnResult;
+          return  JsonConvert.DeserializeObject(IsrvMssql.CreatorOrGetDependencyTree(astrTableName));
+      
         }
 
         [HttpGet("[action]")]
-        public List<TableFragmentationDetails> GetTableFragmentationDetails(string astrtableName, string astrDatabaseName)
+        public List<TableFragmentationDetails> GetTableFragmentationDetails(string astrTableName, string astrDatabaseName)
         {
             IsrvMssql.IstrDatabaseConnection = GetActiveDatabaseInfo(astrDatabaseName);
-            return IsrvMssql.GetTableFragmentationDetails(astrtableName);
+            return IsrvMssql.GetTableFragmentationDetails(astrTableName);
         }
 
         #endregion 
@@ -173,136 +172,29 @@ namespace MSSQL.DIARY.UI.APP.Controllers
         [HttpGet("[action]")]
         public Ms_Description GetErDiagram(string astrDatabaseName, string istrServerName, string istrSchemaName)
         {
-            var result = new Ms_Description();
-            //if (istrSchemaName.Equals("All"))
-            //    result.desciption = !istrServerName.IsNullOrEmpty()
-            //        ? SrvDatabaseInfo.GetERDiagram(_hostingEnv.WebRootPath, astrDatabaseName, istrServerName, null)
-            //        : SrvDatabaseInfo.GetERDiagram(_hostingEnv.WebRootPath, astrDatabaseName.Split('/')[0],
-            //            astrDatabaseName.Split('/')[1], null);
-            //else
-            //    result.desciption = !istrServerName.IsNullOrEmpty()
-            //        ? SrvDatabaseInfo.GetERDiagram(_hostingEnv.WebRootPath, astrDatabaseName, istrServerName, istrSchemaName)
-            //        : SrvDatabaseInfo.GetERDiagram(_hostingEnv.WebRootPath, astrDatabaseName.Split('/')[0],
-            //            astrDatabaseName.Split('/')[1], istrSchemaName);
-
-
-            return result;
+            return new Ms_Description(); 
         }
         [HttpGet("[action]")]
         public Ms_Description GetErDiagramWithSelectedTables(string astrDatabaseName, string istrServerName, string istrSchemaName, string selectedTables)
-        {
-            //var alstOfSelectedTables = selectedTables.Split(';').Where(x => x.IsNotNullOrEmpty()).ToList();
-            //var newSelectedTables = new List<string>();
-            //alstOfSelectedTables.ForEach(x => {
-            //    newSelectedTables.Add(x.Split('.')[1]);
-            //});
-            var result = new Ms_Description();
-            //if (istrSchemaName.Equals("All"))
-            //    result.desciption = !istrServerName.IsNullOrEmpty()
-            //        ? SrvDatabaseInfo.GetERDiagram(_hostingEnv.WebRootPath, astrDatabaseName, istrServerName, null, newSelectedTables)
-            //        : SrvDatabaseInfo.GetERDiagram(_hostingEnv.WebRootPath, astrDatabaseName.Split('/')[0],
-            //            astrDatabaseName.Split('/')[1], null, newSelectedTables);
-            //else
-            //    result.desciption = !istrServerName.IsNullOrEmpty()
-            //        ? SrvDatabaseInfo.GetERDiagram(_hostingEnv.WebRootPath, astrDatabaseName, istrServerName, istrSchemaName, newSelectedTables)
-            //        : SrvDatabaseInfo.GetERDiagram(_hostingEnv.WebRootPath, astrDatabaseName.Split('/')[0],
-            //            astrDatabaseName.Split('/')[1], istrSchemaName, newSelectedTables);
-
-
-            return result;
+        { 
+            return new Ms_Description(); 
 
         }
         [HttpGet("[action]")]
-        public Ms_Description SaveErDiagramWithSelectedTables(string astrDatabaseName, string istrServerName, string selectedTables, string istrsqlmodule)
-        {
-
-            var result = new Ms_Description();
-
-            //DatabaseModule databaseModule = new DatabaseModule();
-            //databaseModule.DatabaseName = astrDatabaseName;
-            //databaseModule.ServerName = istrServerName;
-            //databaseModule.tables = SelectedTables;
-            //databaseModule.DbModuleName = istrsqlmodule;
-            //if (!applicationDbContext.databaseModule
-            //    .Where(x => x.DatabaseName.Contains(astrDatabaseName) && x.ServerName.Contains(istrServerName) && x.DbModuleName.Contains(istrsqlmodule))
-            //    .Any())
-            //{
-            //    applicationDbContext.databaseModule.Add(databaseModule);
-            //    applicationDbContext.SaveChanges();
-            //    result.desciption = "Module save successfully ";
-            //}
-            //else
-            //{
-            //    result.desciption = "There is already same name module is existing in database";
-            //}
-            return result;
-
+        public Ms_Description SaveErDiagramWithSelectedTables(string astrDatabaseName, string istrServerName, string selectedTables, string astrSqlmodule)
+        { 
+            return new Ms_Description();  
         }
         [HttpGet("[action]")]
-        public Ms_Description LoadErDiagramWithSelectedTables(string astrDatabaseName, string istrServerName, string istrsqlmodule)
+        public Ms_Description LoadErDiagramWithSelectedTables(string astrDatabaseName, string istrServerName, string astrSqlmodule)
         {
-
-            var result = new Ms_Description();
-            //var sqlmodule =applicationDbContext.databaseModule.Where(
-            //     x => x.DatabaseName.Contains(astrDatabaseName) &&
-            //     x.ServerName.Contains(istrServerName) &&
-            //     x.DbModuleName.Contains(istrsqlmodule)
-
-            //     ).FirstOrDefault() ;
-            // if (sqlmodule.IsNotNull())
-            // {
-            //     var alstOfSelectedTables = sqlmodule.tables.Split(';').Where(x => x.IsNotNullOrEmpty()).ToList();
-            //     var newSelectedTables = new List<string>();
-            //     alstOfSelectedTables.ForEach(x =>
-            //     {
-            //         newSelectedTables.Add(x.Split('.')[1]);
-            //     });
-            //     result.desciption = !istrServerName.IsNullOrEmpty()
-            //         ? SrvDatabaseInfo.GetERDiagram(_hostingEnv.WebRootPath, astrDatabaseName, istrServerName, null, newSelectedTables)
-            //         : SrvDatabaseInfo.GetERDiagram(_hostingEnv.WebRootPath, astrDatabaseName.Split('/')[0],
-            //             astrDatabaseName.Split('/')[1], null, newSelectedTables);
-            // } 
-
-            return result;
-
+            return new Ms_Description();  
         }
         [HttpGet("[action]")]
-        public Ms_Description DeleteErDiagramWithSelectedTables(string astrDatabaseName, string istrServerName, string istrsqlmodule)
-        {
-
-            var result = new Ms_Description();
-            //var sqlmodule = applicationDbContext.databaseModule.Where(
-            //     x => x.DatabaseName.Contains(astrDatabaseName) &&
-            //     x.ServerName.Contains(istrServerName) &&
-            //     x.DbModuleName.Contains(istrsqlmodule)
-
-            //     ).FirstOrDefault();
-            //if (sqlmodule.IsNotNull())
-            //{
-            //    applicationDbContext.databaseModule.Remove(sqlmodule);
-            //    applicationDbContext.SaveChanges();
-            //}
-
-            return result;
-
-        }
-        [HttpGet("[action]")]
-        public List<string> LoadAllModules(string astrDatabaseName, string istrServerName)
-        {
-
-            var result = new List<string>();
-            //var sqlmodule = applicationDbContext.databaseModule.Where(
-            //     x => x.DatabaseName.Contains(astrDatabaseName) &&
-            //     x.ServerName.Contains(istrServerName));
-            //if (sqlmodule.IsNotNull())
-            //{
-            //    result = sqlmodule.Select(x => x.DbModuleName).ToList();
-            //}
-
-            return result;
-
-        }
-
+        public Ms_Description DeleteErDiagramWithSelectedTables(string astrDatabaseName, string istrServerName, string astrSqlmodule)
+        { 
+            return new Ms_Description(); 
+        }  
         #endregion
 
         #region Object Explorer
@@ -355,19 +247,19 @@ namespace MSSQL.DIARY.UI.APP.Controllers
         }
 
         [HttpGet("[action]")]
-        public FunctionCreateScript GetScalerFunctionCreateScript(string astrDatabaseName, string astrFunctionName)
+        public FunctionCreateScript GetScalarFunctionCreateScript(string astrDatabaseName, string astrFunctionName)
         {
             return IsrvScalarFunction.GetFunctionCreateScript(astrDatabaseName, astrFunctionName);
         }
 
         [HttpGet("[action]")]
-        public List<PropertyInfo> GetAllScalarFunctionWithMsDescriptions(string astrDatabaseName)
+        public List<PropertyInfo> GetScalarFunctionsWithMsDescription(string astrDatabaseName)
         {
             return IsrvScalarFunction.GetFunctionsWithDescription(astrDatabaseName);
         }
 
         [HttpGet("[action]")]
-        public PropertyInfo GetScalarFunctionMsDescriptions(string astrDatabaseName, string astrFunctionName)
+        public PropertyInfo GetScalarFunctionDescription(string astrDatabaseName, string astrFunctionName)
         {
             return IsrvScalarFunction.GetFunctionWithDescription(astrDatabaseName, astrFunctionName);
         }
@@ -397,30 +289,28 @@ namespace MSSQL.DIARY.UI.APP.Controllers
         }
 
         [HttpGet("[action]")]
-        public List<PropertyInfo> GetAllTableValueFunctionWithMsDescriptions(string astrDatabaseName)
+        public List<PropertyInfo> GetTableValueFunctionsWithDescription(string astrDatabaseName)
         {
             return IsrvTableValueFunction.GetFunctionsWithDescription(astrDatabaseName);
         }
 
         [HttpGet("[action]")]
-        public PropertyInfo GetTableValueFunctionMsDescriptions(string astrDatabaseName, string astrFunctionName)
+        public PropertyInfo GetTableValueFunctionWithDescription(string astrDatabaseName, string astrFunctionName)
         {
             return IsrvTableValueFunction.GetFunctionWithDescription(astrDatabaseName, astrFunctionName);
         }
 
         [HttpGet("[action]")]
-        public bool CreateOrUpdateScalerFunctionDescription(string astrDatabaseName, string astrDescriptionValue, string astrFunctionName)
+        public bool CreateOrUpdateScalarFunctionDescription(string astrDatabaseName, string astrDescriptionValue, string astrFunctionName)
         {
-            IsrvScalarFunction.CreateOrUpdateFunctionDescription(astrDatabaseName, astrDescriptionValue,
-                astrFunctionName.Split(".")[0], astrFunctionName);
+            IsrvScalarFunction.CreateOrUpdateFunctionDescription(astrDatabaseName, astrDescriptionValue, astrFunctionName.Split(".")[0], astrFunctionName);
             return true;
         }
 
         [HttpGet("[action]")]
         public bool CreateOrUpdateTableValueFunctionDescription(string astrDatabaseName, string astrDescriptionValue, string astrFunctionName)
         {
-            IsrvTableValueFunction.CreateOrUpdateFunctionDescription(astrDatabaseName, astrDescriptionValue,
-                astrFunctionName.Split(".")[0], astrFunctionName);
+            IsrvTableValueFunction.CreateOrUpdateFunctionDescription(astrDatabaseName, astrDescriptionValue, astrFunctionName.Split(".")[0], astrFunctionName);
             return true;
         }
 
@@ -532,39 +422,8 @@ namespace MSSQL.DIARY.UI.APP.Controllers
         [HttpGet("[action]")]
         public List<SP_PropertyInfo> GetStoreProceduresWithDescription(string astrDatabaseName, bool ablnSearchInSsisPackages)
         {
-            var lstStoreprocedure = IsrvMssql.GetStoreProceduresWithDescription(astrDatabaseName);
-        
-            //var SSRS_package = new List<PackageJsonHandler>();
-            //SSISPackageInfoHandlerController.GetAllSSISPackages(_hostingEnv.WebRootPath);
-            //SSISPackageInfoHandlerController.SSISPkgeCache.Cache.TryGetValue(serverName, out SSRS_package);
-            //if (SSRS_package != null) FillSSISPackageDetails(AllStoreprocedure, SSRS_package);
-            //if (ablnSearchInSsisPackages)
-            //    lstStoreprocedure = lstStoreprocedure.Where(x => x.lstSSISpackageReferance.IsNotNull()).ToList();
-            return lstStoreprocedure;
-        }
-
-        //private static void FillSSISPackageDetails(List<SP_PropertyInfo> AllStoreprocedure,
-        //    List<PackageJsonHandler> SSRS_package)
-        //{
-        //    AllStoreprocedure.ForEach(x =>
-        //    {
-        //        SSRS_package.ForEach(x1 =>
-        //        {
-        //            x1.ExecuteSQLTask.ForEach(x3 =>
-        //            {
-        //                if (x3.SqlStatementSource.Contains(x.istrName))
-        //                {
-        //                    if (x.lstSSISpackageReferance == null) x.lstSSISpackageReferance = new List<string>();
-
-        //                    x.lstSSISpackageReferance.Add(x1.PackageLocation);
-        //                }
-        //            });
-        //        });
-        //        if (x.lstSSISpackageReferance != null)
-        //            x.lstSSISpackageReferance = x.lstSSISpackageReferance.DistinctBy(x1 => x1).ToList();
-        //    });
-        //}
-
+           return IsrvMssql.GetStoreProceduresWithDescription(astrDatabaseName); 
+        } 
         [HttpGet("[action]")]
         public Ms_Description GetStoreProcedureCreateScript(string astrDatabaseName, string astrStoreProcedureName)
         {
@@ -593,15 +452,7 @@ namespace MSSQL.DIARY.UI.APP.Controllers
         public List<ExecutionPlanInfo> GetStoreProcedureExecutionPlan(string astrDatabaseName, string astrStoreProcedureName)
         {
             return IsrvMssql.GetStoreProcedureExecutionPlan(astrDatabaseName, astrStoreProcedureName);
-        }
-
-        //[HttpGet("[action]")]
-        //public object GetDependancyTree(string astrDatabaseName, string astrStoreProcedureName)
-        //{
-        //    return JsonConvert.DeserializeObject(
-        //        ISrvMssql.CreatorOrGetStoreProcedureDependencyTree(astrDatabaseName, astrStoreProcedureName));
-        //}
-
+        }  
         [HttpGet("[action]")]
         public void CreateOrUpdateStoreProcParameterDescription(string astrDatabaseName, string astrDescriptionValue, string astrSpName, string astrSpParameterName)
         {

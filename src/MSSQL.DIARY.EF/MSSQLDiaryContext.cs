@@ -741,7 +741,7 @@ namespace MSSQL.DIARY.EF
                     Database.OpenConnection();
                     DataTable ldtServerProperties = new DataTable();
                     ldtServerProperties.Load(command.ExecuteReader());
-                    lstServerProperties = (List<PropertyInfo>)lstServerProperties.Concat(GetCollection<PropertyInfo>(ldtServerProperties));
+                    lstServerProperties.AddRange(GetCollection<PropertyInfo>(ldtServerProperties));
 
                 }
 
