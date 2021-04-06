@@ -17,7 +17,6 @@ F:\Lakshaman\GitHub\MSSQLDIARY\src\MSSQL.DIARY.SERVICE.EXCEL\bin\Debug\MSSQL.DIA
 F:\Lakshaman\GitHub\MSSQLDIARY\src\MSSQL.DIARY.SERVICE.EXCEL\bin\Debug\MSSQL.DIARY.SERVICE.EXCEL.pdb
 F:\Lakshaman\GitHub\MSSQLDIARY\src\MSSQL.DIARY.SERVICE.EXCEL\bin\Debug\DocumentFormat.OpenXml.dll
 F:\Lakshaman\GitHub\MSSQLDIARY\src\MSSQL.DIARY.SERVICE.EXCEL\bin\Debug\DocumentFormat.OpenXml.xml
-F:\Lakshaman\GitHub\MSSQLDIARY\src\MSSQL.DIARY.SERVICE.EXCEL\obj\Debug\MSSQL.DIARY.SERVICE.EXCEL.csprojAssemblyReference.cache
 F:\Lakshaman\GitHub\MSSQLDIARY\src\MSSQL.DIARY.SERVICE.EXCEL\obj\Debug\MSSQL.DIARY.SERVICE.EXCEL.ExcelService.resources
 F:\Lakshaman\GitHub\MSSQLDIARY\src\MSSQL.DIARY.SERVICE.EXCEL\obj\Debug\MSSQL.DIARY.SERVICE.EXCEL.ProjectInstaller.resources
 F:\Lakshaman\GitHub\MSSQLDIARY\src\MSSQL.DIARY.SERVICE.EXCEL\obj\Debug\MSSQL.DIARY.SERVICE.EXCEL.Properties.Resources.resources

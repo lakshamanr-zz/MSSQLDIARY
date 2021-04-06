@@ -1,36 +1,27 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MoreLinq.Extensions;
 using MSSQL.DIARY.COMN.Constant;
-using MSSQL.DIARY.COMN.Helper;
 using MSSQL.DIARY.COMN.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Globalization;
 using System.Linq;
+using System.Reflection;
+using PropertyInfo = MSSQL.DIARY.COMN.Models.PropertyInfo;
 
 namespace MSSQL.DIARY.EF
 {
-    public partial class MsSqlDiaryContext : DbContext
+    public class MsSqlDiaryContext : DbContext
     {
         public MsSqlDiaryContext(string astrDatabaseConnection = null)
         {
-            IstrDatabaseConnection = astrDatabaseConnection;
+            IstrDatabaseConnection = astrDatabaseConnection; 
         }
 
         public MsSqlDiaryContext(DbContextOptions<MsSqlDiaryContext> options) : base(options)
         {
         }
         public string IstrDatabaseConnection { get; set; }
-
-        public string GetDatabaseName
-        {
-            get
-            {
-                using var con = Database.GetDbConnection();
-                return con.Database;
-            }
-        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -48,9 +39,9 @@ namespace MSSQL.DIARY.EF
                         optionsBuilder.UseSqlServer(IstrDatabaseConnection);
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    // ignored
+                    Console.WriteLine($" \n Exception occurred : {ex.Message} "); Console.WriteLine($" \n Exception StackTrace : {ex.StackTrace} ");
                 }
             }
         }
@@ -61,6 +52,11 @@ namespace MSSQL.DIARY.EF
         /// <returns></returns>
         public List<PropertyInfo> GetDatabaseProperties()
         {
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
+
             var lstDatabaseProperties = new List<PropertyInfo>();
             try
             {
@@ -78,10 +74,15 @@ namespace MSSQL.DIARY.EF
                                 istrValue = reader.GetString(i)
                             });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
+
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
 
             return lstDatabaseProperties;
         }
@@ -92,6 +93,10 @@ namespace MSSQL.DIARY.EF
         /// <returns></returns>
         public List<PropertyInfo> GetDatabaseOptions()
         {
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
             var lstDatabaseOptions = new List<PropertyInfo>();
             try
             {
@@ -109,10 +114,14 @@ namespace MSSQL.DIARY.EF
                                 istrValue = reader.GetString(i)
                             });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
 
             return lstDatabaseOptions;
         }
@@ -123,6 +132,10 @@ namespace MSSQL.DIARY.EF
 
         public List<FileInfomration> GetDatabaseFiles()
         {
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
             var lstDatabaseFiles = new List<FileInfomration>();
             try
             {
@@ -132,29 +145,16 @@ namespace MSSQL.DIARY.EF
                 Database.OpenConnection();
                 DataTable ldtDatabaseFiles = new DataTable();
                 ldtDatabaseFiles.Load(command.ExecuteReader());
-                Type lTypeFileInformation = typeof(FileInfomration);
-                FileInfomration lFileInfomration = new FileInfomration();
-                if (ldtDatabaseFiles.IsNotNull()&& ldtDatabaseFiles.Rows.Count>0)
-                {
-                    foreach (DataRow ldtRow in ldtDatabaseFiles.Rows)
-                    {
-                        foreach (DataColumn ldtColumn in ldtDatabaseFiles.Columns)
-                        {
-                            if (!Convert.IsDBNull(ldtRow[ldtColumn]))
-                            {
-                                var piShared = lTypeFileInformation.GetProperty(ldtColumn.ColumnName);
-                                piShared.SetValue(lFileInfomration, ldtRow[ldtColumn]);
-                            } 
-                        }
-                        lstDatabaseFiles.Add(lFileInfomration);
-                    }
-                    
-                } 
+                lstDatabaseFiles = GetCollection<FileInfomration>(ldtDatabaseFiles);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
 
             return lstDatabaseFiles;
         }
@@ -165,6 +165,10 @@ namespace MSSQL.DIARY.EF
         /// <returns></returns>
         public List<DatabaseName> GetDatabaseNames()
         {
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
             var lstDatabaseNames = new List<DatabaseName>();
             try
             {
@@ -173,31 +177,16 @@ namespace MSSQL.DIARY.EF
                 Database.OpenConnection();
                 DataTable ldtDatabaseNames = new DataTable();
                 ldtDatabaseNames.Load(command.ExecuteReader());
-                Type lTypeDatabaseName = typeof(DatabaseName);
-                DatabaseName lDatabaseName = new DatabaseName();
-                if (ldtDatabaseNames.IsNotNull() && ldtDatabaseNames.Rows.Count > 0)
-                {
-                    foreach (DataRow ldtRow in ldtDatabaseNames.Rows)
-                    {
-                        lDatabaseName = new DatabaseName();
-                        foreach (DataColumn ldtColumn in ldtDatabaseNames.Columns)
-                        {
-                            if (!Convert.IsDBNull(ldtRow[ldtColumn]))
-                            {
-                                var piShared = lTypeDatabaseName.GetProperty(ldtColumn.ColumnName);
-                                piShared.SetValue(lDatabaseName, ldtRow[ldtColumn]);
-                            }
-                        }
-                        lstDatabaseNames.Add(lDatabaseName);
-                    }
-
-                }
-                
+                lstDatabaseNames = GetCollection<DatabaseName>(ldtDatabaseNames);
             }
             catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
 
             return lstDatabaseNames;
         }
@@ -209,46 +198,32 @@ namespace MSSQL.DIARY.EF
         /// <returns></returns>
         public List<FunctionDependencies> GetFunctionDependencies(string astrFunctionName, string astrFunctionType)
         {
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
             var lstInterdependency = new List<FunctionDependencies>();
             try
             {
                 using var lDbConnection = Database.GetDbConnection();
-                try
-                {
-                    var command = lDbConnection.CreateCommand();
-                    var newFunctionName = astrFunctionName.Replace(astrFunctionName.Substring(0, astrFunctionName.IndexOf(".", StringComparison.Ordinal)) + ".", "");
-                    command.CommandText = SqlQueryConstant.GetFunctionDependencies.Replace("@function_Type", "'" + astrFunctionType + "'").Replace("@function_name", "'" + newFunctionName + "'");
-                    Database.OpenConnection();
-                    DataTable ldtFunctionDependencies = new DataTable();
-                    ldtFunctionDependencies.Load(command.ExecuteReader());
-                    FunctionDependencies lFunctionDependencies = new FunctionDependencies();
-                    if (ldtFunctionDependencies.IsNotNull() && ldtFunctionDependencies.Rows.Count > 0)
-                    {
-                        foreach (DataRow ldtRow in ldtFunctionDependencies.Rows)
-                        {
-                            foreach (DataColumn ldtColumn in ldtFunctionDependencies.Columns)
-                            {
-                                if (!Convert.IsDBNull(ldtRow[ldtColumn]))
-                                {
-                                    var piShared = ldtFunctionDependencies.GetProperty(ldtColumn.ColumnName);
-                                    piShared.SetValue(lFunctionDependencies, ldtRow[ldtColumn]);
-                                }
-                            }
-                            lstInterdependency.Add(lFunctionDependencies);
-                        }
 
-                    }
-                    
-                }
-                catch (Exception)
-                {
-                    // ignored
-                }
+                var command = lDbConnection.CreateCommand();
+                var newFunctionName = astrFunctionName.Replace(astrFunctionName.Substring(0, astrFunctionName.IndexOf(".", StringComparison.Ordinal)) + ".", "");
+                command.CommandText = SqlQueryConstant.GetFunctionDependencies.Replace("@function_Type", "'" + astrFunctionType + "'").Replace("@function_name", "'" + newFunctionName + "'");
+                Database.OpenConnection();
+                DataTable ldtFunctionDependencies = new DataTable();
+                ldtFunctionDependencies.Load(command.ExecuteReader());
+                lstInterdependency = GetCollection<FunctionDependencies>(ldtFunctionDependencies);
+
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
 
             return lstInterdependency.Distinct().ToList();
         }
@@ -261,6 +236,10 @@ namespace MSSQL.DIARY.EF
         /// <returns></returns>
         public List<FunctionProperties> GetFunctionProperties(string astrFunctionName, string astrFunctionType)
         {
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
             var lstFunctionProperties = new List<FunctionProperties>();
             try
             {
@@ -269,21 +248,18 @@ namespace MSSQL.DIARY.EF
                 var newFunctionName = astrFunctionName.Replace(astrFunctionName.Substring(0, astrFunctionName.IndexOf(".", StringComparison.Ordinal)) + ".", "");
                 command.CommandText = SqlQueryConstant.GetFunctionProperties.Replace("@function_Type", "'" + astrFunctionType + "'").Replace("@function_name", "'" + newFunctionName + "'");
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstFunctionProperties.Add(new FunctionProperties
-                        {
-                            uses_ansi_nulls = reader.SafeGetString(0),
-                            uses_quoted_identifier = reader.SafeGetString(1),
-                            create_date = reader.SafeGetString(2),
-                            modify_date = reader.SafeGetString(3)
-                        });
+                DataTable ldtFunctionProperties = new DataTable();
+                ldtFunctionProperties.Load(command.ExecuteReader());
+                lstFunctionProperties = GetCollection<FunctionProperties>(ldtFunctionProperties);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
 
             return lstFunctionProperties;
         }
@@ -295,6 +271,10 @@ namespace MSSQL.DIARY.EF
         /// <returns></returns>
         public List<FunctionParameters> GetFunctionParameters(string astrFunctionName, string astrFunctionType)
         {
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
             var lstFunctionColumns = new List<FunctionParameters>();
             try
             {
@@ -302,24 +282,19 @@ namespace MSSQL.DIARY.EF
                 var command = lDbConnection.CreateCommand();
                 command.CommandText = SqlQueryConstant.GetFunctionParameters.Replace("@function_Type", "'" + astrFunctionType + "'").Replace("@function_name", "'" + astrFunctionName + "'");
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstFunctionColumns.Add(new FunctionParameters
-                        {
-                            name = reader.SafeGetString(0),
-                            type = reader.SafeGetString(1),
-                            updated = reader.SafeGetString(2),
-                            selected = reader.SafeGetString(3),
-                            column_name = reader.SafeGetString(7)
-                        });
+                DataTable ldtFunctionColumns = new DataTable();
+                ldtFunctionColumns.Load(command.ExecuteReader());
+                lstFunctionColumns = GetCollection<FunctionParameters>(ldtFunctionColumns);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
 
-            lstFunctionColumns.ForEach(x => { x.name = x.name == string.Empty ? "@Return Parameter " : x.name; });
             return lstFunctionColumns;
         }
 
@@ -331,24 +306,28 @@ namespace MSSQL.DIARY.EF
         /// <returns></returns>
         public FunctionCreateScript GetFunctionCreateScript(string astrFunctionName, string astrFunctionType)
         {
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
             var lstrFunctionCreateScript = new FunctionCreateScript();
             try
             {
                 using var lDbConnection = Database.GetDbConnection();
                 var command = lDbConnection.CreateCommand();
                 command.CommandText = SqlQueryConstant.GetFunctionCreateScript.Replace("@function_Type", "'" + astrFunctionType + "'").Replace("@function_name", "'" + astrFunctionName + "'");
-                Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                    {
-                        lstrFunctionCreateScript.createFunctionscript = reader.SafeGetString(0);
-                    }
+                DataTable ldtFunctionCreateScript = new DataTable();
+                ldtFunctionCreateScript.Load(command.ExecuteReader());
+                lstrFunctionCreateScript = SelectRow<FunctionCreateScript>(ldtFunctionCreateScript);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
 
             return lstrFunctionCreateScript;
         }
@@ -360,27 +339,28 @@ namespace MSSQL.DIARY.EF
         /// <returns></returns>
         public List<PropertyInfo> GetFunctionsWithDescription(string astrFunctionType)
         {
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
             var lstFunctionDescriptions = new List<PropertyInfo>();
             try
             {
                 using var command = Database.GetDbConnection().CreateCommand();
                 command.CommandText = SqlQueryConstant.GetFunctionsWithDescription.Replace("@function_Type", "'" + astrFunctionType + "'");
                 Database.OpenConnection();
-                using (var reader = command.ExecuteReader())
-                {
-                    if (reader.HasRows)
-                        while (reader.Read())
-                            lstFunctionDescriptions.Add(new PropertyInfo
-                            {
-                                istrName = reader.SafeGetString(0),
-                                istrValue = reader.GetString(1)
-                            });
-                }
+                DataTable ldtFunctionDescriptions = new DataTable();
+                ldtFunctionDescriptions.Load(command.ExecuteReader());
+                lstFunctionDescriptions = GetCollection<PropertyInfo>(ldtFunctionDescriptions);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
 
             return lstFunctionDescriptions;
         }
@@ -411,11 +391,20 @@ namespace MSSQL.DIARY.EF
         /// <param name="astrFunctioneName"></param>
         private void CreateFunctionDescription(string astrDescriptionValue, string astrSchemaName, string astrFunctioneName)
         {
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
             using var command = Database.GetDbConnection().CreateCommand();
             var tableName = astrFunctioneName.Replace(astrFunctioneName.Substring(0, astrFunctioneName.IndexOf(".", StringComparison.Ordinal)) + ".", "");
             command.CommandText = SqlQueryConstant.UpdateFunctionExtendedProperty.Replace("@fun_value", "'" + astrDescriptionValue + "'").Replace("@Schema_Name", "'" + astrSchemaName + "'").Replace("@FunctionName", "'" + tableName + "'");
             Database.OpenConnection();
             command.ExecuteNonQuery();
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
+
         }
 
         /// <summary>
@@ -426,37 +415,51 @@ namespace MSSQL.DIARY.EF
         /// <param name="astrFunctioneName"></param>
         private void UpdateFunctionDescription(string astrDescriptionValue, string astrSchemaName, string astrFunctioneName)
         {
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
+
             using var command = Database.GetDbConnection().CreateCommand();
             var tableName = astrFunctioneName.Replace(astrFunctioneName.Substring(0, astrFunctioneName.IndexOf(".", StringComparison.Ordinal)) + ".", "");
             command.CommandText = SqlQueryConstant.UpdateFunctionExtendedProperty.Replace("@fun_value", "'" + astrDescriptionValue + "'").Replace("@Schema_Name", "'" + astrSchemaName + "'").Replace("@FunctionName", "'" + tableName + "'");
             Database.OpenConnection();
             command.ExecuteNonQuery();
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
+
         }
 
         /// <summary>
         /// Get scalar functions
         /// </summary>
         /// <returns></returns>
-        public List<string> GetScalarFunctions()
+        public List<ScalarFunctions> GetScalarFunctions()
         {
-            var lstScalarFunctions = new List<string>();
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
+            var lstScalarFunctions = new List<ScalarFunctions>();
             try
             {
                 using var command = Database.GetDbConnection().CreateCommand();
                 command.CommandText = SqlQueryConstant.GetScalarFunctions;
                 Database.OpenConnection();
-                using (var reader = command.ExecuteReader())
-                {
-                    if (reader.HasRows)
-                        while (reader.Read())
-                            lstScalarFunctions.Add(reader.GetString(0));
-                }
+                DataTable ldtScalarFunctions = new DataTable();
+                ldtScalarFunctions.Load(command.ExecuteReader());
+                lstScalarFunctions = GetCollection<ScalarFunctions>(ldtScalarFunctions);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
-
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
 
             return lstScalarFunctions;
         }
@@ -465,24 +468,30 @@ namespace MSSQL.DIARY.EF
         /// Get Table value functions
         /// </summary>
         /// <returns></returns>
-        public List<string> GetTableValueFunctions()
+        public List<TableValueFunction> GetTableValueFunctions()
         {
-            var lstTableValueFunctions = new List<string>();
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
+            var lstTableValueFunctions = new List<TableValueFunction>();
             try
             {
                 using var command = Database.GetDbConnection().CreateCommand();
                 command.CommandText = SqlQueryConstant.GetTableValueFunctions;
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstTableValueFunctions.Add(reader.GetString(0));
+                DataTable ldtTableValueFunction = new DataTable();
+                ldtTableValueFunction.Load(command.ExecuteReader());
+                lstTableValueFunctions = GetCollection<TableValueFunction>(ldtTableValueFunction);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
-
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
 
             return lstTableValueFunctions;
         }
@@ -491,22 +500,26 @@ namespace MSSQL.DIARY.EF
         /// Get aggregation functions
         /// </summary>
         /// <returns></returns>
-        public List<string> GetAggregateFunctions()
+        public List<AggregateFunctions> GetAggregateFunctions()
         {
-            var lstAggregateFunctions = new List<string>();
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
+            var lstAggregateFunctions = new List<AggregateFunctions>();
             try
             {
                 using var command = Database.GetDbConnection().CreateCommand();
                 command.CommandText = SqlQueryConstant.GetAggregateFunctions;
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstAggregateFunctions.Add(reader.GetString(0));
+                DataTable ldtAggregateFunctions = new DataTable();
+                ldtAggregateFunctions.Load(command.ExecuteReader());
+                lstAggregateFunctions = GetCollection<AggregateFunctions>(ldtAggregateFunctions);
+
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
             return lstAggregateFunctions;
         }
@@ -517,28 +530,32 @@ namespace MSSQL.DIARY.EF
         /// <returns></returns>
         public List<PropertyInfo> GetSchemaWithDescriptions()
         {
-            var lstPropInfo = new List<PropertyInfo>();
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
+
+            var lstSchemaWithDescriptions = new List<PropertyInfo>();
             try
             {
                 using var command = Database.GetDbConnection().CreateCommand();
                 command.CommandText = SqlQueryConstant.GetSchemaWithDescriptions;
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstPropInfo.Add(new PropertyInfo
-                            {
-                                istrName = reader.GetString(0),
-                                istrValue = reader.GetString(1)
-                            }
-                        );
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
+                DataTable ldtSchemaWithDescriptions = new DataTable();
+                ldtSchemaWithDescriptions.Load(command.ExecuteReader());
+                lstSchemaWithDescriptions = GetCollection<PropertyInfo>(ldtSchemaWithDescriptions);
 
-            return lstPropInfo;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
+            }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
+
+            return lstSchemaWithDescriptions;
         }
 
         /// <summary>
@@ -565,10 +582,20 @@ namespace MSSQL.DIARY.EF
         /// <param name="astrSchemaName"></param>
         private void CreateSchemaDescription(string astrDescriptionValue, string astrSchemaName)
         {
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
+
             using var command = Database.GetDbConnection().CreateCommand();
             command.CommandText = SqlQueryConstant.CreateSchemaColumnExtendedProperty.Replace("@Schema_info", "'" + astrDescriptionValue + "'").Replace("@SchemaName", "'" + astrSchemaName + "'");
             Database.OpenConnection();
             command.ExecuteNonQuery();
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
+
         }
 
         /// <summary>
@@ -578,10 +605,19 @@ namespace MSSQL.DIARY.EF
         /// <param name="astrSchemaName"></param>
         private void UpdateSchemaDescription(string astrDescriptionValue, string astrSchemaName)
         {
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
             using var command = Database.GetDbConnection().CreateCommand();
             command.CommandText = SqlQueryConstant.UpdateSchemaColumnExtendedProperty.Replace("@Schema_info", "'" + astrDescriptionValue + "'").Replace("@SchemaName", "'" + astrSchemaName + "'");
             Database.OpenConnection();
             command.ExecuteNonQuery();
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
+
         }
 
         /// <summary>
@@ -591,25 +627,29 @@ namespace MSSQL.DIARY.EF
         /// <returns></returns>
         public List<SchemaReferanceInfo> GetSchemaReferences(string astrSchemaName)
         {
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
+
             var lstSchemaReferences = new List<SchemaReferanceInfo>();
             try
             {
                 using var command = Database.GetDbConnection().CreateCommand();
                 command.CommandText = SqlQueryConstant.GetSchemaReferences.Replace("@schema_id", "'" + astrSchemaName + "'");
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstSchemaReferences.Add(new SchemaReferanceInfo
-                            {
-                                istrName = reader.GetString(0)
-                            }
-                        );
+                DataTable ldtSchemaReferences = new DataTable();
+                ldtSchemaReferences.Load(command.ExecuteReader());
+                lstSchemaReferences = GetCollection<SchemaReferanceInfo>(ldtSchemaReferences);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
 
             return lstSchemaReferences;
         }
@@ -621,107 +661,64 @@ namespace MSSQL.DIARY.EF
         /// <returns></returns>
         public Ms_Description GetSchemaDescription(string astrSchemaName)
         {
-            var schemaDescription = new Ms_Description();
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
+            var lMsDescription = new Ms_Description();
             try
             {
                 using var command = Database.GetDbConnection().CreateCommand();
                 command.CommandText = SqlQueryConstant.GetSchemaMsDescription.Replace("@schemaName", "'" + astrSchemaName + "'");
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        schemaDescription.desciption = reader.GetString(0);
+                DataTable ldtSchemaDescription = new DataTable();
+                ldtSchemaDescription.Load(command.ExecuteReader());
+                lMsDescription = SelectRow<Ms_Description>(ldtSchemaDescription);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
 
-            return schemaDescription;
+            return lMsDescription;
         }
-
-        //public SchemaCreateScript GetSchemaCreateSript()
-        //{
-        //    var sch_cs = new SchemaCreateScript();
-        //    try
-        //    {
-        //        using (var command = Database.GetDbConnection().CreateCommand())
-        //        {
-        //            command.CommandText = SqlQueryConstant.GetServerName;
-        //            Database.OpenConnection();
-        //            using (var reader = command.ExecuteReader())
-        //            {
-        //                if (reader.HasRows)
-        //                    while (reader.Read())
-        //                    {
-
-        //                        sch_cs.istrCreateScript = reader.GetString(0);
-        //                    }
-        //            }
-        //        }
-        //    }
-        //    catch (Exception)
-        //    {
-
-        //    }
-        //    return sch_cs;
-        //}
-
         /// <summary>
         /// Get server name.
         /// </summary>
         /// <returns></returns>
-        public string GetServerName()
+        public ServerName GetServerName()
         {
-            var lstrServerName = "";
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
+
+            ServerName lServerName = new ServerName();
             try
             {
                 using var command = Database.GetDbConnection().CreateCommand();
                 command.CommandText = SqlQueryConstant.GetServerName;
                 Database.OpenConnection();
-                using (var reader = command.ExecuteReader())
-                {
-                    if (reader.HasRows)
-                        while (reader.Read())
-                            lstrServerName = reader.GetString(0);
-                }
+                DataTable ldtServerName = new DataTable();
+                ldtServerName.Load(command.ExecuteReader());
+                lServerName = SelectRow<ServerName>(ldtServerName);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
 
-            return lstrServerName;
+            return lServerName;
         }
 
-        /// <summary>
-        /// Get xml schemas
-        /// </summary>
-        /// <returns></returns>
-
-        public List<string> GetXmlSchemas()
-        {
-            var lstXmlSchemas = new List<string>();
-            try
-            {
-                using var command = Database.GetDbConnection().CreateCommand();
-                command.CommandText = SqlQueryConstant.GetXmlSchemas;
-                Database.OpenConnection();
-                using (var reader = command.ExecuteReader())
-                {
-                    if (reader.HasRows)
-                        while (reader.Read())
-                            lstXmlSchemas.Add(reader.GetString(0));
-                }
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
-
-
-            return lstXmlSchemas;
-        }
 
         /// <summary>
         /// Get server Properties
@@ -730,6 +727,10 @@ namespace MSSQL.DIARY.EF
 
         public List<PropertyInfo> GetServerProperties()
         {
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
             var lstServerProperties = new List<PropertyInfo>();
             try
             {
@@ -738,21 +739,21 @@ namespace MSSQL.DIARY.EF
                     using var command = Database.GetDbConnection().CreateCommand();
                     command.CommandText = SqlQueryConstant.GetServerProperties[count];
                     Database.OpenConnection();
-                    using var reader = command.ExecuteReader();
-                    if (reader.HasRows)
-                        while (reader.Read())
-                            lstServerProperties.Add(new PropertyInfo
-                            {
-                                istrName = Enumerable.Range(0, reader.FieldCount).Select(reader.GetName).FirstOrDefault(),
-                                istrValue = reader.GetString(0).Replace("\0", "")
-                            });
+                    DataTable ldtServerProperties = new DataTable();
+                    ldtServerProperties.Load(command.ExecuteReader());
+                    lstServerProperties = (List<PropertyInfo>)lstServerProperties.Concat(GetCollection<PropertyInfo>(ldtServerProperties));
+
                 }
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
 
             return lstServerProperties;
         }
@@ -763,6 +764,11 @@ namespace MSSQL.DIARY.EF
         /// <returns></returns>
         public List<PropertyInfo> GetAdvancedServerSettings()
         {
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
+
             var lstAdvancedServerSettings = new List<PropertyInfo>();
             try
             {
@@ -771,34 +777,21 @@ namespace MSSQL.DIARY.EF
                 Database.OpenConnection();
                 DataTable ldtAdvServerSetting = new DataTable();
                 ldtAdvServerSetting.Load(command.ExecuteReader());
-                Type lTypePropertyInfo = typeof(PropertyInfo);
-                PropertyInfo lPropertyInfo = new PropertyInfo();
-                if (ldtAdvServerSetting.IsNotNull() && ldtAdvServerSetting.Rows.Count > 0)
-                {
-                    foreach (DataRow ldtRow in ldtAdvServerSetting.Rows)
-                    {
-                        lPropertyInfo = new PropertyInfo();
-                        foreach (DataColumn ldtColumn in ldtAdvServerSetting.Columns)
-                        {
-                            if (!Convert.IsDBNull(ldtRow[ldtColumn]))
-                            {
-                                var piShared = lTypePropertyInfo.GetProperty(ldtColumn.ColumnName);
-                                piShared.SetValue(lPropertyInfo, ldtRow[ldtColumn]);
-                            }
-                        }
-                        lstAdvancedServerSettings.Add(lPropertyInfo);
-                    }
-
-                } 
+                lstAdvancedServerSettings = GetCollection<PropertyInfo>(ldtAdvServerSetting);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
+
             return lstAdvancedServerSettings;
         }
 
-         
+
 
         /// <summary>
         /// Get store procedures with descriptions
@@ -806,37 +799,30 @@ namespace MSSQL.DIARY.EF
         /// <returns></returns>
         public List<PropertyInfo> GetStoreProceduresWithDescription()
         {
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
+
             var lstStoreProceduresWithDescription = new List<PropertyInfo>();
             try
             {
                 using var command = Database.GetDbConnection().CreateCommand();
                 command.CommandText = SqlQueryConstant.GetStoreProceduresWithDescription;
-                Database.OpenConnection(); 
+                Database.OpenConnection();
                 DataTable ldtStoreProcedures = new DataTable();
                 ldtStoreProcedures.Load(command.ExecuteReader());
-                Type lTypePropertyInfo = typeof(PropertyInfo);
-                PropertyInfo lPropertyInfo;
-                if (ldtStoreProcedures.IsNotNull() && ldtStoreProcedures.Rows.Count > 0)
-                {
-                    foreach (DataRow ldtRow in ldtStoreProcedures.Rows)
-                    {
-                        lPropertyInfo = new PropertyInfo();
-                        foreach (DataColumn ldtColumn in ldtStoreProcedures.Columns)
-                        {
-                            if (!Convert.IsDBNull(ldtRow[ldtColumn]))
-                            {
-                                var piShared = lTypePropertyInfo.GetProperty(ldtColumn.ColumnName);
-                                piShared.SetValue(lPropertyInfo, ldtRow[ldtColumn]);
-                            }
-                        }
-                        lstStoreProceduresWithDescription.Add(lPropertyInfo);
-                    } 
-                } 
+                lstStoreProceduresWithDescription = GetCollection<PropertyInfo>(ldtStoreProcedures);
             }
             catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
+
             return lstStoreProceduresWithDescription;
         }
         /// <summary>
@@ -846,40 +832,31 @@ namespace MSSQL.DIARY.EF
         /// <returns></returns>
         public Ms_Description GetStoreProcedureCreateScript(string astrStoreProcedureName)
         {
-            var lstrStoreProcedureCreateScript = new List<PropertyInfo>();
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
+            var lMsDescription = new Ms_Description();
             try
             {
                 using var command = Database.GetDbConnection().CreateCommand();
                 command.CommandText = SqlQueryConstant.GetStoreProcedureCreateScript.Replace("@StoreprocName", "'" + astrStoreProcedureName + "'");
                 Database.OpenConnection();
                 DataTable ldtStoreProcedureCreateScript = new DataTable();
-                ldtStoreProcedureCreateScript.Load(command.ExecuteReader()); 
-                Type lTypePropertyInfo = typeof(PropertyInfo);
-                PropertyInfo lPropertyInfo;
-                if (ldtStoreProcedureCreateScript.IsNotNull() && ldtStoreProcedureCreateScript.Rows.Count > 0)
-                {
-                    foreach (DataRow ldtRow in ldtStoreProcedureCreateScript.Rows)
-                    {
-                        lPropertyInfo = new PropertyInfo();
-                        foreach (DataColumn ldtColumn in ldtStoreProcedureCreateScript.Columns)
-                        {
-                            if (!Convert.IsDBNull(ldtRow[ldtColumn]))
-                            {
-                                var piShared = lTypePropertyInfo.GetProperty(ldtColumn.ColumnName);
-                                piShared.SetValue(lPropertyInfo, ldtRow[ldtColumn]);
-                            }
-                        }
-                        lstrStoreProcedureCreateScript.Add(lPropertyInfo);
-                    }
-                }
+                ldtStoreProcedureCreateScript.Load(command.ExecuteReader());
+                lMsDescription = SelectRow<Ms_Description>(ldtStoreProcedureCreateScript);
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
 
-            return new Ms_Description { desciption = lstrStoreProcedureCreateScript.FirstOrDefault()?.istrValue };
+            return lMsDescription;
         }
 
         /// <summary>
@@ -889,26 +866,29 @@ namespace MSSQL.DIARY.EF
         /// <returns></returns>
         public List<SP_Depencancy> GetStoreProceduresDependency(string astrStoreProcedureName)
         {
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
+
             var lstStoreProcedureDependencies = new List<SP_Depencancy>();
             try
             {
                 using var command = Database.GetDbConnection().CreateCommand();
                 command.CommandText = SqlQueryConstant.GetStoreProcDependencies.Replace("@StoreprocName", "'" + astrStoreProcedureName + "'");
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstStoreProcedureDependencies.Add(new SP_Depencancy
-                        {
-                            referencing_object_name = reader.SafeGetString(0),
-                            referencing_object_type = reader.SafeGetString(1),
-                            referenced_object_name = reader.SafeGetString(2)
-                        });
+                DataTable ldtStoreProcedureDependencies = new DataTable();
+                ldtStoreProcedureDependencies.Load(command.ExecuteReader());
+                lstStoreProcedureDependencies = GetCollection<SP_Depencancy>(ldtStoreProcedureDependencies);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
 
             return lstStoreProcedureDependencies;
         }
@@ -919,30 +899,30 @@ namespace MSSQL.DIARY.EF
         /// <returns></returns>
         public List<SP_Parameters> GetStoreProceduresParametersWithDescription(string astrStoreProcedureName)
         {
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
+
             var lstStoreProceduresParametersWithDescriptions = new List<SP_Parameters>();
             try
             {
                 using var command = Database.GetDbConnection().CreateCommand();
                 command.CommandText = SqlQueryConstant.GetStoreProceduresParametersWithDescriptions.Replace("@StoreprocName", "'" + astrStoreProcedureName + "'");
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstStoreProceduresParametersWithDescriptions.Add(new SP_Parameters
-                        {
-                            Parameter_name = reader.SafeGetString(0),
-                            Type = reader.SafeGetString(1),
-                            Length = reader.SafeGetString(2),
-                            Prec = reader.SafeGetString(3),
-                            Scale = reader.SafeGetString(4),
-                            Param_order = reader.SafeGetString(5),
-                            Extended_property = reader.SafeGetString(7)
-                        });
+                DataTable ldtStoreProceduresParameters = new DataTable();
+                ldtStoreProceduresParameters.Load(command.ExecuteReader());
+                lstStoreProceduresParametersWithDescriptions = GetCollection<SP_Parameters>(ldtStoreProceduresParameters);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
+
             return lstStoreProceduresParametersWithDescriptions;
         }
 
@@ -953,6 +933,11 @@ namespace MSSQL.DIARY.EF
         /// <returns></returns>
         public List<ExecutionPlanInfo> GetStoreProcedureExecutionPlan(string astrStoreProcedureName)
         {
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
+
             var lstExecutionPlanDetails = new List<ExecutionPlanInfo>();
             try
             {
@@ -960,22 +945,19 @@ namespace MSSQL.DIARY.EF
                 var lStoreProcedureName = astrStoreProcedureName.Replace(astrStoreProcedureName.Substring(0, astrStoreProcedureName.IndexOf(".", StringComparison.Ordinal)) + ".", "");
                 command.CommandText = SqlQueryConstant.GetExecutionPlanOfStoreProc.Replace("@StoreprocName", "'" + lStoreProcedureName + "'");
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstExecutionPlanDetails.Add(new ExecutionPlanInfo
-                        {
-                            QueryPlanXML = reader.SafeGetString(0),
-                            UseAccounts = reader.SafeGetString(1),
-                            CacheObjectType = reader.SafeGetString(2),
-                            Size_In_Byte = reader.SafeGetString(3),
-                            SqlText = reader.SafeGetString(4)
-                        });
+                DataTable ldtExecutionPlanDetails = new DataTable();
+                ldtExecutionPlanDetails.Load(command.ExecuteReader());
+                lstExecutionPlanDetails = GetCollection<ExecutionPlanInfo>(ldtExecutionPlanDetails);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
+
             return lstExecutionPlanDetails;
         }
 
@@ -1007,11 +989,21 @@ namespace MSSQL.DIARY.EF
         /// <param name="astrParameterName"></param>
         private void UpdateStoreProcedureDescription(string astrDescriptionValue, string astrSchemaName, string astrStoreProcedureName, string astrParameterName = null)
         {
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
+
             using var command = Database.GetDbConnection().CreateCommand();
             var lStoreProcedureName = astrStoreProcedureName.Replace(astrStoreProcedureName.Substring(0, astrStoreProcedureName.IndexOf(".", StringComparison.Ordinal)) + ".", "");
             command.CommandText = astrParameterName == null ? SqlQueryConstant.UpdateStoreProcExtendedProperty.Replace("@sp_value", "'" + astrDescriptionValue + "'").Replace("@Schema_Name", "'" + astrSchemaName + "'").Replace("@sp_Name", "'" + lStoreProcedureName + "'") : SqlQueryConstant.UpdateStoreProcParameterExtendedProperty.Replace("@sp_value", "'" + astrDescriptionValue + "'").Replace("@Schema_Name", "'" + astrSchemaName + "'").Replace("@sp_Name", "'" + lStoreProcedureName + "'").Replace("@parmeterName", "'" + astrParameterName + "'");
             Database.OpenConnection();
             command.ExecuteNonQuery();
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
+
         }
 
         /// <summary>
@@ -1023,6 +1015,10 @@ namespace MSSQL.DIARY.EF
         /// <param name="astrParameterName"></param>
         private void CreateStoreProcedureDescription(string astrDescriptionValue, string astrSchemaName, string astrStoreProcedureName, string astrParameterName = null)
         {
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
             var lStoreProcedureName = astrStoreProcedureName.Replace(astrStoreProcedureName.Substring(0, astrStoreProcedureName.IndexOf(".", StringComparison.Ordinal)) + ".", "");
             using var command = Database.GetDbConnection().CreateCommand();
             command.CommandText = astrParameterName == null ? SqlQueryConstant.InsertStoreProcExtendedProperty.Replace("@sp_value", "'" + astrDescriptionValue + "'").Replace("@Schema_Name", "'" + astrSchemaName + "'").Replace("@sp_Name", "'" + lStoreProcedureName + "'") : SqlQueryConstant.InsertStoreProcParameterExtendedProperty.Replace("@sp_value", "'" + astrDescriptionValue + "'").Replace("@Schema_Name", "'" + astrSchemaName + "'").Replace("@sp_Name", "'" + lStoreProcedureName + "'").Replace("@parmeterName", "'" + astrParameterName + "'");
@@ -1031,10 +1027,15 @@ namespace MSSQL.DIARY.EF
             {
                 command.ExecuteNonQuery();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
+
         }
 
         /// <summary>
@@ -1042,59 +1043,138 @@ namespace MSSQL.DIARY.EF
         /// </summary>
         /// <param name="astrStoreProcedureName"></param>
         /// <returns></returns>
-        public string GetStoreProcedureDescription(string astrStoreProcedureName)
+        public Ms_Description GetStoreProcedureDescription(string astrStoreProcedureName)
         {
-            var strSpDescription = "";
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
+
+            var lMsDescription = new Ms_Description { desciption = "" };
             try
             {
                 using var command = Database.GetDbConnection().CreateCommand();
                 command.CommandText = SqlQueryConstant.GetStoreProcMsDescription.Replace("@StoreprocName", "'" + astrStoreProcedureName + "'");
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        strSpDescription = reader.SafeGetString(1);
+                DataTable ldtMsDescriptions = new DataTable();
+                ldtMsDescriptions.Load(command.ExecuteReader());
+                lMsDescription = SelectRow<Ms_Description>(ldtMsDescriptions);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
+
             }
-            return strSpDescription;
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
+
+            return lMsDescription;
         }
 
+
+        public static T SelectRow<T>(DataTable aDataTable) where T : new()
+        {
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
+
+            var lGetType = typeof(T);
+            var lInstanceOfType = new T();
+            if (aDataTable.IsNotNull() && aDataTable.Rows.Count > 0)
+            {
+                foreach (DataRow ldtDataRow in aDataTable.Rows)
+                {
+
+                    foreach (DataColumn ldtDataColumn in aDataTable.Columns)
+                    {
+                        if (!Convert.IsDBNull(ldtDataRow[ldtDataColumn]))
+                        {
+                            var pishare = lGetType.GetProperty(ldtDataColumn.ColumnName);
+                            if (pishare.IsNotNull())
+                                pishare.SetValue(lInstanceOfType, ldtDataRow[ldtDataColumn]);
+                        }
+                    }
+                    //execute first row and come out of loop.
+                    break;
+                }
+            }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
+
+            return lInstanceOfType;
+        }
+
+        public static List<T> GetCollection<T>(DataTable aDataTable) where T : new()
+        {
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
+
+
+            var lGetType = typeof(T);
+            List<T> lstTList = new List<T>();
+
+            if (aDataTable.IsNotNull() && aDataTable.Rows.Count > 0)
+            {
+
+                foreach (DataRow ldtDataRow in aDataTable.Rows)
+                {
+                    var lInstanceOfType = new T();
+                    foreach (DataColumn ldtDataColumn in aDataTable.Columns)
+                    {
+                        if (!Convert.IsDBNull(ldtDataRow[ldtDataColumn]))
+                        {
+                            var pishare = lGetType.GetProperty(ldtDataColumn.ColumnName);
+                            if (pishare.IsNotNull())
+                                pishare.SetValue(lInstanceOfType, ldtDataRow[ldtDataColumn]);
+                        }
+                    }
+                    lstTList.Add(lInstanceOfType);
+                }
+            }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
+
+            return lstTList;
+        }
         /// <summary>
         /// Get list of Index on the table
         /// </summary>
         /// <param name="astrTableName"></param>
         /// <returns></returns>
-        public List<TableIndexInfo> GetTableIndexes(string astrTableName)
+        public List<TableIndexInfo> GetTableIndexes(string astrTableName = null)
         {
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
+
             var lstTableIndexes = new List<TableIndexInfo>();
             try
             {
                 using var command = Database.GetDbConnection().CreateCommand();
-                command.CommandText = SqlQueryConstant.GetTableIndex.Replace("@tblName", "'" + astrTableName + "'");
+                command.CommandText = astrTableName.IsNullOrEmpty() ? SqlQueryConstant.GetTablesIndex : SqlQueryConstant.GetTableIndex.Replace("@tblName", "'" + astrTableName + "'");
+                DataTable ldtTableIndex = new DataTable();
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstTableIndexes.Add
-                        (
-                            new TableIndexInfo
-                            {
-                                index_name = reader.SafeGetString(0),
-                                columns = reader.SafeGetString(1),
-                                index_type = reader.SafeGetString(2),
-                                unique = reader.SafeGetString(3),
-                                tableView = reader.SafeGetString(4),
-                                object_Type = reader.SafeGetString(5)
-                            }
-                        );
+                ldtTableIndex.Load(command.ExecuteReader());
+                lstTableIndexes = GetCollection<TableIndexInfo>(ldtTableIndex);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
 
             return lstTableIndexes;
         }
@@ -1106,23 +1186,30 @@ namespace MSSQL.DIARY.EF
         /// <returns></returns>
         public TableCreateScript GetTableCreateScript(string astrTableName)
         {
-            var lstrTableCreateScript = string.Empty;
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
+            var lTableCreateScript = new TableCreateScript();
             try
             {
                 using var command = Database.GetDbConnection().CreateCommand();
                 command.CommandText = SqlQueryConstant.GetTableCreateScript.Replace("@table_name", "'" + astrTableName + "'");
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstrTableCreateScript = reader.GetString(0);
+                DataTable ldtDataTable = new DataTable();
+                ldtDataTable.Load(command.ExecuteReader());
+                lTableCreateScript = SelectRow<TableCreateScript>(ldtDataTable);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
 
-            return new TableCreateScript { createscript = lstrTableCreateScript };
+            return lTableCreateScript;
         }
 
         /// <summary>
@@ -1133,28 +1220,30 @@ namespace MSSQL.DIARY.EF
 
         public List<Tabledependencies> GetTableDependencies(string astrTableName)
         {
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
+
             var lstTableDependencies = new List<Tabledependencies>();
             try
             {
                 using var command = Database.GetDbConnection().CreateCommand();
                 command.CommandText = SqlQueryConstant.GetTableDependencies.Replace("@tblName", "'" + astrTableName + "'");
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstTableDependencies.Add
-                        (
-                            new Tabledependencies
-                            {
-                                name = reader.SafeGetString(0),
-                                object_type = reader.SafeGetString(1)
-                            }
-                        );
+                DataTable ldtTableDependencies = new DataTable();
+                ldtTableDependencies.Load(command.ExecuteReader());
+                lstTableDependencies = GetCollection<Tabledependencies>(ldtTableDependencies);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
+
             return lstTableDependencies.DistinctBy(x => x.name).ToList();
         }
 
@@ -1163,37 +1252,31 @@ namespace MSSQL.DIARY.EF
         /// </summary>
         /// <param name="astrTableName"></param>
         /// <returns></returns>
-        public List<TableColumns> GetTablesColumn(string astrTableName)
+        public List<TableColumns> GetTablesColumn(string astrTableName = null)
         {
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
+
             var lstTablesColumn = new List<TableColumns>();
             try
             {
                 using var command = Database.GetDbConnection().CreateCommand();
-                command.CommandText = SqlQueryConstant.GetTablesColumn.Replace("@tblName", "'" + astrTableName + "'");
+                command.CommandText = astrTableName.IsNullOrWhiteSpace() ? SqlQueryConstant.GetTablesColumn : SqlQueryConstant.GetTablesColumnWithTableName.Replace("@tblName", "'" + astrTableName + "'");
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstTablesColumn.Add
-                        (
-                            new TableColumns
-                            {
-                                tablename = reader.SafeGetString(0),
-                                columnname = reader.SafeGetString(1),
-                                key = reader.SafeGetString(2),
-                                identity = reader.SafeGetString(3),
-                                data_type = reader.SafeGetString(4),
-                                max_length = reader.SafeGetString(5),
-                                allow_null = reader.SafeGetString(6),
-                                defaultValue = reader.SafeGetString(7),
-                                description = reader.SafeGetString(8)
-                            }
-                        );
+                DataTable ldtTableColumns = new DataTable();
+                ldtTableColumns.Load(command.ExecuteReader());
+                lstTablesColumn = GetCollection<TableColumns>(ldtTableColumns);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
 
             return lstTablesColumn;
         }
@@ -1205,32 +1288,29 @@ namespace MSSQL.DIARY.EF
         /// <returns></returns>
         public List<TableFKDependency> GetTableForeignKeys(string astrTableName)
         {
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
+
             var lstTableFkColumns = new List<TableFKDependency>();
             try
             {
                 using var command = Database.GetDbConnection().CreateCommand();
                 command.CommandText = SqlQueryConstant.GetTableForeignKeys.Replace("@tblName", "'" + astrTableName + "'");
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstTableFkColumns.Add
-                        (
-                            new TableFKDependency
-                            {
-                                values = reader.SafeGetString(0),
-                                Fk_name = reader.SafeGetString(1),
-                                current_table_name = reader.SafeGetString(3),
-                                current_table_fk_columnName = reader.SafeGetString(4),
-                                fk_refe_table_name = reader.SafeGetString(5),
-                                fk_ref_table_column_name = reader.SafeGetString(6)
-                            }
-                        );
+                DataTable ldtTableFkColumn = new DataTable();
+                ldtTableFkColumn.Load(command.ExecuteReader());
+                lstTableFkColumns = GetCollection<TableFKDependency>(ldtTableFkColumn);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
 
             return lstTableFkColumns;
         }
@@ -1243,133 +1323,104 @@ namespace MSSQL.DIARY.EF
         /// <returns></returns>
         public List<TableKeyConstraint> GetTableKeyConstraints(string astrTableName)
         {
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
+
             var lstTableKeyConstraints = new List<TableKeyConstraint>();
             try
             {
                 using var command = Database.GetDbConnection().CreateCommand();
-                command.CommandText = SqlQueryConstant.GetAllKeyConstraints.Replace("@tblName", "'" + astrTableName + "'");
+                command.CommandText = SqlQueryConstant.GetTableKeyConstraints.Replace("@tblName", "'" + astrTableName + "'");
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstTableKeyConstraints.Add
-                        (
-                            new TableKeyConstraint
-                            {
-                                table_view = reader.SafeGetString(0),
-                                object_type = reader.SafeGetString(1),
-                                Constraint_type = reader.SafeGetString(2),
-                                Constraint_name = reader.SafeGetString(3),
-                                Constraint_details = reader.SafeGetString(4)
-                            }
-                        );
+                DataTable ldtKeyConstraints = new DataTable();
+                ldtKeyConstraints.Load(command.ExecuteReader());
+                lstTableKeyConstraints = GetCollection<TableKeyConstraint>(ldtKeyConstraints);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
 
             return lstTableKeyConstraints;
         }
 
+        /// <summary>
+        /// Get Current Database Name
+        /// </summary>
+        /// <returns></returns>
+
+        public string GetCurrentDatabaseName()
+        {
+            return Database.GetDbConnection().Database;
+
+        }
         /// <summary>
         /// Get tables with descriptions
         /// </summary>
         /// <returns></returns>
         public List<TablePropertyInfo> GetTablesDescription()
         {
-            var lstTables = new List<TablePropertyInfo>();
-            var lstExtensionProperties = new List<string>();
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
 
+
+            var lstTablesWithDescriptions = new List<TablePropertyInfo>();
             try
             {
-                try
-                {
-                    using var command = Database.GetDbConnection().CreateCommand();
-                    command.CommandText = SqlQueryConstant.GetListOfExtendedPropertiesList;
-                    Database.OpenConnection();
-                    using var reader = command.ExecuteReader();
-                    if (reader.HasRows)
-                        while (reader.Read())
-                            lstExtensionProperties.Add(reader.SafeGetString(0));
-                }
-                catch (Exception)
-                {
-                    // ignored
-                }
-
-                lstExtensionProperties.ForEach(x =>
-                {
-                    using var command = Database.GetDbConnection().CreateCommand();
-                    command.CommandText = SqlQueryConstant.GetTablesWithDescription.Replace("@ExtendedProp", "'" + x + "'");
-                    Database.OpenConnection();
-                    using var reader = command.ExecuteReader();
-                    if (reader.HasRows)
-                        while (reader.Read())
-                            lstTables.Add(new TablePropertyInfo
-                            {
-                                istrName = reader.SafeGetString(0),
-                                istrFullName = reader.SafeGetString(1),
-                                istrValue = reader.SafeGetString(2),
-                                istrSchemaName = reader.SafeGetString(3)
-                                //tableColumns = GetAllTablesColumn(reader.SafeGetString(0))
-                            });
-                });
-
-                try
-                {
-                    using var command = Database.GetDbConnection().CreateCommand();
-                    command.CommandText = SqlQueryConstant.GetTablesWithOutDescription;
-                    Database.OpenConnection();
-                    using var reader = command.ExecuteReader();
-                    if (reader.HasRows)
-                        while (reader.Read())
-                            lstTables.Add(new TablePropertyInfo
-                            {
-                                istrName = reader.SafeGetString(0),
-                                istrFullName = reader.SafeGetString(1),
-                                istrValue = reader.SafeGetString(2),
-                                istrSchemaName = reader.SafeGetString(3)
-                            });
-                }
-                catch (Exception)
-                {
-                    // ignored
-                }
-
-                lstTables.ForEach(tablePropertyInfo =>
-                {
-                    tablePropertyInfo.istrNevigation = GetDatabaseName + "/" + tablePropertyInfo.istrFullName + "/" + GetServerName();
-                });
+                using var command = Database.GetDbConnection().CreateCommand();
+                command.CommandText = SqlQueryConstant.GetTablesWithDescription;
+                DataTable ldtTableWithDescriptions = new DataTable();
+                Database.OpenConnection();
+                ldtTableWithDescriptions.Load(command.ExecuteReader());
+                lstTablesWithDescriptions = GetCollection<TablePropertyInfo>(ldtTableWithDescriptions);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
 
-            return lstTables;
+            return lstTablesWithDescriptions;
         }
 
         //Get table descriptions
         public Ms_Description GetTableDescription(string astrTableName)
         {
-            var lstrTableDescription = string.Empty;
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
+
+            var lMsDescription = new Ms_Description { desciption = "" };
             try
             {
                 using var command = Database.GetDbConnection().CreateCommand();
                 command.CommandText = SqlQueryConstant.GetTableDescription.Replace("@tblName", "'" + astrTableName + "'");
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (!reader.HasRows) return new Ms_Description { desciption = lstrTableDescription };
-                while (reader.Read())
-                    lstrTableDescription = reader.SafeGetString(1);
-
-                return new Ms_Description { desciption = lstrTableDescription };
+                DataTable ldtMsDescriptions = new DataTable();
+                ldtMsDescriptions.Load(command.ExecuteReader());
+                lMsDescription = SelectRow<Ms_Description>(ldtMsDescriptions);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return new Ms_Description { desciption = "" };
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
+
+            return lMsDescription;
         }
 
         /// <summary>
@@ -1398,11 +1449,21 @@ namespace MSSQL.DIARY.EF
         /// <param name="astrTableName"></param>
         private void UpdateTableDescription(string astrDescriptionValue, string astrSchemaName, string astrTableName)
         {
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
+
             using var command = Database.GetDbConnection().CreateCommand();
             var tableName = astrTableName.Replace(astrTableName.Substring(0, astrTableName.IndexOf(".", StringComparison.Ordinal)) + ".", "");
             command.CommandText = SqlQueryConstant.UpdateTableExtendedProperty.Replace("@Table_value", "'" + astrDescriptionValue + "'").Replace("@Schema_Name", "'" + astrSchemaName + "'").Replace("@Table_Name", "'" + tableName + "'");
             Database.OpenConnection();
             command.ExecuteNonQuery();
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
+
         }
 
         /// <summary>
@@ -1413,6 +1474,11 @@ namespace MSSQL.DIARY.EF
         /// <param name="astrTableName"></param>
         private void CreateTableDescription(string astrDescriptionValue, string astrSchemaName, string astrTableName)
         {
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
+
             var tableName = astrTableName.Replace(astrTableName.Substring(0, astrTableName.IndexOf(".", StringComparison.Ordinal)) + ".", "");
             using var command = Database.GetDbConnection().CreateCommand();
             command.CommandText = SqlQueryConstant.InsertTableExtendedProperty.Replace("@Table_value", "'" + astrDescriptionValue + "'").Replace("@Schema_Name", "'" + astrSchemaName + "'").Replace("@Table_Name", "'" + tableName + "'");
@@ -1421,10 +1487,15 @@ namespace MSSQL.DIARY.EF
             {
                 command.ExecuteNonQuery();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
+
         }
 
 
@@ -1456,11 +1527,21 @@ namespace MSSQL.DIARY.EF
         /// <param name="astrColumnValue"></param>
         private void UpdateColumnDescription(string astrDescriptionValue, string astrSchemaName, string astrTableName, string astrColumnValue)
         {
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
+
             using var command = Database.GetDbConnection().CreateCommand();
             var lstrTableName = astrTableName.Replace(astrTableName.Substring(0, astrTableName.IndexOf(".", StringComparison.Ordinal)) + ".", "");
             command.CommandText = SqlQueryConstant.UpdateTableColumnExtendedProperty.Replace("@Column_value", "'" + astrDescriptionValue + "'").Replace("@Schema_Name", "'" + astrSchemaName + "'").Replace("@Table_Name", "'" + lstrTableName + "'").Replace("@Column_Name", "'" + astrColumnValue + "'");
             Database.OpenConnection();
             command.ExecuteNonQuery();
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
+
         }
 
         /// <summary>
@@ -1472,6 +1553,11 @@ namespace MSSQL.DIARY.EF
         /// <param name="astrColumnValue"></param>
         private void CreateColumnDescription(string astrDescriptionValue, string astrSchemaName, string astrTableName, string astrColumnValue)
         {
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
+
             using var command = Database.GetDbConnection().CreateCommand();
             var lstrTableName = astrTableName.Replace(astrTableName.Substring(0, astrTableName.IndexOf(".", StringComparison.Ordinal)) + ".", "");
             command.CommandText = SqlQueryConstant.InsertTableColumnExtendedProperty.Replace("@Column_value", "'" + astrDescriptionValue + "'").Replace("@Schema_Name", "'" + astrSchemaName + "'").Replace("@Table_Name", "'" + lstrTableName + "'").Replace("@Column_Name", "'" + astrColumnValue + "'");
@@ -1480,10 +1566,15 @@ namespace MSSQL.DIARY.EF
             {
                 command.ExecuteNonQuery();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
+
         }
 
         /// <summary>
@@ -1492,59 +1583,31 @@ namespace MSSQL.DIARY.EF
         /// <returns></returns>
         public List<TableFragmentationDetails> GetTablesFragmentation()
         {
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
+
             var lstTableFragmentation = new List<TableFragmentationDetails>();
             try
             {
                 using var command = Database.GetDbConnection().CreateCommand();
                 command.CommandText = SqlQueryConstant.TableFragmentation;
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstTableFragmentation.Add
-                        (
-                            new TableFragmentationDetails
-                            {
-                                TableName = reader.SafeGetString(0),
-                                IndexName = reader.SafeGetString(1),
-                                PercentFragmented = reader.GetInt32(2).ToString()
-                            }
-                        );
+                DataTable ldtTableFragmentationDetails = new DataTable();
+                ldtTableFragmentationDetails.Load(command.ExecuteReader());
+                lstTableFragmentation = GetCollection<TableFragmentationDetails>(ldtTableFragmentationDetails);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
 
-            return lstTableFragmentation.Where(x => Convert.ToInt32(x.PercentFragmented) > 0).ToList();
-        }
-
-        /// <summary>
-        /// Get table details
-        /// </summary>
-        /// <returns></returns>
-        public List<string> GetTables()
-        {
-            var lstTables = new List<string>();
-            try
-            {
-                using var command = Database.GetDbConnection().CreateCommand();
-                command.CommandText = SqlQueryConstant.GetTables;
-                command.CommandType = CommandType.StoredProcedure;
-                Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        if (!reader.GetString(1).Equals("sys") && reader.GetString(3).Equals("TABLE"))
-                            //lstTables.Add( reader.GetString(2));
-                            lstTables.Add(reader.GetString(1) + "." + reader.GetString(2));
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
-
-            return lstTables;
+            return lstTableFragmentation;//.Where(x => Convert.ToInt32(x.PercentFragmented) > 0).ToList();
         }
 
         /// <summary>
@@ -1552,23 +1615,32 @@ namespace MSSQL.DIARY.EF
         /// </summary>
         /// <param name="astrTableName"></param>
         /// <returns></returns>
-        public List<string> GetTableColumns(string astrTableName)
+        public List<TableColumns> GetTableColumns(string astrTableName)
         {
-            var lstTableColumns = new List<string>();
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
+
+            var lstTableColumns = new List<TableColumns>();
+            //column_name
             try
             {
                 using var command = Database.GetDbConnection().CreateCommand();
                 command.CommandText = SqlQueryConstant.GetTableColumns.Replace("@tableName", astrTableName);
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstTableColumns.Add(reader.GetString(0));
+                DataTable ldtTableColumns = new DataTable();
+                ldtTableColumns.Load(command.ExecuteReader());
+                lstTableColumns = GetCollection<TableColumns>(ldtTableColumns);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
 
             return lstTableColumns;
         }
@@ -1579,34 +1651,32 @@ namespace MSSQL.DIARY.EF
         /// <returns></returns>
         public List<TableFKDependency> GetTableFkReferences(string astrSchemaName = null)
         {
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
+
             var lstTableFkDependencies = new List<TableFKDependency>();
             try
             {
                 using var lDbConnection = Database.GetDbConnection();
                 var command = lDbConnection.CreateCommand();
-                if (astrSchemaName.IsNullOrEmpty())
-                {
-                    command.CommandText = SqlQueryConstant.GetTableFkReferences;
-                }
-                else
-                {
-                    command.CommandText = SqlQueryConstant.GetTableFkReferencesBySchemaName.Replace("@SchemaName", $"'{astrSchemaName}'");
-                    
-                }
+                command.CommandText = astrSchemaName.IsNullOrEmpty() ? SqlQueryConstant.GetTableFkReferences : SqlQueryConstant.GetTableFkReferencesBySchemaName.Replace("@SchemaName", $"'{astrSchemaName}'");
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstTableFkDependencies.Add(new TableFKDependency
-                        {
-                            Fk_name = reader.GetString(0),
-                            fk_refe_table_name = reader.GetString(1)
-                        });
+                DataTable ldtTableFkDependencies = new DataTable();
+                ldtTableFkDependencies.Load(command.ExecuteReader());
+                lstTableFkDependencies = GetCollection<TableFKDependency>(ldtTableFkDependencies);
+
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
+
             return lstTableFkDependencies;
         }
         /// <summary>
@@ -1615,28 +1685,32 @@ namespace MSSQL.DIARY.EF
         /// <returns></returns>
         public List<PropertyInfo> GetTriggers()
         {
-            var propertyInfos = new List<PropertyInfo>();
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
+
+            var lstTriggers = new List<PropertyInfo>();
             try
             {
                 using var lDbConnection = Database.GetDbConnection();
                 var command = lDbConnection.CreateCommand();
                 command.CommandText = SqlQueryConstant.GetTriggers;
-                Database.OpenConnection(); 
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        propertyInfos.Add(new PropertyInfo
-                        {
-                            istrName = reader.SafeGetString(0),
-                            istrValue = reader.SafeGetString(1)
-                        });
+                Database.OpenConnection();
+                DataTable ldtTriggers = new DataTable();
+                ldtTriggers.Load(command.ExecuteReader());
+                lstTriggers = GetCollection<PropertyInfo>(ldtTriggers);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
 
-            return propertyInfos;
+            return lstTriggers;
         }
 
         /// <summary>
@@ -1646,32 +1720,32 @@ namespace MSSQL.DIARY.EF
         /// <returns></returns>
         public List<TriggerInfo> GetTrigger(string astrTriggerName)
         {
-            var triggerInfo = new List<TriggerInfo>();
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
+            var lstTriggerInfo = new List<TriggerInfo>();
             try
             {
                 using var lDbConnection = Database.GetDbConnection();
                 var command = lDbConnection.CreateCommand();
                 command.CommandText = SqlQueryConstant.GetTrigger.Replace("@TiggersName", "'" + astrTriggerName + "'");
                 Database.OpenConnection();
+                DataTable ldtTriggerInfo = new DataTable();
+                ldtTriggerInfo.Load(command.ExecuteReader());
+                lstTriggerInfo = GetCollection<TriggerInfo>(ldtTriggerInfo);
 
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        triggerInfo.Add(new TriggerInfo
-                        {
-                            TiggersName = reader.SafeGetString(0),
-                            TiggersDesc = reader.SafeGetString(1),
-                            TiggersCreateScript = reader.SafeGetString(2),
-                            TiggersCreatedDate = reader.GetDateTime(3).ToString(CultureInfo.InvariantCulture),
-                            TiggersModifyDate = reader.GetDateTime(4).ToString(CultureInfo.InvariantCulture)
-                        });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
 
-            return triggerInfo;
+            return lstTriggerInfo;
         }
 
         /// <summary>
@@ -1681,6 +1755,7 @@ namespace MSSQL.DIARY.EF
         /// <param name="astrTriggerName"></param>
         public void CreateOrUpdateTriggerDescription(string astrDescriptionValue, string astrTriggerName)
         {
+
             try
             {
                 UpdateTriggerDescription(astrDescriptionValue, astrTriggerName);
@@ -1698,10 +1773,20 @@ namespace MSSQL.DIARY.EF
         /// <param name="astrSchemaName"></param>
         private void UpdateTriggerDescription(string astrDescriptionValue, string astrSchemaName)
         {
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
+
             using var command = Database.GetDbConnection().CreateCommand();
             command.CommandText = SqlQueryConstant.UpdateTriggerExtendedProperty.Replace("@Trigger_value", "'" + astrDescriptionValue + "'").Replace("@Trigger_Name", "'" + astrSchemaName + "'");
             Database.OpenConnection();
             command.ExecuteNonQuery();
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
+
         }
 
         /// <summary>
@@ -1711,6 +1796,10 @@ namespace MSSQL.DIARY.EF
         /// <param name="astrSchemaName"></param>
         private void CreateTriggerDescription(string astrDescriptionValue, string astrSchemaName)
         {
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
             using var command = Database.GetDbConnection().CreateCommand();
             command.CommandText = SqlQueryConstant.CreateTriggerExtendedProperty.Replace("@Trigger_value", "'" + astrDescriptionValue + "'").Replace("@Trigger_Name", "'" + astrSchemaName + "'");
             Database.OpenConnection();
@@ -1718,10 +1807,15 @@ namespace MSSQL.DIARY.EF
             {
                 command.ExecuteNonQuery();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
+
         }
         /// <summary>
         /// Get list of UserDefined data types
@@ -1729,6 +1823,10 @@ namespace MSSQL.DIARY.EF
         /// <returns></returns>
         public List<UserDefinedDataTypeDetails> GetUserDefinedDataTypes()
         {
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
             var lstUserDefinedDataTypeDetails = new List<UserDefinedDataTypeDetails>();
             try
             {
@@ -1736,22 +1834,21 @@ namespace MSSQL.DIARY.EF
                 var command = lDbConnection.CreateCommand();
                 command.CommandText = SqlQueryConstant.GetUserDefinedDataTypes;
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstUserDefinedDataTypeDetails.Add(new UserDefinedDataTypeDetails
-                        {
-                            name = reader.SafeGetString(0),
-                            iblnallownull = reader.GetBoolean(1),
-                            basetypename = reader.SafeGetString(2),
-                            length = reader.GetInt16(3),
-                            createscript = reader.SafeGetString(4)
-                        });
+                DataTable ldtUserDefinedDataTypeRef = new DataTable();
+                ldtUserDefinedDataTypeRef.Load(command.ExecuteReader());
+                lstUserDefinedDataTypeDetails = GetCollection<UserDefinedDataTypeDetails>(ldtUserDefinedDataTypeRef);
+
             }
-            catch
+
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
+
 
             return lstUserDefinedDataTypeDetails;
         }
@@ -1763,6 +1860,11 @@ namespace MSSQL.DIARY.EF
         /// <returns></returns>
         public UserDefinedDataTypeDetails GetUserDefinedDataType(string astrTypeName)
         {
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
+
             var lUserDefinedDataTypeDetails = new UserDefinedDataTypeDetails();
             try
             {
@@ -1770,22 +1872,18 @@ namespace MSSQL.DIARY.EF
                 var command = lDbConnection.CreateCommand();
                 command.CommandText = SqlQueryConstant.GetUserDefinedDataTypeDetails.Replace("@TypeName", "'" + astrTypeName + "'");
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lUserDefinedDataTypeDetails = new UserDefinedDataTypeDetails
-                        {
-                            name = reader.SafeGetString(0),
-                            iblnallownull = reader.GetBoolean(1),
-                            basetypename = reader.SafeGetString(2),
-                            length = reader.GetInt16(3),
-                            createscript = reader.SafeGetString(4)
-                        };
+                DataTable ldtUserDefinedDataTypeDetails = new DataTable();
+                ldtUserDefinedDataTypeDetails.Load(command.ExecuteReader());
+                lUserDefinedDataTypeDetails = SelectRow<UserDefinedDataTypeDetails>(ldtUserDefinedDataTypeDetails);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
 
             return lUserDefinedDataTypeDetails;
         }
@@ -1797,6 +1895,11 @@ namespace MSSQL.DIARY.EF
         /// <returns></returns>
         public List<UserDefinedDataTypeReferance> GetUsedDefinedDataTypeReference(string astrTypeName)
         {
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
+
             var lstUserDefinedDataTypeReference = new List<UserDefinedDataTypeReferance>();
             try
             {
@@ -1804,19 +1907,19 @@ namespace MSSQL.DIARY.EF
                 var command = lDbConnection.CreateCommand();
                 command.CommandText = SqlQueryConstant.GetUsedDefinedDataTypeReference.Replace("@TypeName", "'" + astrTypeName + "'");
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstUserDefinedDataTypeReference.Add(new UserDefinedDataTypeReferance
-                        {
-                            objectname = reader.SafeGetString(0),
-                            typeofobject = reader.SafeGetString(1)
-                        });
+                DataTable ldtUserDefinedDataTypeRef = new DataTable();
+                ldtUserDefinedDataTypeRef.Load(command.ExecuteReader());
+                lstUserDefinedDataTypeReference = GetCollection<UserDefinedDataTypeReferance>(ldtUserDefinedDataTypeRef);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
+
             return lstUserDefinedDataTypeReference;
         }
 
@@ -1827,6 +1930,11 @@ namespace MSSQL.DIARY.EF
         /// <returns></returns>
         public Ms_Description GetUsedDefinedDataTypeExtendedProperties(string astrTypeName)
         {
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
+
             var lUserDefinedDataTypeDescription = new Ms_Description();
             try
             {
@@ -1834,18 +1942,18 @@ namespace MSSQL.DIARY.EF
                 var command = lDbConnection.CreateCommand();
                 command.CommandText = SqlQueryConstant.GetUsedDefinedDataTypeExtendedProperties.Replace("@SchemaName", "'" + astrTypeName.Split('.')[0] + "'").Replace("@TypeName", "'" + astrTypeName.Split('.')[1] + "'");
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lUserDefinedDataTypeDescription = new Ms_Description
-                        {
-                            desciption = reader.SafeGetString(0)
-                        };
+                DataTable ldtUserDefinedDataTypeDescription = new DataTable();
+                ldtUserDefinedDataTypeDescription.Load(command.ExecuteReader());
+                lUserDefinedDataTypeDescription = SelectRow<Ms_Description>(ldtUserDefinedDataTypeDescription);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
 
             return lUserDefinedDataTypeDescription;
         }
@@ -1857,6 +1965,11 @@ namespace MSSQL.DIARY.EF
         /// <param name="astrDescValue"></param>
         private void CreateUsedDefinedDataTypeDescription(string astrTypeName, string astrDescValue)
         {
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
+
             try
             {
                 using var lDbConnection = Database.GetDbConnection();
@@ -1865,10 +1978,15 @@ namespace MSSQL.DIARY.EF
                 Database.OpenConnection();
                 command.ExecuteNonQuery();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
+
         }
         /// <summary>
         /// Update user defined data type description
@@ -1877,6 +1995,10 @@ namespace MSSQL.DIARY.EF
         /// <param name="astrDescValue"></param>
         private void UpdateUsedDefinedDataTypeDescription(string astrTypeName, string astrDescValue)
         {
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
             try
             {
                 using var lDbConnection = Database.GetDbConnection();
@@ -1885,10 +2007,15 @@ namespace MSSQL.DIARY.EF
                 Database.OpenConnection();
                 command.ExecuteNonQuery();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
+
         }
 
         /// <summary>
@@ -1914,28 +2041,33 @@ namespace MSSQL.DIARY.EF
 
         public List<PropertyInfo> GetViewsWithDescription()
         {
-            var dbProperties = new List<PropertyInfo>();
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
+
+            var lstViewsWithDescription = new List<PropertyInfo>();
             try
             {
                 using var lDbConnection = Database.GetDbConnection();
                 var command = lDbConnection.CreateCommand();
-                command.CommandText = SqlQueryConstant.GetViewsWithDescription; 
-                Database.OpenConnection(); 
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        dbProperties.Add(new PropertyInfo
-                        {
-                            istrName = reader.SafeGetString(0),
-                            istrValue = reader.SafeGetString(1)
-                        });
+                command.CommandText = SqlQueryConstant.GetViewsWithDescription;
+                Database.OpenConnection();
+                DataTable ldtViewsWithDescription = new DataTable();
+                ldtViewsWithDescription.Load(command.ExecuteReader());
+                lstViewsWithDescription = GetCollection<PropertyInfo>(ldtViewsWithDescription);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
 
-            return dbProperties;
+
+            return lstViewsWithDescription;
         }
 
         /// <summary>
@@ -1945,25 +2077,32 @@ namespace MSSQL.DIARY.EF
         /// <returns></returns>
         public List<ViewDependancy> GetViewDependencies(string astrViewName)
         {
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
+
             var lstViewDependencies = new List<ViewDependancy>();
+
             try
             {
                 using var lDbConnection = Database.GetDbConnection();
                 var command = lDbConnection.CreateCommand();
                 command.CommandText = SqlQueryConstant.GetViewsDependancies.Replace("@viewname", "'" + astrViewName + "'");
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstViewDependencies.Add(new ViewDependancy
-                        {
-                            name = reader.SafeGetString(0)
-                        });
+                DataTable ldtViewDependencies = new DataTable();
+                ldtViewDependencies.Load(command.ExecuteReader());
+                lstViewDependencies = GetCollection<ViewDependancy>(ldtViewDependencies);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
+
 
             return lstViewDependencies;
         }
@@ -1975,6 +2114,11 @@ namespace MSSQL.DIARY.EF
         /// <returns></returns>
         public List<View_Properties> GetViewProperties(string astrViewName)
         {
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
+
             var lstViewProperties = new List<View_Properties>();
             try
             {
@@ -1982,21 +2126,18 @@ namespace MSSQL.DIARY.EF
                 var command = lDbConnection.CreateCommand();
                 command.CommandText = SqlQueryConstant.GetViewProperties.Replace("@viewname", "'" + astrViewName + "'");
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstViewProperties.Add(new View_Properties
-                        {
-                            uses_ansi_nulls = reader.SafeGetString(0),
-                            uses_quoted_identifier = reader.SafeGetString(1),
-                            create_date = reader.SafeGetString(2),
-                            modify_date = reader.SafeGetString(3)
-                        });
+                DataTable ldtViewProperties = new DataTable();
+                ldtViewProperties.Load(command.ExecuteReader());
+                lstViewProperties = GetCollection<View_Properties>(ldtViewProperties);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
 
             return lstViewProperties;
         }
@@ -2007,6 +2148,11 @@ namespace MSSQL.DIARY.EF
         /// <returns></returns>
         public List<ViewColumns> GetViewColumns(string astrViewName)
         {
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
+
             var lstGetViewColumns = new List<ViewColumns>();
             try
             {
@@ -2014,22 +2160,18 @@ namespace MSSQL.DIARY.EF
                 var command = lDbConnection.CreateCommand();
                 command.CommandText = SqlQueryConstant.GetViewColumns.Replace("@viewname", "'" + astrViewName + "'");
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lstGetViewColumns.Add(new ViewColumns
-                        {
-                            name = reader.SafeGetString(0),
-                            type = reader.SafeGetString(1),
-                            updated = reader.SafeGetString(2),
-                            selected = reader.SafeGetString(3),
-                            column_name = reader.SafeGetString(4)
-                        });
+                DataTable ldtViewColumns = new DataTable();
+                ldtViewColumns.Load(command.ExecuteReader());
+                lstGetViewColumns = GetCollection<ViewColumns>(ldtViewColumns);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
 
             return lstGetViewColumns;
         }
@@ -2041,6 +2183,11 @@ namespace MSSQL.DIARY.EF
 
         public ViewCreateScript GetViewCreateScript(string astrViewName)
         {
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
+
             var lViewCreateScript = new ViewCreateScript();
             try
             {
@@ -2048,15 +2195,18 @@ namespace MSSQL.DIARY.EF
                 var command = lDbConnection.CreateCommand();
                 command.CommandText = SqlQueryConstant.GetViewCreateScript.Replace("@viewname", "'" + astrViewName + "'");
                 Database.OpenConnection();
-                using var reader = command.ExecuteReader();
-                if (reader.HasRows)
-                    while (reader.Read())
-                        lViewCreateScript.createViewScript = reader.SafeGetString(0);
+                DataTable ldtViewCreateScript = new DataTable();
+                ldtViewCreateScript.Load(command.ExecuteReader());
+                lViewCreateScript = SelectRow<ViewCreateScript>(ldtViewCreateScript);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
 
             return lViewCreateScript;
         }
@@ -2068,37 +2218,31 @@ namespace MSSQL.DIARY.EF
         /// <returns></returns>
         public List<ReferencesModel> GetObjectThatDependsOn(string astrObjectName)
         {
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
+
             var lstObjectDependsOn = new List<ReferencesModel>();
             try
             {
                 using var lDbConnection = Database.GetDbConnection();
-                try
-                {
-                    var command = lDbConnection.CreateCommand();
-                    var newObjectName = astrObjectName.Replace(astrObjectName.Substring(0, astrObjectName.IndexOf(".", StringComparison.Ordinal)) + ".", "");
-                    command.CommandText = SqlQueryConstant.ObjectThatDependsOn.Replace("@ObjectName", "'" + newObjectName + "'");
-                    Database.OpenConnection();
-                    using var reader = command.ExecuteReader();
-                    if (reader.HasRows)
-                        while (reader.Read())
-                            lstObjectDependsOn
-                                .Add(new ReferencesModel
-                                {
-                                    ThePath = reader.SafeGetString(0),
-                                    TheFullEntityName = reader.SafeGetString(1),
-                                    TheType = reader.SafeGetString(2),
-                                    iteration = reader.GetInt32(3)
-                                });
-                }
-                catch (Exception)
-                {
-                    // ignored
-                }
+                var command = lDbConnection.CreateCommand();
+                var newObjectName = astrObjectName.Replace(astrObjectName.Substring(0, astrObjectName.IndexOf(".", StringComparison.Ordinal)) + ".", "");
+                command.CommandText = SqlQueryConstant.ObjectThatDependsOn.Replace("@ObjectName", "'" + newObjectName + "'");
+                Database.OpenConnection();
+                DataTable ldtObjectDependsOn = new DataTable();
+                ldtObjectDependsOn.Load(command.ExecuteReader());
+                lstObjectDependsOn = GetCollection<ReferencesModel>(ldtObjectDependsOn);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
 
             return lstObjectDependsOn
 ;
@@ -2111,36 +2255,33 @@ namespace MSSQL.DIARY.EF
         /// <returns></returns>
         public List<ReferencesModel> GetObjectOnWhichDepends(string astrObjectName)
         {
+#if DEBUG
+            var watch = new System.Diagnostics.Stopwatch(); watch.Start();
+#endif
+
+
             var lstObjectOnWhichDepends = new List<ReferencesModel>();
+
             try
             {
                 using var lDbConnection = Database.GetDbConnection();
-                try
-                {
-                    var command = lDbConnection.CreateCommand();
-                    var newObjectName = astrObjectName.Replace(astrObjectName.Substring(0, astrObjectName.IndexOf(".", StringComparison.Ordinal)) + ".", "");
-                    command.CommandText = SqlQueryConstant.ObjectOnWhichDepends.Replace("@ObjectName", "'" + newObjectName + "'");
-                    Database.OpenConnection();
-                    using var reader = command.ExecuteReader();
-                    if (reader.HasRows)
-                        while (reader.Read())
-                            lstObjectOnWhichDepends.Add(new ReferencesModel
-                            {
-                                ThePath = reader.SafeGetString(0),
-                                TheFullEntityName = reader.SafeGetString(1),
-                                TheType = reader.SafeGetString(2),
-                                iteration = reader.GetInt32(3)
-                            });
-                }
-                catch (Exception)
-                {
-                    // ignored
-                }
+                var command = lDbConnection.CreateCommand();
+                var newObjectName = astrObjectName.Replace(astrObjectName.Substring(0, astrObjectName.IndexOf(".", StringComparison.Ordinal)) + ".", "");
+                command.CommandText = SqlQueryConstant.ObjectOnWhichDepends.Replace("@ObjectName", "'" + newObjectName + "'");
+                Database.OpenConnection();
+                DataTable ldtObjectOnWhichDepends = new DataTable();
+                ldtObjectOnWhichDepends.Load(command.ExecuteReader());
+                lstObjectOnWhichDepends = GetCollection<ReferencesModel>(ldtObjectOnWhichDepends);
+
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Console.WriteLine("*******************************************************************"); Console.WriteLine($"\n Exception : {ex.Message} ", ConsoleColor.Red); Console.WriteLine($"\n StackTrace : {ex.StackTrace} ", ConsoleColor.Red); Console.WriteLine("*******************************************************************");
             }
+            watch.Stop();
+#if DEBUG
+            Console.WriteLine($"\n Time taken to completed the {MethodBase.GetCurrentMethod()?.Name} method are :{watch.ElapsedMilliseconds}ms", ConsoleColor.Yellow);
+#endif
 
             return lstObjectOnWhichDepends;
         }

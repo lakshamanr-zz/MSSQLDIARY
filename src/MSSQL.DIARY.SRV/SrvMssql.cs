@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace MSSQL.DIARY.SRV
 {
@@ -300,40 +301,34 @@ namespace MSSQL.DIARY.SRV
         /// <returns></returns>
         private List<TablePropertyInfo> GetTablesDescriptionFromCache()
         {
-            var lstTableDetails = new List<TablePropertyInfo>();
+            List<TablePropertyInfo> lstTableDetails;
+            string lDatabaseName;
+         
             using (var lSqlDatabaseContext = new MsSqlDiaryContext(IstrDatabaseConnection))
             {
-                lSqlDatabaseContext.GetTablesDescription().GroupBy(x => x.istrName).ToList().ForEach(lstTableProperties =>
-                {
-                    var lTableProperty = new TablePropertyInfo();
-                    foreach (var lTableProperties in lstTableProperties)
-                    {
-                        lTableProperty.istrFullName = lTableProperties.istrFullName;
-                        lTableProperty.istrName = lTableProperties.istrName;
-                        lTableProperty.istrSchemaName = lTableProperties.istrSchemaName;
-                        lTableProperty.istrNevigation = lTableProperties.istrNevigation;
-                        if (lTableProperties.istrValue.Length > 0)
-                        {
-                            lTableProperty.istrValue += lTableProperties.istrValue;
-                        }
-                        else
-                        {
-                            if (!string.IsNullOrEmpty(lTableProperty.istrValue))
-                                lTableProperty.istrValue += ";";
-                            else
-                                lTableProperty.istrValue += "description of the " + lTableProperties.istrFullName + " is missing.";
-                        }
-                        lTableProperty.tableColumns = lTableProperties.tableColumns;
-                    }
-
-                    if (!(lTableProperty.istrName.Contains("$") || lTableProperty.istrFullName.Contains("\\") || lTableProperty.istrFullName.Contains("-")))
-                        lstTableDetails.Add(lTableProperty);
-                });
+                lstTableDetails=lSqlDatabaseContext.GetTablesDescription();
+                lDatabaseName = lSqlDatabaseContext.GetCurrentDatabaseName();
             }
+            var lServerName = GetServerName(IstrDatabaseConnection).FirstOrDefault();
 
+            lstTableDetails.ForEach(x =>
+            { 
+                if (string.IsNullOrEmpty(x.istrValue))
+                {
+                    x.istrValue = "description of the " + x.istrFullName + " is missing.";
+                }
+                else if (x.istrName.Contains("$") && x.istrName.Contains("\\") && x.istrName.Contains("-"))
+                {
+                    x.istrName = string.Empty;
+                }
+                x.istrNevigation = lDatabaseName + "/" + x.istrFullName + "/" + lServerName;
+            });
+
+            var lstTableColumns = GetTableColumns();
             lstTableDetails.ForEach(tablePropertyInfo =>
             {
-                tablePropertyInfo.tableColumns = GetTableColumns(tablePropertyInfo.istrFullName).DistinctBy(x1 => x1.columnname).ToList();
+                tablePropertyInfo.tableColumns = lstTableColumns
+                    .Where(x => x.tableWithSchemaname.Equals(tablePropertyInfo.istrFullName)).ToList();
             });
             return lstTableDetails;
         }
@@ -387,34 +382,18 @@ namespace MSSQL.DIARY.SRV
         /// <param name="astrTableName"></param>
         /// <returns></returns>
 
-        public List<TableColumns> GetTableColumns(string astrTableName)
-        {
+        public List<TableColumns> GetTableColumns(string astrTableName=null)
+        { 
             using var lSqlDatabaseContext = new MsSqlDiaryContext(IstrDatabaseConnection);
-            var lstTableColumns = new List<TableColumns>();
-            foreach (var lTableColumnKeyValuePairs in lSqlDatabaseContext.GetTablesColumn(astrTableName).GroupBy(x => x.columnname))
-            {
-                var lTableColumn = new TableColumns { columnname = lTableColumnKeyValuePairs.Key };
-                foreach (var lTableColumnValue in lTableColumnKeyValuePairs)
-                {
-                    lTableColumn.tablename = lTableColumnValue.tablename;
-                    lTableColumn.key = lTableColumnValue.key;
-                    lTableColumn.identity = lTableColumnValue.identity;
-                    lTableColumn.max_length = lTableColumnValue.max_length;
-                    lTableColumn.allow_null = lTableColumnValue.allow_null;
-                    lTableColumn.defaultValue = lTableColumnValue.defaultValue;
-                    lTableColumn.data_type = lTableColumnValue.data_type;
-                    lTableColumn.description += lTableColumnValue.description;
-                    lTableColumn.HideEdit = false;
-                }
-                lstTableColumns.Add(lTableColumn);
-            }
+            var lTableColums= lSqlDatabaseContext.GetTablesColumn(astrTableName);
             var count = 1;
-            lstTableColumns.ForEach(tableColumn =>
+            lTableColums.ForEach(lTableColumns =>
             {
-                tableColumn.id = count;
+
+                lTableColumns.id = count;
                 count++;
             });
-            return lstTableColumns;
+            return lTableColums;
         }
 
         /// <summary>
@@ -565,150 +544,155 @@ namespace MSSQL.DIARY.SRV
         {
             referencesModels.DistinctBy(x => x.ThePath).ForEach(x =>
             {
-                switch (x.TheType.Trim())
+                if (x.TheType.IsNotNullOrEmpty())
                 {
-                    case "AF ":
-                        {
-                            x.ThePath += "(Aggregate function)";
-                        }
-                        break;
-                    case "C":
-                        {
-                            x.ThePath += "(CHECK constraint)";
-                        }
-                        break;
-                    case "D":
-                        {
-                            x.ThePath += "( DEFAULT )";
-                        }
-                        break;
-                    case "FN":
-                        {
-                            x.ThePath += "( SQL scalar function )";
-                        }
-                        break;
-                    case "FS":
-                        {
-                            x.ThePath += "( Assembly (CLR) scalar-function )";
-                        }
-                        break;
-                    case "FT":
-                        {
-                            x.ThePath += "( Assembly (CLR) table-valued function )";
-                        }
-                        break;
-                    case "IF":
-                        {
-                            x.ThePath += "( SQL inline table-valued function )";
-                        }
-                        break;
-                    case "IT":
-                        {
-                            x.ThePath += "( Internal table )";
-                        }
-                        break;
-                    case "P":
-                        {
-                            x.ThePath += "( SQL Stored Procedure)";
-                        }
-                        break;
-                    case "PC":
-                        {
-                            x.ThePath += "( Assembly (CLR) stored-procedure )";
-                        }
-                        break;
-                    case "PG":
-                        {
-                            x.ThePath += "(Plan guide)";
-                        }
-                        break;
-                    case "PK":
-                        {
-                            x.ThePath += "(PRIMARY KEY constraint)";
-                        }
-                        break;
-                    case "R":
-                        {
-                            x.ThePath += "(Rule (old-style, stand-alone))";
-                        }
-                        break;
-                    case "RF":
-                        {
-                            x.ThePath += "(Replication-filter-procedure)";
-                        }
-                        break;
-                    case "S":
-                        {
-                            x.ThePath += "(System base table)";
-                        }
-                        break;
-                    case "SN":
-                        {
-                            x.ThePath += "(Synonym)";
-                        }
-                        break;
-                    case "SO":
-                        {
-                            x.ThePath += "(Sequence object)";
-                        }
-                        break;
-                    case "U":
-                        {
-                            x.ThePath += "( Table- user-defined)";
-                        }
-                        break;
-                    case "V":
-                        {
-                            x.ThePath += "(View)";
-                        }
-                        break;
-                    case "EC":
-                        {
-                            x.ThePath += "(Edge constraint)";
-                        }
-                        break;
-                    case "SQ":
-                        {
-                            x.ThePath += "(Service queue)";
-                        }
-                        break;
-                    case "TA":
-                        {
-                            x.ThePath += "( Assembly (CLR) DML trigger)";
-                        }
-                        break;
-                    case "TF":
-                        {
-                            x.ThePath += "(SQL table-valued-function)";
-                        }
-                        break;
-                    case "TR":
-                        {
-                            x.ThePath += "( SQL DML trigger)";
-                        }
-                        break;
-                    case "TT":
-                        {
-                            x.ThePath += "( Table type)";
-                        }
-                        break;
-                    case "UQ":
-                        {
-                            x.ThePath += "( UNIQUE constraint)";
-                        }
-                        break;
-                    case "X":
-                        {
-                            x.ThePath += "( Extended stored procedure)";
-                        }
-                        break;
-                    case "XMLC":
-                        {
-                            x.ThePath += "(XML Data Type)";
-                        }
-                        break;
+                    switch (x.TheType.Trim())
+                    {
+                        case "AF ":
+                            {
+                                x.ThePath += "(Aggregate function)";
+                            }
+                            break;
+                        case "C":
+                            {
+                                x.ThePath += "(CHECK constraint)";
+                            }
+                            break;
+                        case "D":
+                            {
+                                x.ThePath += "( DEFAULT )";
+                            }
+                            break;
+                        case "FN":
+                            {
+                                x.ThePath += "( SQL scalar function )";
+                            }
+                            break;
+                        case "FS":
+                            {
+                                x.ThePath += "( Assembly (CLR) scalar-function )";
+                            }
+                            break;
+                        case "FT":
+                            {
+                                x.ThePath += "( Assembly (CLR) table-valued function )";
+                            }
+                            break;
+                        case "IF":
+                            {
+                                x.ThePath += "( SQL inline table-valued function )";
+                            }
+                            break;
+                        case "IT":
+                            {
+                                x.ThePath += "( Internal table )";
+                            }
+                            break;
+                        case "P":
+                            {
+                                x.ThePath += "( SQL Stored Procedure)";
+                            }
+                            break;
+                        case "PC":
+                            {
+                                x.ThePath += "( Assembly (CLR) stored-procedure )";
+                            }
+                            break;
+                        case "PG":
+                            {
+                                x.ThePath += "(Plan guide)";
+                            }
+                            break;
+                        case "PK":
+                            {
+                                x.ThePath += "(PRIMARY KEY constraint)";
+                            }
+                            break;
+                        case "R":
+                            {
+                                x.ThePath += "(Rule (old-style, stand-alone))";
+                            }
+                            break;
+                        case "RF":
+                            {
+                                x.ThePath += "(Replication-filter-procedure)";
+                            }
+                            break;
+                        case "S":
+                            {
+                                x.ThePath += "(System base table)";
+                            }
+                            break;
+                        case "SN":
+                            {
+                                x.ThePath += "(Synonym)";
+                            }
+                            break;
+                        case "SO":
+                            {
+                                x.ThePath += "(Sequence object)";
+                            }
+                            break;
+                        case "U":
+                            {
+                                x.ThePath += "( Table- user-defined)";
+                            }
+                            break;
+                        case "V":
+                            {
+                                x.ThePath += "(View)";
+                            }
+                            break;
+                        case "EC":
+                            {
+                                x.ThePath += "(Edge constraint)";
+                            }
+                            break;
+                        case "SQ":
+                            {
+                                x.ThePath += "(Service queue)";
+                            }
+                            break;
+                        case "TA":
+                            {
+                                x.ThePath += "( Assembly (CLR) DML trigger)";
+                            }
+                            break;
+                        case "TF":
+                            {
+                                x.ThePath += "(SQL table-valued-function)";
+                            }
+                            break;
+                        case "TR":
+                            {
+                                x.ThePath += "( SQL DML trigger)";
+                            }
+                            break;
+                        case "TT":
+                            {
+                                x.ThePath += "( Table type)";
+                            }
+                            break;
+                        case "UQ":
+                            {
+                                x.ThePath += "( UNIQUE constraint)";
+                            }
+                            break;
+                        case "X":
+                            {
+                                x.ThePath += "( Extended stored procedure)";
+                            }
+                            break;
+                        case "XMLC":
+                            {
+                                x.ThePath += "(XML Data Type)";
+                            }
+                            break;
 
+                    }
                 }
+
+                
             });
 
             return referencesModels;
@@ -954,11 +938,11 @@ namespace MSSQL.DIARY.SRV
         /// Get server names
         /// </summary>
         /// <returns></returns>
-        public List<string> GetServerName()
+        public List<string> GetServerName(string astrDatabaseConnection=null)
         {
             var lstServers = new List<string>();
-            using var lSqlDatabaseContext = new MsSqlDiaryContext();
-            lstServers.Add(lSqlDatabaseContext.GetServerName());
+            using var lSqlDatabaseContext = new MsSqlDiaryContext(astrDatabaseConnection);
+            lstServers.Add(lSqlDatabaseContext.GetServerName().SERVERNAME);
             return lstServers;
         }
         /// <summary>
@@ -1166,7 +1150,7 @@ namespace MSSQL.DIARY.SRV
         /// <param name="astrDatabaseName"></param>
         /// <param name="astrStoreProcedureName"></param>
         /// <returns></returns>
-        public string GetStoreProcedureDescription(string astrDatabaseName, string astrStoreProcedureName)
+        public Ms_Description GetStoreProcedureDescription(string astrDatabaseName, string astrStoreProcedureName)
         {
             using var lSqlDatabaseContext = new MsSqlDiaryContext(astrDatabaseName);
             return lSqlDatabaseContext.GetStoreProcedureDescription(astrStoreProcedureName);
@@ -1557,9 +1541,9 @@ namespace MSSQL.DIARY.SRV
                 tablesList.Add(
                     new TreeViewJson
                     {
-                        text = tables,
+                        text = tables.istrFullName,
                         icon = "fa fa-table fa-fw",
-                        mdaIcon = tables,
+                        mdaIcon = tables.istrFullName,
                         expand = false,
                         link = $"/{IstrProjectName}/{IstrServerName}/User Database/{IstrDatabaseName}/Tables/{tables}",
                         selected = true,
@@ -1586,9 +1570,9 @@ namespace MSSQL.DIARY.SRV
                     tablesColumns.Add(
                         new TreeViewJson
                         {
-                            text = columns,
+                            text = columns.columnname,
                             icon = "fa fa fa-columns",
-                            mdaIcon = columns,
+                            mdaIcon = columns.columnname,
                             expand = false,
                             link = $"/{IstrProjectName}/{IstrServerName}/User Database/{IstrDatabaseName}/Tables/{columns}",
                             selected = true,
@@ -2058,7 +2042,7 @@ namespace MSSQL.DIARY.SRV
         /// <param name="astrDatabaseName"></param>
         /// <param name="astrDatabaseConnection"></param>
         /// <returns></returns>
-        public static List<string> GetTables(string astrDatabaseName, string astrDatabaseConnection)
+        public static List<TablePropertyInfo> GetTables(string astrDatabaseName, string astrDatabaseConnection)
         {
             return GetTableList(astrDatabaseName, astrDatabaseConnection);
         }
@@ -2068,10 +2052,10 @@ namespace MSSQL.DIARY.SRV
         /// <param name="astrDatabaseNames"></param>
         /// <param name="astrDatabaseConnection"></param>
         /// <returns></returns>
-        public static List<string> GetTableList(string astrDatabaseNames = null, string astrDatabaseConnection = null)
+        public static List<TablePropertyInfo> GetTableList(string astrDatabaseNames = null, string astrDatabaseConnection = null)
         {
             using var lSqlDatabaseContext = new MsSqlDiaryContext(astrDatabaseConnection);
-            return lSqlDatabaseContext.GetTables();
+            return lSqlDatabaseContext.GetTablesDescription();
         }
         /// <summary>
         /// 
@@ -2080,7 +2064,7 @@ namespace MSSQL.DIARY.SRV
         /// <param name="astrDatabaseNames"></param>
         /// <param name="astrDatabaseConnection"></param>
         /// <returns></returns>
-        public static List<string> GetTablesColumns(string astrTableName, string astrDatabaseNames = null, string astrDatabaseConnection = null)
+        public static List<TableColumns> GetTablesColumns(string astrTableName, string astrDatabaseNames = null, string astrDatabaseConnection = null)
         {
             return GetTablesColumnsList(astrTableName, astrDatabaseNames, astrDatabaseConnection);
         }
@@ -2091,7 +2075,7 @@ namespace MSSQL.DIARY.SRV
         /// <param name="astrDatabaseNames"></param>
         /// <param name="astrDatabaseConnection"></param>
         /// <returns></returns>
-        public static List<string> GetTablesColumnsList(string astrTableName, string astrDatabaseNames = null, string astrDatabaseConnection = null)
+        public static List<TableColumns> GetTablesColumnsList(string astrTableName, string astrDatabaseNames = null, string astrDatabaseConnection = null)
         {
             using var lSqlDatabaseContext = new MsSqlDiaryContext(astrDatabaseConnection);
             return lSqlDatabaseContext.GetTableColumns(astrTableName);
@@ -2150,7 +2134,7 @@ namespace MSSQL.DIARY.SRV
         public static List<string> GetScalarFunctionsList(string astrDatabaseNames = null, string astrDatabaseConnection = null)
         {
             using var lSqlDatabaseContext = new MsSqlDiaryContext(astrDatabaseConnection);
-            return lSqlDatabaseContext.GetScalarFunctions().Where(x => x != null).ToList();
+            return lSqlDatabaseContext.GetScalarFunctions().Where(x => x != null).Select(x=>x.SQL_SCALAR_FUNCTION).ToList();
         }
         /// <summary>
         /// 
@@ -2171,7 +2155,7 @@ namespace MSSQL.DIARY.SRV
         public static List<string> GetTableValueFunctionsList(string astrDatabaseNames, string astrDatabaseConnection)
         {
             using var lSqlDatabaseContext = new MsSqlDiaryContext(astrDatabaseConnection);
-            return lSqlDatabaseContext.GetTableValueFunctions().Where(x => x != null).ToList();
+            return lSqlDatabaseContext.GetTableValueFunctions().Where(x => x != null).Select(x=>x.SQL_TABLE_VALUED_FUNCTION).ToList();
         }
         /// <summary>
         /// 
@@ -2192,7 +2176,7 @@ namespace MSSQL.DIARY.SRV
         public static List<string> GetAggregateFunctionsList(string astrDatabaseNames, string astrDatabaseConnection )
         {
             using var lSqlDatabaseContext = new MsSqlDiaryContext(astrDatabaseConnection);
-            return lSqlDatabaseContext.GetAggregateFunctions().Where(x => x != null).ToList();
+            return lSqlDatabaseContext.GetAggregateFunctions().Where(x => x != null).Select(x=>x.SQL_AGGREGATE_FUNCTION).ToList();
         }
         /// <summary>
         /// 
