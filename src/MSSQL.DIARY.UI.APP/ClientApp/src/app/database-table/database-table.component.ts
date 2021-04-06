@@ -33,7 +33,8 @@ declare var Prism: any;
 export class DatabaseTableComponent implements OnInit {
   iblnShowEditBox: boolean;
   constructor(private route: Router,public activeRoute: ActivatedRoute, public databaseTableService: DatabaseTableService, public _http: HttpClient, @Inject('BASE_URL') public baseUrl: string) {
-    
+
+    this.iblnShowTableCreateScript = false;
   }
   public items: MenuItem[];
   public home: MenuItem; 
@@ -51,6 +52,7 @@ export class DatabaseTableComponent implements OnInit {
   public databaseTableKeyConstraints: Observable<TableKeyConstraint[]>;
   public databaseTableDependencyTree: any;
   public databaseTableFragmentationDetails: Observable<TableFragmentationDetails[]>;
+  public iblnShowTableCreateScript:boolean;
  
 
   ngOnInit() {
@@ -73,6 +75,7 @@ export class DatabaseTableComponent implements OnInit {
     this._http.get<TableCreateScript>(this.baseUrl + "DatabaseTables/GetTableCreateScript", { params: { astrtableName: this.databaseTableName, astrdbName: this.databaseName } }).toPromise()
       .then(res => {
         this.databaseTableCreateScript = res;
+        this.iblnShowTableCreateScript = true;
       });
 
     //public LoadTableCreateScript(astrtableName: string, astrdbName: string): Observable<TableCreateScript> {

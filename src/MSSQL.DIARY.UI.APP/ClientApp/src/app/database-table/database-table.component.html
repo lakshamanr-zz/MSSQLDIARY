@@ -216,9 +216,10 @@
 
 </amexio-accordion-tab>
 <amexio-accordion-tab amexioColorPalette [color-palette]="''" header="SQL Script " [gradient]="true" [active]="true">
-   <ngx-prism [language]="language">
-      {{databaseTableCreateScript.createscript   }}
-    </ngx-prism> 
+
+  <div *ngIf="iblnShowTableCreateScript">
+    <ngx-prism [language]="language">{{databaseTableCreateScript.createscript   }}</ngx-prism>
+  </div>
 </amexio-accordion-tab>
 
 </amexio-accordion>
